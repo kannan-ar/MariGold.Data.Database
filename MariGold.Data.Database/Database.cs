@@ -9,8 +9,47 @@
     /// </summary>
     public sealed class Database : IDatabase
     {
-        private readonly IDbConnection _conn;
-        private IDbTransaction _tran;
+        private readonly IDbConnection conn;
+        private IDbTransaction tran;
+
+        private IDataReader GetDataReader(IDbCommand cmd)
+        {
+            using (cmd)
+            {
+                if (tran != null)
+                {
+                    cmd.Transaction = tran;
+                }
+
+                return cmd.ExecuteReader();
+            }
+        }
+
+        private int Execute(IDbCommand cmd)
+        {
+            using (cmd)
+            {
+                if (tran != null)
+                {
+                    cmd.Transaction = tran;
+                }
+
+                return cmd.ExecuteNonQuery();
+            }
+        }
+
+        private object GetScalar(IDbCommand cmd)
+        {
+            using (cmd)
+            {
+                if (tran != null)
+                {
+                    cmd.Transaction = tran;
+                }
+
+                return cmd.ExecuteScalar();
+            }
+        }
 
         /// <summary>
         /// Returns the status of internal IDbConnection.
@@ -19,13 +58,13 @@
         {
             get
             {
-                if (_conn == null)
+                if (conn == null)
                 {
                     return ConnectionState.Closed;
                 }
                 else
                 {
-                    return _conn.State;
+                    return conn.State;
                 }
             }
         }
@@ -37,7 +76,7 @@
         {
             get
             {
-                return _conn;
+                return conn;
             }
         }
 
@@ -48,7 +87,7 @@
         {
             get
             {
-                return _tran;
+                return tran;
             }
         }
 
@@ -58,23 +97,23 @@
         /// <param name="conn">An implemention of IDbConnection. Throws ArgumentNullException if null.</param>
         public Database(IDbConnection conn)
         {
-        	if (conn == null)
+            if (conn == null)
             {
                 throw new ArgumentNullException("conn");
             }
-        	
-            _conn = conn;
+
+            this.conn = conn;
         }
-        
+
         /// <summary>
         /// Opens the internal IDbConnection.
         /// </summary>
         /// <returns></returns>
         public IDbConnection Open()
         {
-            _conn.Open();
+            conn.Open();
 
-            return _conn;
+            return conn;
         }
 
         /// <summary>
@@ -84,14 +123,14 @@
         /// <returns></returns>
         public IDbTransaction BeginTransaction()
         {
-            if (_tran != null)
+            if (tran != null)
             {
-                throw new ApplicationException("There is a pending transaction exists");
+                throw new InvalidOperationException("There is a pending transaction exists");
             }
 
-            _tran = _conn.BeginTransaction();
+            tran = conn.BeginTransaction();
 
-            return _tran;
+            return tran;
         }
 
         /// <summary>
@@ -99,18 +138,18 @@
         /// </summary>
         public void Commit()
         {
-            if (_tran == null)
+            if (tran == null)
             {
-                throw new ApplicationException("There is no active transaction");
+                throw new InvalidOperationException("There is no active transaction");
             }
 
             try
             {
-                _tran.Commit();
+                tran.Commit();
             }
             finally
             {
-                _tran = null;
+                tran = null;
             }
         }
 
@@ -119,18 +158,18 @@
         /// </summary>
         public void Rollback()
         {
-            if (_tran == null)
+            if (tran == null)
             {
-                throw new ApplicationException("There is no active transaction");
+                throw new InvalidOperationException("There is no active transaction");
             }
 
             try
             {
-                _tran.Rollback();
+                tran.Rollback();
             }
             finally
             {
-                _tran = null;
+                tran = null;
             }
         }
 
@@ -143,10 +182,29 @@
         /// <returns></returns>
         public IDataReader GetDataReader(
             string sql,
-            CommandType commandType = CommandType.Text,
-            IDictionary<string, object> parameters = null)
+            CommandType commandType,
+            IDictionary<string, object> parameters)
         {
-            return GetDataReader(new Query(sql, commandType, parameters));
+            return GetDataReader(Query.GetCommand(conn, sql, commandType, parameters));
+        }
+
+        public IDataReader GetDataReader(
+           string sql,
+           CommandType commandType)
+        {
+            return GetDataReader(Query.GetCommand(conn, sql, commandType));
+        }
+
+        public IDataReader GetDataReader(
+            string sql,
+            IDictionary<string, object> parameters)
+        {
+            return GetDataReader(Query.GetCommand(conn, sql, parameters));
+        }
+
+        public IDataReader GetDataReader(string sql)
+        {
+            return GetDataReader(Query.GetCommand(conn, sql));
         }
 
         /// <summary>
@@ -156,10 +214,7 @@
         /// <returns></returns>
         public IDataReader GetDataReader(Query query)
         {
-            using (IDbCommand cmd = CreateCommand(query))
-            {
-                return cmd.ExecuteReader();
-            }
+            return GetDataReader(query.GetCommand(conn));
         }
 
         /// <summary>
@@ -170,11 +225,30 @@
         /// <param name="parameters"></param>
         /// <returns></returns>
         public int Execute(
-            string sql, 
-            CommandType commandType = CommandType.Text, 
-            IDictionary<string, object> parameters = null)
+            string sql,
+            CommandType commandType,
+            IDictionary<string, object> parameters)
         {
-            return Execute(new Query(sql, commandType, parameters));
+            return Execute(Query.GetCommand(conn, sql, commandType, parameters));
+        }
+
+        public int Execute(
+            string sql,
+            CommandType commandType)
+        {
+            return Execute(Query.GetCommand(conn, sql, commandType));
+        }
+
+        public int Execute(
+            string sql,
+            IDictionary<string, object> parameters)
+        {
+            return Execute(Query.GetCommand(conn, sql, parameters));
+        }
+
+        public int Execute(string sql)
+        {
+            return Execute(Query.GetCommand(conn, sql));
         }
 
         /// <summary>
@@ -184,12 +258,14 @@
         /// <returns></returns>
         public int Execute(Query query)
         {
-            using (IDbCommand cmd = CreateCommand(query))
+            if (query == null)
             {
-                return cmd.ExecuteNonQuery();
+                throw new ArgumentNullException("query");
             }
+
+            return Execute(query.GetCommand(conn));
         }
-         
+
         /// <summary>
         /// Get a scalar value with the given sql string and underlying IDbConnection.
         /// </summary>
@@ -199,10 +275,29 @@
         /// <returns></returns>
         public object GetScalar(
             string sql,
-            CommandType commandType = CommandType.Text,
-            IDictionary<string, object> parameters = null)
+            CommandType commandType,
+            IDictionary<string, object> parameters)
         {
-            return GetScalar(new Query(sql, commandType, parameters));
+            return GetScalar(Query.GetCommand(conn, sql, commandType, parameters));
+        }
+
+        public object GetScalar(
+            string sql,
+            CommandType commandType)
+        {
+            return GetScalar(Query.GetCommand(conn, sql, commandType));
+        }
+
+        public object GetScalar(
+            string sql,
+            IDictionary<string, object> parameters)
+        {
+            return GetScalar(Query.GetCommand(conn, sql, parameters));
+        }
+
+        public object GetScalar(string sql)
+        {
+            return GetScalar(Query.GetCommand(conn, sql));
         }
 
         /// <summary>
@@ -212,37 +307,12 @@
         /// <returns></returns>
         public object GetScalar(Query query)
         {
-            using (IDbCommand cmd = CreateCommand(query))
+            if (query == null)
             {
-                return cmd.ExecuteScalar();
-            }
-        }
-
-        /// <summary>
-        /// Creates an IDbCommand using the properties of Query class. Throws exception if the connection is null or not opened.
-        /// </summary>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        public IDbCommand CreateCommand(Query query)
-        {
-            if (_conn == null)
-            {
-                throw new ApplicationException("Database connection is not established yet");
+                throw new ArgumentNullException("query");
             }
 
-            if (_conn.State != ConnectionState.Open)
-            {
-                throw new ApplicationException("Database connection is not established yet");
-            }
-
-            IDbCommand cmd = query.GetCommand(_conn);
-
-            if (_tran != null)
-            {
-                cmd.Transaction = _tran;
-            }
-
-            return cmd;
+            return GetScalar(query.GetCommand(conn));
         }
 
         /// <summary>
@@ -250,19 +320,19 @@
         /// </summary>
         public void Close()
         {
-            if (_conn == null)
+            if (conn == null)
             {
                 return;
             }
 
-            if (_conn.State == ConnectionState.Closed)
+            if (conn.State == ConnectionState.Closed)
             {
                 return;
             }
 
-            _conn.Close();
+            conn.Close();
 
-            _conn.Dispose();
+            conn.Dispose();
         }
 
         /// <summary>
@@ -271,12 +341,12 @@
         /// <returns></returns>
         public override string ToString()
         {
-            if (_conn == null)
+            if (conn == null)
             {
                 return this.ToString();
             }
 
-            return _conn.ConnectionString;
+            return conn.ConnectionString;
         }
     }
 }

@@ -7,7 +7,7 @@
     using System.Linq;
 
     [TestFixture]
-    public class ORMTest
+    public class SqlServerORMTest
     {
         private string connectionString = @"Server=.\sqlexpress;Database=Test;Trusted_Connection=True;";
 

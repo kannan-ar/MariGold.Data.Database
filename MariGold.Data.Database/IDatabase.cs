@@ -18,22 +18,35 @@
 
         void Rollback();
 
-        IDataReader GetDataReader(string sql, CommandType commandType = CommandType.Text, 
-            IDictionary<string, object> parameters = null);
+        IDataReader GetDataReader(string sql, CommandType commandType, IDictionary<string, object> parameters);
+
+        IDataReader GetDataReader(string sql, CommandType commandType);
+
+        IDataReader GetDataReader(string sql, IDictionary<string, object> parameters);
+
+        IDataReader GetDataReader(string sql);
 
         IDataReader GetDataReader(Query query);
 
-        int Execute(string sql, CommandType commandType = CommandType.Text,
-            IDictionary<string, object> parameters = null);
+        int Execute(string sql, CommandType commandType, IDictionary<string, object> parameters);
+
+        int Execute(string sql, CommandType commandType);
+
+        int Execute(string sql, IDictionary<string, object> parameters);
+
+        int Execute(string sql);
 
         int Execute(Query query);
 
-        object GetScalar(string sql, CommandType commandType = CommandType.Text,
-            IDictionary<string, object> parameters = null);
+        object GetScalar(string sql, CommandType commandType, IDictionary<string, object> parameters);
+
+        object GetScalar(string sql, CommandType commandType);
+
+        object GetScalar(string sql, IDictionary<string, object> parameters);
+
+        object GetScalar(string sql);
 
         object GetScalar(Query query);
-
-        IDbCommand CreateCommand(Query query);
 
         void Close();
     }

@@ -39,7 +39,7 @@
         /// <returns></returns>
         public IConvertDataReader GetConverter()
         {
-            return new ConvertDataReader();
+            return new ConvertILDataReader();
         }
     }
 }

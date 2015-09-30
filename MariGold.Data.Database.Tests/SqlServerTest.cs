@@ -20,11 +20,12 @@
                 conn.Open();
 
                 int count = Convert.ToInt32(conn.GetScalar("select count(*) from person"));
-
+                
                 int i = 0;
 
                 using (IDataReader dr = conn.GetDataReader("select * from person"))
                 {
+                    
                     while (dr.Read())
                     {
                         i++;

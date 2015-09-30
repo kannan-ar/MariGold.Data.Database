@@ -6,32 +6,58 @@
 
     public static class DbExtensions
     {
-    	/// <summary>
-    	/// Creates an IDataReader from the given IDbConnection using the sql and other parameters.
-    	/// </summary>
-    	/// <param name="conn"></param>
-    	/// <param name="sql"></param>
-    	/// <param name="commandType"></param>
-    	/// <param name="parameters"></param>
-    	/// <returns></returns>
-        public static IDataReader GetDataReader(this IDbConnection conn, string sql, 
-            CommandType commandType = CommandType.Text, 
-            IDictionary<string, object> parameters = null)
+        /// <summary>
+        /// Creates an IDataReader from the given IDbConnection using the sql and other parameters.
+        /// </summary>
+        /// <param name="conn"></param>
+        /// <param name="sql"></param>
+        /// <param name="commandType"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public static IDataReader GetDataReader(this IDbConnection conn,
+            string sql,
+            CommandType commandType,
+            IDictionary<string, object> parameters)
         {
             IDatabase db = new DbBuilder(conn).GetConnection();
 
             return db.GetDataReader(sql, commandType, parameters);
         }
 
-    	/// <summary>
-    	/// Creates an IDataReader from the given IDbConnection using the properties of Query object.
-    	/// </summary>
-    	/// <param name="conn"></param>
-    	/// <param name="query"></param>
-    	/// <returns></returns>
+        public static IDataReader GetDataReader(this IDbConnection conn,
+            string sql,
+            CommandType commandType)
+        {
+            IDatabase db = new DbBuilder(conn).GetConnection();
+
+            return db.GetDataReader(sql, commandType);
+        }
+
+        public static IDataReader GetDataReader(this IDbConnection conn,
+            string sql,
+            IDictionary<string, object> parameters)
+        {
+            IDatabase db = new DbBuilder(conn).GetConnection();
+
+            return db.GetDataReader(sql, parameters);
+        }
+
+        public static IDataReader GetDataReader(this IDbConnection conn, string sql)
+        {
+            IDatabase db = new DbBuilder(conn).GetConnection();
+
+            return db.GetDataReader(sql);
+        }
+
+        /// <summary>
+        /// Creates an IDataReader from the given IDbConnection using the properties of Query object.
+        /// </summary>
+        /// <param name="conn"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
         public static IDataReader GetDataReader(this IDbConnection conn, Query query)
         {
-        	IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = new DbBuilder(conn).GetConnection();
 
             return db.GetDataReader(query);
         }
@@ -44,12 +70,42 @@
         /// <param name="commandType"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public static int Execute(this IDbConnection conn, string sql, CommandType commandType = CommandType.Text,
-            IDictionary<string, object> parameters = null)
+        public static int Execute(
+            this IDbConnection conn,
+            string sql,
+            CommandType commandType,
+            IDictionary<string, object> parameters)
         {
             IDatabase db = new DbBuilder(conn).GetConnection();
 
             return db.Execute(sql, commandType, parameters);
+        }
+
+        public static int Execute(
+            this IDbConnection conn,
+            string sql,
+            CommandType commandType)
+        {
+            IDatabase db = new DbBuilder(conn).GetConnection();
+
+            return db.Execute(sql, commandType);
+        }
+
+        public static int Execute(
+            this IDbConnection conn,
+            string sql,
+            IDictionary<string, object> parameters)
+        {
+            IDatabase db = new DbBuilder(conn).GetConnection();
+
+            return db.Execute(sql, parameters);
+        }
+
+        public static int Execute(this IDbConnection conn, string sql)
+        {
+            IDatabase db = new DbBuilder(conn).GetConnection();
+
+            return db.Execute(sql);
         }
 
         /// <summary>
@@ -73,12 +129,42 @@
         /// <param name="commandType"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public static object GetScalar(this IDbConnection conn, string sql, CommandType commandType = CommandType.Text,
-            IDictionary<string, object> parameters = null)
+        public static object GetScalar(
+            this IDbConnection conn,
+            string sql,
+            CommandType commandType,
+            IDictionary<string, object> parameters)
         {
-        	IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = new DbBuilder(conn).GetConnection();
 
             return db.GetScalar(sql, commandType, parameters);
+        }
+
+        public static object GetScalar(
+            this IDbConnection conn,
+            string sql,
+            CommandType commandType)
+        {
+            IDatabase db = new DbBuilder(conn).GetConnection();
+
+            return db.GetScalar(sql, commandType);
+        }
+
+        public static object GetScalar(
+            this IDbConnection conn,
+            string sql,
+            IDictionary<string, object> parameters)
+        {
+            IDatabase db = new DbBuilder(conn).GetConnection();
+
+            return db.GetScalar(sql, parameters);
+        }
+
+        public static object GetScalar(this IDbConnection conn, string sql)
+        {
+            IDatabase db = new DbBuilder(conn).GetConnection();
+
+            return db.GetScalar(sql);
         }
 
         /// <summary>

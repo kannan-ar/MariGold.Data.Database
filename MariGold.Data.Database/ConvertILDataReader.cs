@@ -9,7 +9,7 @@
     /// <summary>
     /// Creates dynamic methods to iterate through data reader and generate CLR objects using IL Emit.
     /// </summary>
-    public sealed class ConvertDataReader : IConvertDataReader
+    public sealed class ConvertILDataReader : IConvertDataReader
     {
         private MethodInfo GetDrMethod(Type drType, string propTypeName)
         {
@@ -76,7 +76,7 @@
 
             if (ctor == null)
             {
-                throw new ApplicationException("Type " + type.ToString() + " does not have default constructor");
+                throw new InvalidOperationException("Type " + type.ToString() + " does not have default constructor");
             }
 
             il.Emit(OpCodes.Newobj, ctor);

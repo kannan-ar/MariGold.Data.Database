@@ -111,7 +111,7 @@
         {
             if (dr.IfDbNull(index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetInt16(index);
@@ -153,7 +153,7 @@
 
             if (dr.IfDbNull(name, out index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetInt16(index);
@@ -249,7 +249,7 @@
         {
             if (dr.IfDbNull(index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetInt32(index);
@@ -291,7 +291,7 @@
 
             if (dr.IfDbNull(name, out index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetInt32(index);
@@ -387,7 +387,7 @@
         {
             if (dr.IfDbNull(index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetInt64(index);
@@ -429,7 +429,7 @@
 
             if (dr.IfDbNull(name, out index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetInt64(index);
@@ -525,7 +525,7 @@
         {
             if (dr.IfDbNull(index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetString(index);
@@ -567,7 +567,7 @@
 
             if (dr.IfDbNull(name, out index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetString(index);
@@ -613,7 +613,7 @@
         {
             if (dr.IfDbNull(index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetDateTime(index);
@@ -705,7 +705,7 @@
 
             if (dr.IfDbNull(name, out index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetDateTime(index);
@@ -751,7 +751,7 @@
         {
             if (dr.IfDbNull(index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetDecimal(index);
@@ -793,7 +793,7 @@
 
             if (dr.IfDbNull(name, out index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetDecimal(index);
@@ -889,7 +889,7 @@
         {
             if (dr.IfDbNull(index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetBoolean(index);
@@ -931,7 +931,7 @@
 
             if (dr.IfDbNull(name, out index))
             {
-                throw new ApplicationException("Reader is null");
+                throw new InvalidOperationException("Reader is null");
             }
 
             return dr.GetBoolean(index);

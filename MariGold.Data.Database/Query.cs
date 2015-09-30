@@ -10,17 +10,18 @@
     /// </summary>
     public sealed class Query
     {
-        private string _sql;
-        private IDictionary<string, object> _parameters;
+        private string sql;
+        private IDictionary<string, object> parameters;
+        private CommandType commandType;
 
         /// <summary>
         /// A valid sql query. Thorws ArgumentNullException if the string is null or empty.
         /// </summary>
-        public string Sql 
+        public string Sql
         {
             get
             {
-                return _sql;
+                return sql;
             }
 
             set
@@ -30,15 +31,26 @@
                     throw new ArgumentNullException("Sql");
                 }
 
-                _sql = value;
+                sql = value;
             }
         }
-        
+
         /// <summary>
         /// System.Data.CommandType to create the IDbCommand.
         /// </summary>
-        public CommandType CommandType { get; set; }
-        
+        public CommandType CommandType
+        {
+            get
+            {
+                return commandType;
+            }
+
+            set
+            {
+                commandType = value;
+            }
+        }
+
         /// <summary>
         /// A collection of parameters to create the IDbCommand.
         /// </summary>
@@ -46,14 +58,14 @@
         {
             get
             {
-                return _parameters;
+                return parameters;
             }
 
             set
             {
                 if (value != null)
                 {
-                    _parameters = value;
+                    parameters = value;
                 }
             }
         }
@@ -73,17 +85,36 @@
         /// <param name="parameters"></param>
         public Query(
             string sql,
-            CommandType commandType = CommandType.Text,
-            IDictionary<string, object> parameters = null)
+            CommandType commandType,
+            IDictionary<string, object> parameters)
         {
             if (!ValidateString(sql))
             {
                 throw new ArgumentNullException("sql");
             }
 
-            _sql = sql;
-            CommandType = commandType;
-            _parameters = parameters ?? new Dictionary<string, object>();
+            this.sql = sql;
+            this.commandType = commandType;
+            this.parameters = parameters ?? new Dictionary<string, object>();
+        }
+
+        public Query(
+            string sql,
+            CommandType commandType)
+            : this(sql, commandType, null)
+        {
+        }
+
+        public Query(
+            string sql,
+            IDictionary<string, object> parameters)
+            : this(sql, CommandType.Text, parameters)
+        {
+        }
+
+        public Query(string sql)
+            : this(sql, CommandType.Text, null)
+        {
         }
 
         /// <summary>
@@ -104,21 +135,40 @@
 
             foreach (KeyValuePair<string, object> param in parameters)
             {
-                _parameters[param.Key] = param.Value;
+                parameters[param.Key] = param.Value;
             }
         }
 
-        internal IDbCommand GetCommand(IDbConnection connection)
+        static internal IDbCommand GetCommand(
+            IDbConnection connection,
+            string sql,
+            CommandType commandType,
+            IDictionary<string, object> parameters)
         {
+            if (connection == null)
+            {
+                throw new InvalidOperationException("Database connection is not established yet");
+            }
+
+            if (connection.State != ConnectionState.Open)
+            {
+                throw new InvalidOperationException("Database connection is not established yet");
+            }
+
+            if(string.IsNullOrEmpty(sql))
+            {
+                throw new ArgumentNullException("sql");
+            }
+
             IDbCommand cmd = connection.CreateCommand();
 
-            cmd.CommandText = Sql;
+            cmd.CommandText = sql;
 
-            cmd.CommandType = CommandType;
+            cmd.CommandType = commandType;
 
-            if (Parameters != null && Parameters.Count > 0)
+            if (parameters != null && parameters.Count > 0)
             {
-                foreach (var p in Parameters)
+                foreach (var p in parameters)
                 {
                     IDbDataParameter param = cmd.CreateParameter();
                     param.ParameterName = p.Key;
@@ -129,6 +179,34 @@
             }
 
             return cmd;
+        }
+
+        static internal IDbCommand GetCommand(
+            IDbConnection connection,
+            string sql,
+            IDictionary<string, object> parameters)
+        {
+            return GetCommand(connection, sql, CommandType.Text, parameters);
+        }
+
+        static internal IDbCommand GetCommand(
+            IDbConnection connection,
+            string sql,
+            CommandType commandType)
+        {
+            return GetCommand(connection, sql, commandType, null);
+        }
+
+        static internal IDbCommand GetCommand(
+            IDbConnection connection,
+            string sql)
+        {
+            return GetCommand(connection, sql, CommandType.Text, null);
+        }
+
+        internal IDbCommand GetCommand(IDbConnection connection)
+        {
+            return GetCommand(connection, sql, commandType, parameters);
         }
     }
 }
