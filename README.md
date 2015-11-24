@@ -15,3 +15,10 @@ using (SqlConnection conn = new SqlConnection(connectionString))
 }
 </pre>
 </div>
+<h2>Installing via NuGet</h2>
+<p>
+In Package Manager Console, enter the following command:
+</p>
+<pre>
+Install-Package MariGold.Data.Database
+</pre>
