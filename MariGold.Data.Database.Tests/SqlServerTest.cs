@@ -11,8 +11,8 @@
 	[TestFixture]
 	public class SqlServerTest
 	{
-		private string connectionString = @"Server=.\sqlexpress;Database=Test;Trusted_Connection=True;";
-		private PersonTable table;
+		private const string connectionString = @"Server=.\sqlexpress;Database=Tests;Trusted_Connection=True;";
+		private readonly PersonTable table;
 		
 		public SqlServerTest()
 		{
