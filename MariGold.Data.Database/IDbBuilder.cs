@@ -1,10 +1,12 @@
 ﻿namespace MariGold.Data
 {
-    using System;
-
-    public interface IDbBuilder
-    {
-        IDatabase GetConnection();
-        IConvertDataReader GetConverter();
-    }
+	using System;
+	using System.Dynamic;
+	
+	public interface IDbBuilder
+	{
+		IDatabase GetConnection();
+		IConvertDataReader<T> GetConverter<T>();
+		ConvertDataReader<dynamic> GetConverter();
+	}
 }

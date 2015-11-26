@@ -2,7 +2,7 @@
 {
     using System;
     using System.Data;
-
+	
     /// <summary>
     /// Default implementation of IDbBuilder. Provides default implementation for database connection and data reader converter.
     /// </summary>
@@ -37,9 +37,14 @@
         /// Get the default implementation IConvertDataReader
         /// </summary>
         /// <returns></returns>
-        public IConvertDataReader GetConverter()
+        public IConvertDataReader<T> GetConverter<T>()
         {
-            return new ConvertILDataReader();
+            return new ConvertILDataReader<T>();
+        }
+        
+        public ConvertDataReader<dynamic> GetConverter()
+        {
+			return new ConvertDynamicDataReader();
         }
     }
 }

@@ -4,10 +4,10 @@
     using System.Data;
     using System.Collections.Generic;
 
-    public interface IConvertDataReader
+    public interface IConvertDataReader<T>
     {
-        T Get<T>(IDataReader dr);
-        List<T> GetList<T>(IDataReader dr);
-        IEnumerable<T> GetEnumerable<T>(IDataReader dr);
+        T Get(IDataReader dr);
+        IList<T> GetList(IDataReader dr);
+        IEnumerable<T> GetEnumerable(IDataReader dr);
     }
 }

@@ -1,177 +1,365 @@
 ﻿namespace MariGold.Data
 {
-    using System;
-    using System.Data;
-    using System.Collections.Generic;
+	using System;
+	using System.Data;
+	using System.Collections.Generic;
 
-    public static class ORMExtensions
-    {
-        /// <summary>
-        /// Creates type T instance from the sql query using the default implementations of IDatabase and IConvertDataReader provided through DbBuilder class.
-        /// </summary>
-        /// <param name="conn"></param>
-        /// <param name="sql"></param>
-        /// <param name="commandType"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        public static T Get<T>(this IDbConnection conn,
-            string sql,
-            CommandType commandType,
-            IDictionary<string, object> parameters)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
+	public static class ORMExtensions
+	{
+		/// <summary>
+		/// Creates type T instance from the sql query using the default implementations of IDatabase and IConvertDataReader provided through DbBuilder class.
+		/// </summary>
+		/// <param name="conn"></param>
+		/// <param name="sql"></param>
+		/// <param name="commandType"></param>
+		/// <param name="parameters"></param>
+		/// <returns></returns>
+		public static T Get<T>(this IDbConnection conn,
+			string sql,
+			CommandType commandType,
+			IDictionary<string, object> parameters)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
+			
+			return converter.Get(db.GetDataReader(sql, commandType, parameters));
+		}
 
-            return orm.Get<T>(sql, commandType, parameters);
-        }
+		public static T Get<T>(this IDbConnection conn,
+			string sql,
+			CommandType commandType)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
 
-        public static T Get<T>(this IDbConnection conn,
-           string sql,
-           CommandType commandType)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
+			return converter.Get(db.GetDataReader(sql, commandType));
+		}
 
-            return orm.Get<T>(sql, commandType);
-        }
+		public static T Get<T>(this IDbConnection conn,
+			string sql,
+			IDictionary<string, object> parameters)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
 
-        public static T Get<T>(this IDbConnection conn,
-           string sql,
-           IDictionary<string, object> parameters)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
+			return converter.Get(db.GetDataReader(sql, parameters));
+		}
 
-            return orm.Get<T>(sql, parameters);
-        }
+		public static T Get<T>(this IDbConnection conn, string sql)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
+			
+			return converter.Get(db.GetDataReader(sql));
+		}
 
-        public static T Get<T>(this IDbConnection conn, string sql)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
+		/// <summary>
+		/// Creates type T instance from the Query parameter using the default implementations of IDatabase and IConvertDataReader provided through DbBuilder class.
+		/// </summary>
+		/// <param name="conn"></param>
+		/// <param name="query"></param>
+		/// <returns></returns>
+		public static T Get<T>(this IDbConnection conn, Query query)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
 
-            return orm.Get<T>(sql);
-        }
+			return converter.Get(db.GetDataReader(query));
+		}
 
-        /// <summary>
-        /// Creates type T instance from the Query parameter using the default implementations of IDatabase and IConvertDataReader provided through DbBuilder class.
-        /// </summary>
-        /// <param name="conn"></param>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        public static T Get<T>(this IDbConnection conn, Query query)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
+		/// <summary>
+		/// Creates a list of type T objects from the sql query using the default implementations of IDatabase and IConvertDataReader provided through DbBuilder class.
+		/// </summary>
+		/// <param name="conn"></param>
+		/// <param name="sql"></param>
+		/// <param name="commandType"></param>
+		/// <param name="parameters"></param>
+		/// <returns></returns>
+		public static IList<T> GetList<T>(this IDbConnection conn,
+			string sql,
+			CommandType commandType,
+			IDictionary<string, object> parameters)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
 
-            return orm.Get<T>(query);
-        }
+			return converter.GetList(db.GetDataReader(sql, commandType, parameters));
+		}
 
-        /// <summary>
-        /// Creates a list of type T objects from the sql query using the default implementations of IDatabase and IConvertDataReader provided through DbBuilder class.
-        /// </summary>
-        /// <param name="conn"></param>
-        /// <param name="sql"></param>
-        /// <param name="commandType"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        public static List<T> GetList<T>(this IDbConnection conn,
-           string sql,
-           CommandType commandType,
-           IDictionary<string, object> parameters)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
+		public static IList<T> GetList<T>(this IDbConnection conn,
+			string sql,
+			CommandType commandType)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
 
-            return orm.GetList<T>(sql, commandType, parameters);
-        }
+			return converter.GetList(db.GetDataReader(sql, commandType));
+		}
 
-        public static List<T> GetList<T>(this IDbConnection conn,
-           string sql,
-           CommandType commandType)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
+		public static IList<T> GetList<T>(this IDbConnection conn,
+			string sql,
+			IDictionary<string, object> parameters)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
 
-            return orm.GetList<T>(sql, commandType);
-        }
+			return converter.GetList(db.GetDataReader(sql, parameters));
+		}
 
-        public static List<T> GetList<T>(this IDbConnection conn,
-           string sql,
-           IDictionary<string, object> parameters)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
+		public static IList<T> GetList<T>(this IDbConnection conn, string sql)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
+			
+			return converter.GetList(db.GetDataReader(sql));
+		}
 
-            return orm.GetList<T>(sql, parameters);
-        }
+		/// <summary>
+		/// Creates a list of type T objects from the Query parameter using the default implementations of IDatabase and IConvertDataReader provided through DbBuilder class.
+		/// </summary>
+		/// <param name="conn"></param>
+		/// <param name="query"></param>
+		/// <returns></returns>
+		public static IList<T> GetList<T>(this IDbConnection conn, Query query)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
+			
+			return converter.GetList(db.GetDataReader(query));
+		}
 
-        public static List<T> GetList<T>(this IDbConnection conn, string sql)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
+		/// <summary>
+		/// Creates an Enumerable of type T from the sql query using the default implementations of IDatabase and IConvertDataReader provided through DbBuilder class.
+		/// </summary>
+		/// <param name="conn"></param>
+		/// <param name="sql"></param>
+		/// <param name="commandType"></param>
+		/// <param name="parameters"></param>
+		/// <returns></returns>
+		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn,
+			string sql,
+			CommandType commandType,
+			IDictionary<string, object> parameters)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
+			
+			return converter.GetEnumerable(db.GetDataReader(sql, commandType, parameters));
+		}
 
-            return orm.GetList<T>(sql);
-        }
+		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn,
+			string sql,
+			CommandType commandType)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
 
-        /// <summary>
-        /// Creates a list of type T objects from the Query parameter using the default implementations of IDatabase and IConvertDataReader provided through DbBuilder class.
-        /// </summary>
-        /// <param name="conn"></param>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        public static List<T> GetList<T>(this IDbConnection conn, Query query)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
+			return converter.GetEnumerable(db.GetDataReader(sql, commandType));
+		}
 
-            return orm.GetList<T>(query);
-        }
+		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn,
+			string sql,
+			IDictionary<string, object> parameters)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
+			
+			return converter.GetEnumerable(db.GetDataReader(sql, parameters));
+		}
 
-        /// <summary>
-        /// Creates an Enumerable of type T from the sql query using the default implementations of IDatabase and IConvertDataReader provided through DbBuilder class.
-        /// </summary>
-        /// <param name="conn"></param>
-        /// <param name="sql"></param>
-        /// <param name="commandType"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn,
-           string sql,
-           CommandType commandType,
-           IDictionary<string, object> parameters)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
+		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn, string sql)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
+			
+			return converter.GetEnumerable(db.GetDataReader(sql));
+		}
 
-            return orm.GetEnumerable<T>(sql, commandType, parameters);
-        }
+		/// <summary>
+		/// Creates an Enumerable of type T from the Query parameter using the default implementations of IDatabase and IConvertDataReader provided through DbBuilder class.
+		/// </summary>
+		/// <param name="conn"></param>
+		/// <param name="query"></param>
+		/// <returns></returns>
+		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn, Query query)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			IDatabase db = builder.GetConnection();
+			IConvertDataReader<T> converter = builder.GetConverter<T>();
+			
+			return converter.GetEnumerable(db.GetDataReader(query));
+		}
+        
+        
+		public static dynamic Get(this IDbConnection conn,
+			string sql,
+			CommandType commandType,
+			IDictionary<string, object> parameters)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
+			
+			return converter.Get(db.GetDataReader(sql, commandType, parameters));
+		}
+        
+		public static dynamic Get(this IDbConnection conn,
+			string sql,
+			CommandType commandType)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
+			
+			return converter.Get(db.GetDataReader(sql, commandType));
+		}
+        
+		public static dynamic Get(this IDbConnection conn,
+			string sql,
+			IDictionary<string, object> parameters)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
+			
+			return converter.Get(db.GetDataReader(sql, parameters));
+		}
+        
+		public static dynamic Get(this IDbConnection conn,
+			string sql)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
+			
+			return converter.Get(db.GetDataReader(sql));
+		}
+        
+		public static dynamic Get(this IDbConnection conn, Query query)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
+			
+			return converter.Get(db.GetDataReader(query));
+		}
+		
+		public static IList<dynamic> GetList(this IDbConnection conn,
+			string sql,
+			CommandType commandType,
+			IDictionary<string, object> parameters)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
 
-        public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn,
-           string sql,
-           CommandType commandType)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
+			return converter.GetList(db.GetDataReader(sql, commandType, parameters));
+		}
+		
+		public static IList<dynamic> GetList(this IDbConnection conn,
+			string sql,
+			CommandType commandType)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
 
-            return orm.GetEnumerable<T>(sql, commandType);
-        }
+			return converter.GetList(db.GetDataReader(sql, commandType));
+		}
+		
+		public static IList<dynamic> GetList(this IDbConnection conn,
+			string sql,
+			IDictionary<string, object> parameters)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
 
-        public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn,
-           string sql,
-           IDictionary<string, object> parameters)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
+			return converter.GetList(db.GetDataReader(sql, parameters));
+		}
+		
+		public static IList<dynamic> GetList(this IDbConnection conn, string sql)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
 
-            return orm.GetEnumerable<T>(sql, parameters);
-        }
+			return converter.GetList(db.GetDataReader(sql));
+		}
+		
+		public static IList<dynamic> GetList(this IDbConnection conn, Query query)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
 
-        public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn, string sql)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
-
-            return orm.GetEnumerable<T>(sql);
-        }
-
-        /// <summary>
-        /// Creates an Enumerable of type T from the Query parameter using the default implementations of IDatabase and IConvertDataReader provided through DbBuilder class.
-        /// </summary>
-        /// <param name="conn"></param>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn, Query query)
-        {
-            ORM orm = new ORM(new DbBuilder(conn));
-
-            return orm.GetEnumerable<T>(query);
-        }
-    }
+			return converter.GetList(db.GetDataReader(query));
+		}
+		
+		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn,
+			string sql,
+			CommandType commandType,
+			IDictionary<string, object> parameters)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
+			
+			return converter.GetEnumerable(db.GetDataReader(sql, commandType, parameters));
+		}
+		
+		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn,
+			string sql,
+			CommandType commandType)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
+			
+			return converter.GetEnumerable(db.GetDataReader(sql, commandType));
+		}
+		
+		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn,
+			string sql,
+			IDictionary<string, object> parameters)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
+			
+			return converter.GetEnumerable(db.GetDataReader(sql, parameters));
+		}
+		
+		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn, string sql)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
+			
+			return converter.GetEnumerable(db.GetDataReader(sql));
+		}
+		
+		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn, Query query)
+		{
+			IDbBuilder builder = new DbBuilder(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter();
+			
+			return converter.GetEnumerable(db.GetDataReader(query));
+		}
+	}
 }
