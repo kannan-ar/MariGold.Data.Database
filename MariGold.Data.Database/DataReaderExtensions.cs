@@ -2,7 +2,8 @@
 {
     using System;
     using System.Data;
-
+	using System.Collections.Generic;
+	
     public static class DataReaderExtensions
     {
     	/// <summary>
@@ -1014,5 +1015,51 @@
         }
 
         #endregion Bool
+        
+        #region Entity
+        
+        public static T Get<T>(this IDataReader dr)
+        {
+			var converter = new ConvertILDataReader<T>();
+			
+			return converter.Get(dr);
+        }
+        
+        public static dynamic Get(this IDataReader dr)
+        {
+			var converter = new ConvertDynamicDataReader();
+			
+			return converter.Get(dr);
+        }
+        
+        public static IList<T> GetList<T>(this IDataReader dr)
+        {
+			var converter = new ConvertILDataReader<T>();
+        	
+			return converter.GetList(dr);
+        }
+        
+        public static IList<dynamic> GetList(this IDataReader dr)
+        {
+			var converter = new ConvertDynamicDataReader();
+        	
+			return converter.GetList(dr);
+        }
+        
+        public static IEnumerable<T> GetEnumerable<T>(IDataReader dr)
+        {
+			var converter = new ConvertILDataReader<T>();
+        	
+			return converter.GetEnumerable(dr);
+        }
+        
+        public static IEnumerable<dynamic> GetEnumerable(IDataReader dr)
+        {
+			var converter = new ConvertDynamicDataReader();
+        	
+			return converter.GetEnumerable(dr);
+        }
+        
+        #endregion Entity
     }
 }
