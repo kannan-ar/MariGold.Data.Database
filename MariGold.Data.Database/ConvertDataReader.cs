@@ -4,7 +4,7 @@
 	using System.Collections.Generic;
 	using System.Data;
 	
-	public abstract class ConvertDataReader<T> : IConvertDataReader<T>
+	public abstract class ConvertDataReader<T>
 	{
 		public abstract T Get(IDataReader dr);
 		public abstract IList<T> GetList(IDataReader dr);

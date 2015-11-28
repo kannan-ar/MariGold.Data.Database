@@ -19,7 +19,7 @@
             CommandType commandType,
             IDictionary<string, object> parameters)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+        	IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.GetDataReader(sql, commandType, parameters);
         }
@@ -28,7 +28,7 @@
             string sql,
             CommandType commandType)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.GetDataReader(sql, commandType);
         }
@@ -37,14 +37,14 @@
             string sql,
             IDictionary<string, object> parameters)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.GetDataReader(sql, parameters);
         }
 
         public static IDataReader GetDataReader(this IDbConnection conn, string sql)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.GetDataReader(sql);
         }
@@ -57,7 +57,7 @@
         /// <returns></returns>
         public static IDataReader GetDataReader(this IDbConnection conn, Query query)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.GetDataReader(query);
         }
@@ -76,7 +76,7 @@
             CommandType commandType,
             IDictionary<string, object> parameters)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.Execute(sql, commandType, parameters);
         }
@@ -86,7 +86,7 @@
             string sql,
             CommandType commandType)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.Execute(sql, commandType);
         }
@@ -96,14 +96,14 @@
             string sql,
             IDictionary<string, object> parameters)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.Execute(sql, parameters);
         }
 
         public static int Execute(this IDbConnection conn, string sql)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.Execute(sql);
         }
@@ -116,7 +116,7 @@
         /// <returns></returns>
         public static int Execute(this IDbConnection conn, Query query)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.Execute(query);
         }
@@ -135,7 +135,7 @@
             CommandType commandType,
             IDictionary<string, object> parameters)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.GetScalar(sql, commandType, parameters);
         }
@@ -145,7 +145,7 @@
             string sql,
             CommandType commandType)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.GetScalar(sql, commandType);
         }
@@ -155,14 +155,14 @@
             string sql,
             IDictionary<string, object> parameters)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.GetScalar(sql, parameters);
         }
 
         public static object GetScalar(this IDbConnection conn, string sql)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.GetScalar(sql);
         }
@@ -175,7 +175,7 @@
         /// <returns></returns>
         public static object GetScalar(this IDbConnection conn, Query query)
         {
-            IDatabase db = new DbBuilder(conn).GetConnection();
+            IDatabase db = DefaultDb.Create(conn).GetConnection();
 
             return db.GetScalar(query);
         }

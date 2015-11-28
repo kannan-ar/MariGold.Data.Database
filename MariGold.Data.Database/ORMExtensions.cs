@@ -19,7 +19,7 @@
 			CommandType commandType,
 			IDictionary<string, object> parameters)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 			
@@ -30,7 +30,7 @@
 			string sql,
 			CommandType commandType)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 
@@ -41,7 +41,7 @@
 			string sql,
 			IDictionary<string, object> parameters)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 
@@ -50,7 +50,7 @@
 
 		public static T Get<T>(this IDbConnection conn, string sql)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 			
@@ -65,7 +65,7 @@
 		/// <returns></returns>
 		public static T Get<T>(this IDbConnection conn, Query query)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 
@@ -85,7 +85,7 @@
 			CommandType commandType,
 			IDictionary<string, object> parameters)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 
@@ -96,7 +96,7 @@
 			string sql,
 			CommandType commandType)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 
@@ -107,7 +107,7 @@
 			string sql,
 			IDictionary<string, object> parameters)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 
@@ -116,7 +116,7 @@
 
 		public static IList<T> GetList<T>(this IDbConnection conn, string sql)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 			
@@ -131,7 +131,7 @@
 		/// <returns></returns>
 		public static IList<T> GetList<T>(this IDbConnection conn, Query query)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 			
@@ -151,7 +151,7 @@
 			CommandType commandType,
 			IDictionary<string, object> parameters)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 			
@@ -162,7 +162,7 @@
 			string sql,
 			CommandType commandType)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 
@@ -173,7 +173,7 @@
 			string sql,
 			IDictionary<string, object> parameters)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 			
@@ -182,7 +182,7 @@
 
 		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn, string sql)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter<T>();
 			
@@ -197,9 +197,9 @@
 		/// <returns></returns>
 		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn, Query query)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
-			IDatabase db = builder.GetConnection();
-			IConvertDataReader<T> converter = builder.GetConverter<T>();
+			Db builder = DefaultDb.Create(conn);
+			var db = builder.GetConnection();
+			var converter = builder.GetConverter<T>();
 			
 			return converter.GetEnumerable(db.GetDataReader(query));
 		}
@@ -210,7 +210,7 @@
 			CommandType commandType,
 			IDictionary<string, object> parameters)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 			
@@ -221,7 +221,7 @@
 			string sql,
 			CommandType commandType)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 			
@@ -232,7 +232,7 @@
 			string sql,
 			IDictionary<string, object> parameters)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 			
@@ -242,7 +242,7 @@
 		public static dynamic Get(this IDbConnection conn,
 			string sql)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 			
@@ -251,7 +251,7 @@
         
 		public static dynamic Get(this IDbConnection conn, Query query)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 			
@@ -263,7 +263,7 @@
 			CommandType commandType,
 			IDictionary<string, object> parameters)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 
@@ -274,7 +274,7 @@
 			string sql,
 			CommandType commandType)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 
@@ -285,7 +285,7 @@
 			string sql,
 			IDictionary<string, object> parameters)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 
@@ -294,7 +294,7 @@
 		
 		public static IList<dynamic> GetList(this IDbConnection conn, string sql)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 
@@ -303,7 +303,7 @@
 		
 		public static IList<dynamic> GetList(this IDbConnection conn, Query query)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 
@@ -315,7 +315,7 @@
 			CommandType commandType,
 			IDictionary<string, object> parameters)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 			
@@ -326,7 +326,7 @@
 			string sql,
 			CommandType commandType)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 			
@@ -337,7 +337,7 @@
 			string sql,
 			IDictionary<string, object> parameters)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 			
@@ -346,7 +346,7 @@
 		
 		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn, string sql)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 			
@@ -355,7 +355,7 @@
 		
 		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn, Query query)
 		{
-			IDbBuilder builder = new DbBuilder(conn);
+			Db builder = DefaultDb.Create(conn);
 			var db = builder.GetConnection();
 			var converter = builder.GetConverter();
 			

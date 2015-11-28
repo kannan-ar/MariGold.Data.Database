@@ -6,17 +6,22 @@
     /// <summary>
     /// Default implementation of IDbBuilder. Provides default implementation for database connection and data reader converter.
     /// </summary>
-    public sealed class DbBuilder : IDbBuilder
+    public sealed class DefaultDb : Db
     {
         private IDbConnection connection;
 
-        /// <summary>
+        public static Db Create(IDbConnection connection)
+        {
+			return new DefaultDb(connection);
+        }
+        
+         /// <summary>
         /// Initialize the DbBuilder object with an instance of IDbConnection. Throws ArgumentNullException if the IDbConnection is null.
         /// </summary>
         /// <param name="connection"></param>
-        public DbBuilder(IDbConnection connection)
+        public DefaultDb(IDbConnection connection)
         {
-            if (connection == null)
+        	 if (connection == null)
             {
                 throw new ArgumentNullException("connection");
             }
@@ -28,7 +33,7 @@
         /// Get the default implementation of IDatabase
         /// </summary>
         /// <returns></returns>
-        public IDatabase GetConnection()
+        public override IDatabase GetConnection()
         {
             return new Database(connection);
         }
@@ -37,12 +42,12 @@
         /// Get the default implementation IConvertDataReader
         /// </summary>
         /// <returns></returns>
-        public IConvertDataReader<T> GetConverter<T>()
+        public override ConvertDataReader<T> GetConverter<T>()
         {
             return new ConvertILDataReader<T>();
         }
         
-        public ConvertDataReader<dynamic> GetConverter()
+        public override ConvertDataReader<dynamic> GetConverter()
         {
 			return new ConvertDynamicDataReader();
         }

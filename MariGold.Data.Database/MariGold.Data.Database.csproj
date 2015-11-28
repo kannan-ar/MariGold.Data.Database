@@ -41,12 +41,11 @@
     <Compile Include="ConvertILDataReader.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="DataReaderExtensions.cs" />
-    <Compile Include="DbBuilder.cs" />
+    <Compile Include="DefaultDb.cs" />
     <Compile Include="DbExtensions.cs" />
     <Compile Include="DbObject.cs" />
-    <Compile Include="IConvertDataReader.cs" />
     <Compile Include="IDatabase.cs" />
-    <Compile Include="IDbBuilder.cs" />
+    <Compile Include="Db.cs" />
     <Compile Include="ORMExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query.cs" />
