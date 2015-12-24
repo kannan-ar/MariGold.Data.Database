@@ -5,13 +5,14 @@
 	using System.Reflection;
 	using System.Reflection.Emit;
 	using System.Collections.Generic;
+	using System.Collections.Concurrent;
 
 	/// <summary>
 	/// Creates dynamic methods to iterate through data reader and generate CLR objects using IL Emit.
 	/// </summary>
-	public sealed class ConvertILDataReader<T> : ConvertDataReader<T>
+	public sealed class ILDataConverter : IDataConverter
 	{
-		private static Dictionary<Type,Delegate> methods;
+		private static ConcurrentDictionary<Type,Delegate> methods;
 		
 		private MethodInfo GetDrMethod(Type drType, string propTypeName)
 		{
@@ -63,12 +64,12 @@
 			return drMethod;
 		}
 
-		static ConvertILDataReader()
+		static ILDataConverter()
 		{
-			methods = new Dictionary<Type, Delegate>();
+			methods = new ConcurrentDictionary<Type, Delegate>();
 		}
         
-		private Func<IDataReader, T> GetReaderFunc(IDataReader dr)
+		private Func<IDataReader, T> GetReaderFunc<T>(IDataReader dr)
 		{
 			Type type = typeof(T);
 			Delegate del;
@@ -131,7 +132,7 @@
 				
 				del = method.CreateDelegate(typeof(Func<IDataReader, T>));
 				
-				methods.Add(type, del);
+				methods.TryAdd(type, del);
 			}
 			
 			return (Func<IDataReader, T>)del;
@@ -143,13 +144,13 @@
 		/// <typeparam name="T"></typeparam>
 		/// <param name="dr"></param>
 		/// <returns></returns>
-		public override T Get(IDataReader dr)
+		public T Get<T>(IDataReader dr)
 		{
 			T item = default(T);
 
 			if (dr.Read())
 			{
-				Func<IDataReader, T> func = GetReaderFunc(dr);
+				Func<IDataReader, T> func = GetReaderFunc<T>(dr);
 
 				item = func(dr);
 			}
@@ -163,13 +164,13 @@
 		/// <typeparam name="T"></typeparam>
 		/// <param name="dr"></param>
 		/// <returns></returns>
-		public override IList<T> GetList(IDataReader dr)
+		public IList<T> GetList<T>(IDataReader dr)
 		{
 			IList<T> list = new List<T>();
 
 			if (dr.Read())
 			{
-				Func<IDataReader, T> func = GetReaderFunc(dr);
+				Func<IDataReader, T> func = GetReaderFunc<T>(dr);
 
 				do
 				{
@@ -187,11 +188,11 @@
 		/// <typeparam name="T"></typeparam>
 		/// <param name="dr"></param>
 		/// <returns></returns>
-		public override IEnumerable<T> GetEnumerable(IDataReader dr)
+		public IEnumerable<T> GetEnumerable<T>(IDataReader dr)
 		{
 			if (dr.Read())
 			{
-				Func<IDataReader, T> func = GetReaderFunc(dr);
+				Func<IDataReader, T> func = GetReaderFunc<T>(dr);
 
 				do
 				{

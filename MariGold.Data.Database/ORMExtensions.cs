@@ -19,42 +19,34 @@
 			CommandType commandType,
 			IDictionary<string, object> parameters)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 			
-			return converter.Get(db.GetDataReader(sql, commandType, parameters));
+			return db.Get(sql, commandType, parameters);
 		}
 
 		public static T Get<T>(this IDbConnection conn,
 			string sql,
 			CommandType commandType)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 
-			return converter.Get(db.GetDataReader(sql, commandType));
+			return db.Get(sql, commandType);
 		}
 
 		public static T Get<T>(this IDbConnection conn,
 			string sql,
 			IDictionary<string, object> parameters)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 
-			return converter.Get(db.GetDataReader(sql, parameters));
+			return db.Get(sql, parameters);
 		}
 
 		public static T Get<T>(this IDbConnection conn, string sql)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 			
-			return converter.Get(db.GetDataReader(sql));
+			return db.Get(sql);
 		}
 
 		/// <summary>
@@ -65,11 +57,9 @@
 		/// <returns></returns>
 		public static T Get<T>(this IDbConnection conn, Query query)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 
-			return converter.Get(db.GetDataReader(query));
+			return db.Get(query);
 		}
 
 		/// <summary>
@@ -85,42 +75,34 @@
 			CommandType commandType,
 			IDictionary<string, object> parameters)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 
-			return converter.GetList(db.GetDataReader(sql, commandType, parameters));
+			return db.GetList<T>(sql, commandType, parameters);
 		}
 
 		public static IList<T> GetList<T>(this IDbConnection conn,
 			string sql,
 			CommandType commandType)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 
-			return converter.GetList(db.GetDataReader(sql, commandType));
+			return db.GetList<T>(sql, commandType);
 		}
 
 		public static IList<T> GetList<T>(this IDbConnection conn,
 			string sql,
 			IDictionary<string, object> parameters)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 
-			return converter.GetList(db.GetDataReader(sql, parameters));
+			return db.GetList<T>(sql, parameters);
 		}
 
 		public static IList<T> GetList<T>(this IDbConnection conn, string sql)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 			
-			return converter.GetList(db.GetDataReader(sql));
+			return db.GetList<T>(sql);
 		}
 
 		/// <summary>
@@ -131,11 +113,9 @@
 		/// <returns></returns>
 		public static IList<T> GetList<T>(this IDbConnection conn, Query query)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 			
-			return converter.GetList(db.GetDataReader(query));
+			return db.GetList<T>(query);
 		}
 
 		/// <summary>
@@ -151,42 +131,34 @@
 			CommandType commandType,
 			IDictionary<string, object> parameters)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 			
-			return converter.GetEnumerable(db.GetDataReader(sql, commandType, parameters));
+			return db.GetEnumerable<T>(sql, commandType, parameters);
 		}
 
 		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn,
 			string sql,
 			CommandType commandType)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 
-			return converter.GetEnumerable(db.GetDataReader(sql, commandType));
+			return db.GetEnumerable<T>(sql, commandType);
 		}
 
 		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn,
 			string sql,
 			IDictionary<string, object> parameters)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 			
-			return converter.GetEnumerable(db.GetDataReader(sql, parameters));
+			return db.GetEnumerable<T>(sql, parameters);
 		}
 
 		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn, string sql)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 			
-			return converter.GetEnumerable(db.GetDataReader(sql));
+			return db.GetEnumerable<T>(sql);
 		}
 
 		/// <summary>
@@ -197,11 +169,9 @@
 		/// <returns></returns>
 		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn, Query query)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter<T>();
+			Db db = new Db(conn);
 			
-			return converter.GetEnumerable(db.GetDataReader(query));
+			return db.GetEnumerable<T>(query);
 		}
         
         
@@ -210,52 +180,42 @@
 			CommandType commandType,
 			IDictionary<string, object> parameters)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 			
-			return converter.Get(db.GetDataReader(sql, commandType, parameters));
+			return db.Get(sql, commandType, parameters);
 		}
         
 		public static dynamic Get(this IDbConnection conn,
 			string sql,
 			CommandType commandType)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 			
-			return converter.Get(db.GetDataReader(sql, commandType));
+			return db.Get(sql, commandType);
 		}
         
 		public static dynamic Get(this IDbConnection conn,
 			string sql,
 			IDictionary<string, object> parameters)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 			
-			return converter.Get(db.GetDataReader(sql, parameters));
+			return db.Get(sql, parameters);
 		}
         
 		public static dynamic Get(this IDbConnection conn,
 			string sql)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 			
-			return converter.Get(db.GetDataReader(sql));
+			return db.Get(sql);
 		}
         
 		public static dynamic Get(this IDbConnection conn, Query query)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 			
-			return converter.Get(db.GetDataReader(query));
+			return db.Get(query);
 		}
 		
 		public static IList<dynamic> GetList(this IDbConnection conn,
@@ -263,51 +223,41 @@
 			CommandType commandType,
 			IDictionary<string, object> parameters)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 
-			return converter.GetList(db.GetDataReader(sql, commandType, parameters));
+			return db.GetList(sql, commandType, parameters);
 		}
 		
 		public static IList<dynamic> GetList(this IDbConnection conn,
 			string sql,
 			CommandType commandType)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 
-			return converter.GetList(db.GetDataReader(sql, commandType));
+			return db.GetList(sql, commandType);
 		}
 		
 		public static IList<dynamic> GetList(this IDbConnection conn,
 			string sql,
 			IDictionary<string, object> parameters)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 
-			return converter.GetList(db.GetDataReader(sql, parameters));
+			return db.GetList(sql, parameters);
 		}
 		
 		public static IList<dynamic> GetList(this IDbConnection conn, string sql)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 
-			return converter.GetList(db.GetDataReader(sql));
+			return db.GetList(sql);
 		}
 		
 		public static IList<dynamic> GetList(this IDbConnection conn, Query query)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 
-			return converter.GetList(db.GetDataReader(query));
+			return db.GetList(query);
 		}
 		
 		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn,
@@ -315,51 +265,41 @@
 			CommandType commandType,
 			IDictionary<string, object> parameters)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 			
-			return converter.GetEnumerable(db.GetDataReader(sql, commandType, parameters));
+			return db.GetEnumerable(sql, commandType, parameters);
 		}
 		
 		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn,
 			string sql,
 			CommandType commandType)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 			
-			return converter.GetEnumerable(db.GetDataReader(sql, commandType));
+			return db.GetEnumerable(sql, commandType);
 		}
 		
 		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn,
 			string sql,
 			IDictionary<string, object> parameters)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 			
-			return converter.GetEnumerable(db.GetDataReader(sql, parameters));
+			return db.GetEnumerable(sql, parameters);
 		}
 		
 		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn, string sql)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 			
-			return converter.GetEnumerable(db.GetDataReader(sql));
+			return db.GetEnumerable(sql);
 		}
 		
 		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn, Query query)
 		{
-			Db builder = DefaultDb.Create(conn);
-			var db = builder.GetConnection();
-			var converter = builder.GetConverter();
+			Db db = new Db(conn);
 			
-			return converter.GetEnumerable(db.GetDataReader(query));
+			return db.GetEnumerable(query);
 		}
 	}
 }

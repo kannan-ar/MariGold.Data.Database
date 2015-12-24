@@ -1020,42 +1020,42 @@
         
         public static T Get<T>(this IDataReader dr)
         {
-			var converter = new ConvertILDataReader<T>();
+        	var converter = Db.GetConverter();
 			
-			return converter.Get(dr);
+			return converter.Get<T>(dr);
         }
         
         public static dynamic Get(this IDataReader dr)
         {
-			var converter = new ConvertDynamicDataReader();
+        	var converter = Db.GetDynamicConvertor();
 			
 			return converter.Get(dr);
         }
         
         public static IList<T> GetList<T>(this IDataReader dr)
         {
-			var converter = new ConvertILDataReader<T>();
+        	var converter = Db.GetConverter();
         	
-			return converter.GetList(dr);
+			return converter.GetList<T>(dr);
         }
         
         public static IList<dynamic> GetList(this IDataReader dr)
         {
-			var converter = new ConvertDynamicDataReader();
+			var converter = Db.GetDynamicConvertor();
         	
 			return converter.GetList(dr);
         }
         
         public static IEnumerable<T> GetEnumerable<T>(IDataReader dr)
         {
-			var converter = new ConvertILDataReader<T>();
+        	var converter = Db.GetConverter();
         	
-			return converter.GetEnumerable(dr);
+			return converter.GetEnumerable<T>(dr);
         }
         
         public static IEnumerable<dynamic> GetEnumerable(IDataReader dr)
         {
-			var converter = new ConvertDynamicDataReader();
+			var converter = Db.GetDynamicConvertor();
         	
 			return converter.GetEnumerable(dr);
         }

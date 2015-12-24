@@ -36,12 +36,12 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConvertDataReader.cs" />
-    <Compile Include="ConvertDynamicDataReader.cs" />
-    <Compile Include="ConvertILDataReader.cs" />
+    <Compile Include="IDataConverter.cs" />
+    <Compile Include="DynamicDataConverter.cs" />
+    <Compile Include="IDynamicDataConverter.cs" />
+    <Compile Include="ILDataConverter.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="DataReaderExtensions.cs" />
-    <Compile Include="DefaultDb.cs" />
     <Compile Include="DbExtensions.cs" />
     <Compile Include="DbObject.cs" />
     <Compile Include="IDatabase.cs" />

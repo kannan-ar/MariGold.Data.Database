@@ -4,7 +4,7 @@
 	using System.Collections.Generic;
 	using System.Data;
 	
-	public sealed class ConvertDynamicDataReader : ConvertDataReader<dynamic>
+	public sealed class DynamicDataConverter : IDynamicDataConverter
 	{
 		private dynamic GetObject(IDataReader dr)
 		{
@@ -18,7 +18,7 @@
 			return obj;
 		}
 		
-		public override dynamic Get(IDataReader dr)
+		public dynamic Get(IDataReader dr)
 		{
 			if (dr.Read())
 			{
@@ -28,7 +28,7 @@
 			return null;
 		}
 		
-		public override IEnumerable<dynamic> GetEnumerable(IDataReader dr)
+		public IEnumerable<dynamic> GetEnumerable(IDataReader dr)
 		{
 			while (dr.Read())
 			{
@@ -36,7 +36,7 @@
 			}
 		}
 		
-		public override IList<dynamic> GetList(IDataReader dr)
+		public IList<dynamic> GetList(IDataReader dr)
 		{
 			IList<dynamic> list = new List<dynamic>();
 			
