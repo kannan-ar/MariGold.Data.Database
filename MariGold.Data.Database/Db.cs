@@ -10,17 +10,23 @@
 		private static object converterLock = new object();
 		private static object dynamicLock = new object();
 		
-		private static IDatabase db;
+		private static Func<IDbConnection, IDatabase> dbFunc;
 		private static IDynamicDataConverter dynamicConvertor;
 		private static IDataConverter dataConvertor;
 		
-		private IDbConnection conn;
+		private readonly IDbConnection conn;
 		
 		internal static IDatabase GetConnection(IDbConnection conn)
 		{
-			lock (dbLock) 
+			IDatabase db = null;
+			
+			lock (dbLock)
 			{
-				if (db == null) 
+				if (dbFunc != null)
+				{
+					db = dbFunc(conn);
+				}
+				else
 				{
 					db = new Database(conn);
 				}
@@ -31,9 +37,9 @@
 		
 		internal static IDataConverter GetConverter()
 		{
-			lock (converterLock) 
+			lock (converterLock)
 			{
-				if (dataConvertor == null) 
+				if (dataConvertor == null)
 				{
 					dataConvertor = new ILDataConverter();
 				}
@@ -44,9 +50,9 @@
 		
 		internal static IDynamicDataConverter GetDynamicConvertor()
 		{
-			lock (dynamicLock) 
+			lock (dynamicLock)
 			{
-				if (dynamicConvertor == null) 
+				if (dynamicConvertor == null)
 				{
 					dynamicConvertor = new DynamicDataConverter();
 				}
@@ -55,30 +61,29 @@
 			return dynamicConvertor;
 		}
 		
-		public static void SetDatabase(IDatabase database)
+		public static void SetDatabase(Func<IDbConnection, IDatabase> func)
 		{
-			lock (dbLock) 
+			lock (dbLock)
 			{
-				db = database;
+				dbFunc = func;
 			}
 		}
 		
 		public static void SetConverter(IDataConverter converter)
 		{
-			lock (converterLock) {
+			lock (converterLock)
+			{
 				dataConvertor = converter;
 			}
 		}
 		
 		public static void SetDynamicConverter(IDynamicDataConverter converter)
 		{
-			lock (dynamicLock) 
+			lock (dynamicLock)
 			{
 				dynamicConvertor = converter;
 			}
 		}
-		
-		
 		
 		public Db(IDbConnection conn)
 		{
