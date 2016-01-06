@@ -21,7 +21,7 @@
 		{
 			Db db = new Db(conn);
 			
-			return db.Get(sql, commandType, parameters);
+			return db.Get<T>(sql, commandType, parameters);
 		}
 
 		public static T Get<T>(this IDbConnection conn,
@@ -30,7 +30,7 @@
 		{
 			Db db = new Db(conn);
 
-			return db.Get(sql, commandType);
+			return db.Get<T>(sql, commandType);
 		}
 
 		public static T Get<T>(this IDbConnection conn,
@@ -39,14 +39,14 @@
 		{
 			Db db = new Db(conn);
 
-			return db.Get(sql, parameters);
+			return db.Get<T>(sql, parameters);
 		}
 
 		public static T Get<T>(this IDbConnection conn, string sql)
 		{
 			Db db = new Db(conn);
 			
-			return db.Get(sql);
+			return db.Get<T>(sql);
 		}
 
 		/// <summary>
@@ -59,7 +59,7 @@
 		{
 			Db db = new Db(conn);
 
-			return db.Get(query);
+			return db.Get<T>(query);
 		}
 
 		/// <summary>

@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="NSubstitute">
       <HintPath>..\packages\NSubstitute.1.9.2.0\lib\net40\NSubstitute.dll</HintPath>
     </Reference>
@@ -45,9 +46,10 @@
     <Compile Include="IPerson.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="PersonTable.cs" />
-    <Compile Include="SqlServerORMTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlServerTest.cs" />
+    <Compile Include="SqlServer\SqlServerDynamicTest.cs" />
+    <Compile Include="SqlServer\SqlServerORMTest.cs" />
+    <Compile Include="SqlServer\SqlServerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MariGold.Data.Database\MariGold.Data.Database.csproj">
@@ -57,7 +59,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="SqlServer.sql" />
+    <None Include="SqlServer\SqlServer.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SqlServer" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
