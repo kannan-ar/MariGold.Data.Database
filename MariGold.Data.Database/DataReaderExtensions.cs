@@ -1019,6 +1019,7 @@
 		#region Entity
         
 		public static T Get<T>(this IDataReader dr)
+			 where T : class, new()
 		{
 			var converter = Db.GetConverter();
 			
@@ -1033,6 +1034,7 @@
 		}
         
 		public static IList<T> GetList<T>(this IDataReader dr)
+			 where T : class, new()
 		{
 			var converter = Db.GetConverter();
         	
@@ -1047,6 +1049,7 @@
 		}
         
 		public static IEnumerable<T> GetEnumerable<T>(IDataReader dr)
+			 where T : class, new()
 		{
 			var converter = Db.GetConverter();
         	

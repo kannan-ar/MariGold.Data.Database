@@ -18,6 +18,7 @@
 			string sql,
 			CommandType commandType,
 			IDictionary<string, object> parameters)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 			
@@ -27,6 +28,7 @@
 		public static T Get<T>(this IDbConnection conn,
 			string sql,
 			CommandType commandType)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 
@@ -36,6 +38,7 @@
 		public static T Get<T>(this IDbConnection conn,
 			string sql,
 			IDictionary<string, object> parameters)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 
@@ -43,6 +46,7 @@
 		}
 
 		public static T Get<T>(this IDbConnection conn, string sql)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 			
@@ -56,6 +60,7 @@
 		/// <param name="query"></param>
 		/// <returns></returns>
 		public static T Get<T>(this IDbConnection conn, Query query)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 
@@ -74,6 +79,7 @@
 			string sql,
 			CommandType commandType,
 			IDictionary<string, object> parameters)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 
@@ -83,6 +89,7 @@
 		public static IList<T> GetList<T>(this IDbConnection conn,
 			string sql,
 			CommandType commandType)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 
@@ -92,6 +99,7 @@
 		public static IList<T> GetList<T>(this IDbConnection conn,
 			string sql,
 			IDictionary<string, object> parameters)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 
@@ -99,6 +107,7 @@
 		}
 
 		public static IList<T> GetList<T>(this IDbConnection conn, string sql)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 			
@@ -112,6 +121,7 @@
 		/// <param name="query"></param>
 		/// <returns></returns>
 		public static IList<T> GetList<T>(this IDbConnection conn, Query query)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 			
@@ -130,6 +140,7 @@
 			string sql,
 			CommandType commandType,
 			IDictionary<string, object> parameters)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 			
@@ -139,6 +150,7 @@
 		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn,
 			string sql,
 			CommandType commandType)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 
@@ -148,6 +160,7 @@
 		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn,
 			string sql,
 			IDictionary<string, object> parameters)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 			
@@ -155,6 +168,7 @@
 		}
 
 		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn, string sql)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 			
@@ -168,6 +182,7 @@
 		/// <param name="query"></param>
 		/// <returns></returns>
 		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn, Query query)
+			 where T : class, new()
 		{
 			Db db = new Db(conn);
 			

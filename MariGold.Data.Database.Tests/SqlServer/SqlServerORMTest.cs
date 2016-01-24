@@ -10,7 +10,7 @@
 	[TestFixture]
 	public class SqlServerORMTest
 	{
-		private const string connectionString = @"Server=.\sqlexpress;Database=Tests;Trusted_Connection=True;";
+		private const string connectionString = @"Server=10.6.0.116\sqlexpress;Database=Tests;User Id=testusr;Password=pass@word1;";
 		private readonly PersonTable table;
 
 		public SqlServerORMTest()
@@ -59,6 +59,7 @@
 
 				Assert.AreEqual(mockPerson.Id, person.Id);
 				Assert.AreEqual(mockPerson.Name, person.Name);
+				//Assert.Fail(mockPerson.DateOfBirth.ToString() + " - " + person.DateOfBirth.ToString());
 				Assert.AreEqual(mockPerson.DateOfBirth, person.DateOfBirth);
 				Assert.AreEqual(mockPerson.SSN, person.SSN);
 				Assert.AreEqual(mockPerson.BankAccount, person.BankAccount);

@@ -93,6 +93,7 @@
 		public T Get<T>(string sql,
 			CommandType commandType,
 			IDictionary<string, object> parameters)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -102,6 +103,7 @@
 		
 		public T Get<T>(string sql,
 			CommandType commandType)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -111,6 +113,7 @@
 		
 		public T Get<T>(string sql,
 			IDictionary<string, object> parameters)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -119,6 +122,7 @@
 		}
 		
 		public T Get<T>(string sql)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -127,6 +131,7 @@
 		}
 		
 		public T Get<T>(Query query)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -137,6 +142,7 @@
 		public IList<T> GetList<T>(string sql,
 			CommandType commandType,
 			IDictionary<string, object> parameters)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -146,6 +152,7 @@
 		
 		public IList<T> GetList<T>(string sql,
 			CommandType commandType)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -155,6 +162,7 @@
 		
 		public IList<T> GetList<T>(string sql,
 			IDictionary<string, object> parameters)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -163,6 +171,7 @@
 		}
 		
 		public IList<T> GetList<T>(string sql)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -171,6 +180,7 @@
 		}
 		
 		public IList<T> GetList<T>(Query query)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -181,6 +191,7 @@
 		public IEnumerable<T> GetEnumerable<T>(string sql,
 			CommandType commandType,
 			IDictionary<string, object> parameters)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -190,6 +201,7 @@
 		
 		public IEnumerable<T> GetEnumerable<T>(string sql,
 			CommandType commandType)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -199,6 +211,7 @@
 		
 		public IEnumerable<T> GetEnumerable<T>(string sql,
 			IDictionary<string, object> parameters)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -207,6 +220,7 @@
 		}
 		
 		public IEnumerable<T> GetEnumerable<T>(string sql)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();
@@ -215,6 +229,7 @@
 		}
 		
 		public IEnumerable<T> GetEnumerable<T>(Query query)
+			 where T : class, new()
 		{
 			var db = GetConnection(conn);
 			var converter = GetConverter();

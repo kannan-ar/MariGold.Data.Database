@@ -10,7 +10,7 @@
 	[TestFixture]
 	public class SqlServerDynamicTest
 	{
-		private const string connectionString = @"Server=.\sqlexpress;Database=Tests;Trusted_Connection=True;";
+		private const string connectionString = @"Server=10.6.0.116\sqlexpress;Database=Tests;User Id=testusr;Password=pass@word1;";
 		private readonly PersonTable table;
 		
 		public SqlServerDynamicTest()
