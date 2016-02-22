@@ -6,8 +6,8 @@ Various components of MariGold.Data.Database can be used to:
 - Create CLR object from an sql string.
 - Create a CLR object from a data reader.
 - Execute sql string using an IDbConnection.
-- Helper methods to fetch values from data reader without boxing.
-###Installing via NuGet-----------
+- Helper methods to fetch values from data reader without boxing.###
+Installing via NuGet-----------
 In Package Manager Console, enter the following command:
 ```Install-Package MariGold.Data.Database```
 Usage-----------
