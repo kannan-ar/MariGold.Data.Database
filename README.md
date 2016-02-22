@@ -11,10 +11,11 @@ In Package Manager Console, enter the following command:
 ```
 Install-Package MariGold.Data.Database
 ```
-###Usage
+###Usage-------------------------------
 #####Create IDataReader from sql string
 
 ```csharp
+
 using MariGold.Data;
 
 using (IDbConnection conn = new SqlConnection(connectionString))
@@ -25,9 +26,11 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 		new Dictionary<string,object>() {
 		{ "Id", 1 }});
 	
-}```
+}
+```
 #####Create CLR object from an sql string
-```csharpusing MariGold.Data;
+```csharp
+using MariGold.Data;
 
 public class Employee
 {
@@ -42,16 +45,20 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 	Employee emp = conn.Get<Employee>("Select Id, Name From Employee Where Id = @Id",
 		new Dictionary<string,object>() {
 		{ "Id", 1 }});
-}```
+}
+```
 #####Create a CLR object from a data reader
-```csharpusing MariGold.Data;
+```csharp
+using MariGold.Data;
 
 using (IDataReader dr = GetDataReader())
 {
 	Employee emp = dr.Get<Employee>();
-}```
+}
+```
 #####Execute sql string using an IDbConnection
-```csharpusing MariGold.Data;
+```csharp
+using MariGold.Data;
 
 using (IDbConnection conn = new SqlConnection(connectionString))
 {
@@ -60,4 +67,5 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 	conn.Execute("Delete From Employee Where Id = @Id",
 		new Dictionary<string,object>() {
 		{ "Id", 1 }});
-}```
+}
+```
