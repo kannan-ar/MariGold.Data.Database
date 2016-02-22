@@ -19,7 +19,8 @@ In Package Manager Console, enter the following command:
 <pre>
 Install-Package MariGold.Data.Database
 </pre>
-<h3>Create IDataReader from sql string</h3>
+<h2>Usage</h2>
+<h5>Create IDataReader from sql string</h5>
 <div class="highlight highlight-source-cs">
 <pre>
 using MariGold.Data;
@@ -35,7 +36,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 }
 </pre>
 </div>
-<h3>Create CLR object from an sql string</h3>
+<h5>Create CLR object from an sql string</h5>
 <div class="highlight highlight-source-cs">
 <pre>
 using MariGold.Data;
@@ -56,7 +57,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 }
 </pre>
 </div>
-<h3>Create a CLR object from a data reader</h3>
+<h5>Create a CLR object from a data reader</h5>
 <div class="highlight highlight-source-cs">
 <pre>
 using MariGold.Data;
@@ -67,7 +68,7 @@ using (IDataReader dr = GetDataReader())
 }
 </pre>
 </div>
-<h3>Execute sql string using an IDbConnection</h3>
+<h5>Execute sql string using an IDbConnection</h5>
 <div class="highlight highlight-source-cs">
 <pre>
 using MariGold.Data;
