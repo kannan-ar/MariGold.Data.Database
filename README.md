@@ -1,27 +1,19 @@
 MariGold.Data.Database
 ========================================
-<p>
 MariGold.Data.Database is a minimalist set of components to automate most of the tedious tasks in database query operations. It is a zero-configuration library which works with all types of IDbConnection implementations. MariGold.Data.Database will also supports dynamic types.
-</p>
-<p>
-Various components of MariGold.Data.Database can be used to
-<ul>
-<li>Fetch a data reader from an sql string.</li>
-<li>Create CLR object from an sql string.</li>
-<li>Create a CLR object from a data reader.</li>
-<li>Execute sql string using an IDbConnection.</li>
-<li>Helper methods to fetch values from data reader without boxing.</li>
-</ul>
-</p>
-<h2>Installing via NuGet</h2>
-<p>
+Various components of MariGold.Data.Database can be used to:
+- Fetch a data reader from an sql string.
+- Create CLR object from an sql string.
+- Create a CLR object from a data reader.
+- Execute sql string using an IDbConnection.
+- Helper methods to fetch values from data reader without boxing.
+Installing via NuGet========================================
 In Package Manager Console, enter the following command:
-</p>
 ```Install-Package MariGold.Data.Database```
-<h2>Usage</h2>
-<h5>Create IDataReader from sql string</h5>
-<div class="highlight highlight-source-cs">
-<pre>
+Usage========================================
+Create IDataReader from sql string
+-----------------------------------------
+```csharp
 using MariGold.Data;
 
 using (IDbConnection conn = new SqlConnection(connectionString))
@@ -32,13 +24,10 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 		new Dictionary<string,object>() {
 		{ "Id", 1 }});
 	
-}
-</pre>
-</div>
-<h5>Create CLR object from an sql string</h5>
-<div class="highlight highlight-source-cs">
-<pre>
-using MariGold.Data;
+}```
+Create CLR object from an sql string
+-----------------------------------------
+```csharpusing MariGold.Data;
 
 public class Employee
 {
@@ -53,24 +42,16 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 	Employee emp = conn.Get<Employee>("Select Id, Name From Employee Where Id = @Id",
 		new Dictionary<string,object>() {
 		{ "Id", 1 }});
-}
-</pre>
-</div>
-<h5>Create a CLR object from a data reader</h5>
-<div class="highlight highlight-source-cs">
-<pre>
-using MariGold.Data;
+}```
+Create a CLR object from a data reader-----------------------------------------
+```csharpusing MariGold.Data;
 
 using (IDataReader dr = GetDataReader())
 {
 	Employee emp = dr.Get<Employee>();
-}
-</pre>
-</div>
-<h5>Execute sql string using an IDbConnection</h5>
-<div class="highlight highlight-source-cs">
-<pre>
-using MariGold.Data;
+}```
+Execute sql string using an IDbConnection-----------------------------------------
+```csharpusing MariGold.Data;
 
 using (IDbConnection conn = new SqlConnection(connectionString))
 {
@@ -79,6 +60,4 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 	conn.Execute("Delete From Employee Where Id = @Id",
 		new Dictionary<string,object>() {
 		{ "Id", 1 }});
-}
-</pre>
-</div>
+}```
