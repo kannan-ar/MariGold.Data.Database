@@ -1,4 +1,5 @@
-<h1>MariGold.Data.Database</h1>
+MariGold.Data.Database
+========================================
 <p>
 MariGold.Data.Database is a minimalist set of components to automate most of the tedious tasks in database query operations. It is a zero-configuration library which works with all types of IDbConnection implementations. MariGold.Data.Database will also supports dynamic types.
 </p>
@@ -16,9 +17,7 @@ Various components of MariGold.Data.Database can be used to
 <p>
 In Package Manager Console, enter the following command:
 </p>
-<pre>
-Install-Package MariGold.Data.Database
-</pre>
+```Install-Package MariGold.Data.Database```
 <h2>Usage</h2>
 <h5>Create IDataReader from sql string</h5>
 <div class="highlight highlight-source-cs">
