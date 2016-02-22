@@ -107,3 +107,33 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 	IList<Employee> lstEmp = conn.GetList<Employee>("Select Id, Name From Employee");
 }
 ```
+#####Create Enumerable List
+```csharp
+using MariGold.Data;
+using (IDbConnection conn = new SqlConnection(connectionString))
+{
+	conn.Open();
+				
+	var lstEmp = conn.GetEnumerable<Employee>("Select Id, Name From Employee");
+}
+```
+#####Create dynamic IList
+```csharp
+using MariGold.Data;
+using (IDbConnection conn = new SqlConnection(connectionString))
+{
+	conn.Open();
+				
+	var lstEmp = conn.GetList("Select Id, Name From Employee");
+}
+```
+#####Create dynamic Enumerable List
+```csharp
+using MariGold.Data;
+using (IDbConnection conn = new SqlConnection(connectionString))
+{
+	conn.Open();
+				
+	var lstEmp = conn.GetEnumerable("Select Id, Name From Employee");
+}
+```

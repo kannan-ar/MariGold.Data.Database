@@ -10,7 +10,6 @@
 	[TestFixture]
 	public class SqlServerORMTest
 	{
-		private const string connectionString = @"Server=10.6.0.116\sqlexpress;Database=Tests;User Id=testusr;Password=pass@word1;";
 		private readonly PersonTable table;
 
 		public SqlServerORMTest()
@@ -22,14 +21,13 @@
 		public void TestPersonWithIdIsOne()
 		{
 			IPerson mockPerson = table.GetTable().First(p => p.Id == 1);
-        	
-			using (SqlConnection conn = new SqlConnection(connectionString))
+			
+			using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
 			{
 				conn.Open();
 
 				var person = conn.Get<Person>("select Id,Name from person where Id = @Id",
-					             new Dictionary<string,object>()
-					{
+					             new Dictionary<string,object>() {
 						{ "@Id",1 }
 					});
 
@@ -45,13 +43,12 @@
 		{
 			IPerson mockPerson = table.GetTable().First(p => p.Id == 5);
 			
-			using (SqlConnection conn = new SqlConnection(connectionString))
+			using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
 			{
 				conn.Open();
 
 				var person = conn.Get<Person>("select * from person where Id = @Id",
-					             new Dictionary<string,object>()
-					{
+					             new Dictionary<string,object>() {
 						{ "@Id",5 }
 					});
 
@@ -59,7 +56,6 @@
 
 				Assert.AreEqual(mockPerson.Id, person.Id);
 				Assert.AreEqual(mockPerson.Name, person.Name);
-				//Assert.Fail(mockPerson.DateOfBirth.ToString() + " - " + person.DateOfBirth.ToString());
 				Assert.AreEqual(mockPerson.DateOfBirth, person.DateOfBirth);
 				Assert.AreEqual(mockPerson.SSN, person.SSN);
 				Assert.AreEqual(mockPerson.BankAccount, person.BankAccount);
@@ -73,13 +69,12 @@
 		{
 			List<IPerson> mockPersons = table.GetTable().Where(p => p.Id > 2 && p.Id < 4).ToList();
 			
-			using (SqlConnection conn = new SqlConnection(connectionString))
+			using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
 			{
 				conn.Open();
 				
 				IList<Person> persons = conn.GetList<Person>("select Id,Name from person where Id > @from and Id < @to",
-					                        new Dictionary<string,object>()
-					{
+					                        new Dictionary<string,object>() {
 						{ "@from",2 },
 						{ "@to",4 }
 					});
@@ -91,7 +86,7 @@
 		{
 			List<IPerson> mockPersons = table.GetTable().Where(p => p.Name.StartsWith("M")).ToList();
 			
-			using (SqlConnection conn = new SqlConnection(connectionString))
+			using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
 			{
 				conn.Open();
 				
@@ -112,7 +107,7 @@
 		{
 			var mockPersons = table.GetTable();
 			
-			using (SqlConnection conn = new SqlConnection(connectionString))
+			using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
 			{
 				conn.Open();
 				
@@ -122,7 +117,7 @@
 				
 				int i = 0;
 				
-				foreach (IPerson person in people) 
+				foreach (IPerson person in people)
 				{
 					Assert.AreEqual(mockPersons[i].Id, person.Id);
 					Assert.AreEqual(mockPersons[i].Name, person.Name);

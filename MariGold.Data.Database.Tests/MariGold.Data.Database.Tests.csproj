@@ -39,6 +39,9 @@
       <HintPath>..\packages\NUnit.3.0.0\lib\net40\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
   </ItemGroup>
@@ -50,6 +53,7 @@
     <Compile Include="SqlServer\SqlServerDynamicTest.cs" />
     <Compile Include="SqlServer\SqlServerORMTest.cs" />
     <Compile Include="SqlServer\SqlServerTest.cs" />
+    <Compile Include="SqlServer\SqlServerUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MariGold.Data.Database\MariGold.Data.Database.csproj">
@@ -58,6 +62,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="SqlServer\SqlServer.sql" />
   </ItemGroup>

@@ -11,7 +11,6 @@
 	[TestFixture]
 	public class SqlServerTest
 	{
-		private const string connectionString = @"Server=10.6.0.116\sqlexpress;Database=Tests;User Id=testusr;Password=pass@word1;";
 		private readonly PersonTable table;
 		
 		public SqlServerTest()
@@ -22,7 +21,7 @@
 		[Test]
 		public void PersonCountTest()
 		{
-			using (SqlConnection conn = new SqlConnection(connectionString))
+			using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
 			{
 				conn.Open();
 
@@ -39,7 +38,7 @@
 		{
 			IPerson person = table.GetTable().First(p => p.Id == 1);
 			
-			using (SqlConnection conn = new SqlConnection(connectionString))
+			using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
 			{
 				conn.Open();
 
@@ -63,7 +62,7 @@
 		{
 			List<IPerson> persons = table.GetTable().Where(p => p.Id > 2 && p.Id < 4).ToList();
 			
-			using (SqlConnection conn = new SqlConnection(connectionString))
+			using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
 			{
 				conn.Open();
 
@@ -96,7 +95,7 @@
 		{
 			List<IPerson> persons = table.GetTable().Where(p => p.Name.StartsWith("M")).ToList();
 			
-			using (SqlConnection conn = new SqlConnection(connectionString))
+			using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
 			{
 				conn.Open();
 
