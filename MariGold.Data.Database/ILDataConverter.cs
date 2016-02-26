@@ -83,11 +83,15 @@
 				Type intType = typeof(Int32);
 
 				MethodInfo getName = recordType.GetMethod("GetName");
-				MethodInfo compare = stringType.GetMethod("Compare", new Type[] { stringType, stringType, typeof(bool) });
+				MethodInfo compare = stringType.GetMethod("Compare", new Type[] {
+					stringType,
+					stringType,
+					typeof(bool)
+				});
 				MethodInfo fieldCount = recordType.GetProperty("FieldCount").GetGetMethod();
 
 				//New dynamic method with IDataReader type parameter and T type return value.
-				var method = new DynamicMethod("", type, new[] { readerType });
+				var method = new DynamicMethod("", type, new[] { readerType }, true);
 				var il = method.GetILGenerator();
 				
 				var entity = il.DeclareLocal(type);
@@ -234,7 +238,8 @@
 				{
 					list.Add(func(dr));
 
-				} while (dr.Read());
+				}
+				while (dr.Read());
 			}
 
 			return list;
@@ -257,7 +262,8 @@
 				{
 					yield return func(dr);
 
-				} while (dr.Read());
+				}
+				while (dr.Read());
 			}
 		}
 	}

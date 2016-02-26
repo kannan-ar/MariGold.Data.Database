@@ -38,6 +38,9 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.3.0.0\lib\net40\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Oracle.ManagedDataAccess">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.12.1.2400\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
@@ -47,6 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IPerson.cs" />
+    <Compile Include="OracleDb\OracleORMTest.cs" />
+    <Compile Include="OracleDb\OracleTest.cs" />
+    <Compile Include="OracleDb\OracleUtility.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="PersonTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -63,10 +69,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="OracleDb\Oracle.sql" />
     <None Include="packages.config" />
     <None Include="SqlServer\SqlServer.sql" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Sybase" />
+    <Folder Include="OracleDb" />
     <Folder Include="SqlServer" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
