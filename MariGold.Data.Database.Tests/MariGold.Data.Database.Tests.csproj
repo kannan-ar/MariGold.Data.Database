@@ -32,6 +32,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MySql.Data">
+      <HintPath>..\packages\MySql.Data.6.9.8\lib\net40\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="NSubstitute">
       <HintPath>..\packages\NSubstitute.1.9.2.0\lib\net40\NSubstitute.dll</HintPath>
     </Reference>
@@ -50,6 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IPerson.cs" />
+    <Compile Include="MySql\MySqlORMTest.cs" />
+    <Compile Include="MySql\MySqlTest.cs" />
+    <Compile Include="MySql\MySqlUtility.cs" />
     <Compile Include="OracleDb\OracleORMTest.cs" />
     <Compile Include="OracleDb\OracleTest.cs" />
     <Compile Include="OracleDb\OracleUtility.cs" />
@@ -69,11 +75,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="MySql\MySql.sql" />
     <None Include="OracleDb\Oracle.sql" />
     <None Include="packages.config" />
     <None Include="SqlServer\SqlServer.sql" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="MySql" />
     <Folder Include="Sybase" />
     <Folder Include="OracleDb" />
     <Folder Include="SqlServer" />

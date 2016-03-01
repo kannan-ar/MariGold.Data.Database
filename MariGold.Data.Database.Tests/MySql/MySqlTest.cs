@@ -1,19 +1,19 @@
-﻿namespace MariGold.Data.Database.Tests.OracleDb
+﻿namespace MariGold.Data.Database.Tests.MySqlTests
 {
 	using System;
 	using NUnit.Framework;
 	using MariGold.Data;
 	using System.Data;
 	using System.Collections.Generic;
-	using Oracle.ManagedDataAccess.Client;
 	using System.Linq;
+	using MySql.Data.MySqlClient;
 	
 	[TestFixture]
-	public class OracleTest
+	public class MySqlTest
 	{
 		private readonly PersonTable table;
-	
-		public OracleTest()
+		
+		public MySqlTest()
 		{
 			table = new PersonTable();
 		}
@@ -21,7 +21,7 @@
 		[Test]
 		public void PersonCountTest()
 		{
-			using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
+			using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
 			{
 				conn.Open();
 
@@ -38,11 +38,11 @@
 		{
 			IPerson person = table.GetTable().First(p => p.Id == 1);
 			
-			using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
+			using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
 			{
 				conn.Open();
 
-				using (IDataReader dr = conn.GetDataReader("select Id,Name from person where Id = :Id",
+				using (IDataReader dr = conn.GetDataReader("select Id,Name from person where Id = @Id",
 					                        new Dictionary<string,object>() {
 						{ "Id",1 }
 					}))
@@ -61,14 +61,14 @@
 		{
 			List<IPerson> persons = table.GetTable().Where(p => p.Id > 2 && p.Id < 4).ToList();
 			
-			using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
+			using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
 			{
 				conn.Open();
 
-				using (IDataReader dr = conn.GetDataReader("select Id,Name from person where Id > :from_id and Id < :to_id",
+				using (IDataReader dr = conn.GetDataReader("select Id,Name from person where Id > @from_id and Id < @to_id",
 					                        new Dictionary<string,object>() {
-						{ ":from_id",2 },
-						{ ":to_id",4 }
+						{ "from_id",2 },
+						{ "to_id",4 }
 					}))
 				{
 					
@@ -93,7 +93,7 @@
 		{
 			List<IPerson> persons = table.GetTable().Where(p => p.Name.StartsWith("M", StringComparison.InvariantCultureIgnoreCase)).ToList();
 			
-			using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
+			using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
 			{
 				conn.Open();
 

@@ -43,8 +43,7 @@
 				conn.Open();
 
 				using (IDataReader dr = conn.GetDataReader("select Id,Name from person where Id = @Id",
-					                        new Dictionary<string,object>()
-					{
+					                        new Dictionary<string,object>() {
 						{ "@Id",1 }
 					}))
 				{
@@ -67,8 +66,7 @@
 				conn.Open();
 
 				using (IDataReader dr = conn.GetDataReader("select Id,Name from person where Id > @from and Id < @to",
-					                        new Dictionary<string,object>()
-					{
+					                        new Dictionary<string,object>() {
 						{ "@from",2 },
 						{ "@to",4 }
 					}))
@@ -93,7 +91,7 @@
 		[Test]
 		public void CheckPersonWithNameLikeM()
 		{
-			List<IPerson> persons = table.GetTable().Where(p => p.Name.StartsWith("M")).ToList();
+			List<IPerson> persons = table.GetTable().Where(p => p.Name.StartsWith("M", StringComparison.InvariantCultureIgnoreCase)).ToList();
 			
 			using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
 			{
