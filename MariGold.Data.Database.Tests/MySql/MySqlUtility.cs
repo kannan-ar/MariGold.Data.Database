@@ -9,7 +9,7 @@
 		{
 			get 
 			{
-				return ConfigurationManager.AppSettings["mysqlConnection"];
+				return "Server=localhost;Database=Tests;Uid=testusr;Pwd=pass@word1;";
 			}
 		}
 	}

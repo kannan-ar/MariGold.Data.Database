@@ -9,7 +9,7 @@
 		{
 			get 
 			{
-				return ConfigurationManager.AppSettings["sqlServerConnection"];
+                return @"Server=.\sqlexpress;Database=Tests;User Id=testusr;Password=pass@word1;";
 			}
 		}
 	}

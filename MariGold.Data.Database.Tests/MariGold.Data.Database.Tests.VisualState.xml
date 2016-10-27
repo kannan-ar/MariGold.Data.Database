@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <VisualState xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ShowCheckBoxes="false">
-  <TopNode>[0-1000]D:\Projects\MariGold\MariGold.Data.Database.Tests\MariGold.Data.Database.Tests.nunit</TopNode>
-  <SelectedNode>[0-1010]MariGold.Data.Database.Tests.SqlServerTest.CheckPersonWithIdOne</SelectedNode>
+  <TopNode>[0-1000]C:\Projects\MariGold.Data.Database\MariGold.Data.Database.Tests\MariGold.Data.Database.Tests.nunit</TopNode>
+  <SelectedNode>[0-1042]MariGold.Data.Database.Tests.MySqlTests</SelectedNode>
   <ExcludeCategories>false</ExcludeCategories>
   <Nodes>
-    <Node UniqueName="[0-1000]D:\Projects\MariGold\MariGold.Data.Database.Tests\MariGold.Data.Database.Tests.nunit" Expanded="true" />
-    <Node UniqueName="[0-1011]D:\Projects\MariGold\MariGold.Data.Database.Tests\bin\Debug\MariGold.Data.Database.Tests.dll" Expanded="true" />
-    <Node UniqueName="[0-1012]MariGold" Expanded="true" />
-    <Node UniqueName="[0-1013]MariGold.Data" Expanded="true" />
-    <Node UniqueName="[0-1014]MariGold.Data.Database" Expanded="true" />
-    <Node UniqueName="[0-1015]MariGold.Data.Database.Tests" Expanded="true" />
-    <Node UniqueName="[0-1001]MariGold.Data.Database.Tests.ORMTest" Expanded="true" />
-    <Node UniqueName="[0-1007]MariGold.Data.Database.Tests.SqlServerTest" Expanded="true" />
+    <Node UniqueName="[0-1000]C:\Projects\MariGold.Data.Database\MariGold.Data.Database.Tests\MariGold.Data.Database.Tests.nunit" Expanded="true" />
+    <Node UniqueName="[0-1037]C:\Projects\MariGold.Data.Database\MariGold.Data.Database.Tests\bin\Debug\MariGold.Data.Database.Tests.dll" Expanded="true" />
+    <Node UniqueName="[0-1038]MariGold" Expanded="true" />
+    <Node UniqueName="[0-1039]MariGold.Data" Expanded="true" />
+    <Node UniqueName="[0-1040]MariGold.Data.Database" Expanded="true" />
+    <Node UniqueName="[0-1041]MariGold.Data.Database.Tests" Expanded="true" />
+    <Node UniqueName="[0-1042]MariGold.Data.Database.Tests.MySqlTests" Expanded="true" />
+    <Node UniqueName="[0-1043]MariGold.Data.Database.Tests.OracleDb" Expanded="true" />
+    <Node UniqueName="[0-1044]MariGold.Data.Database.Tests.SqlServer" Expanded="true" />
+    <Node UniqueName="[0-1023]MariGold.Data.Database.Tests.SqlServer.SqlServerDynamicTest" Expanded="true" />
   </Nodes>
 </VisualState>
