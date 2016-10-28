@@ -85,9 +85,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Sybase\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="MySql\MySql.sql" />
     <Content Include="OracleDb\Oracle.sql" />

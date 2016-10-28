@@ -110,6 +110,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 #####Create Enumerable List
 ```csharp
 using MariGold.Data;
+
 using (IDbConnection conn = new SqlConnection(connectionString))
 {
 	conn.Open();
@@ -120,6 +121,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 #####Create dynamic IList
 ```csharp
 using MariGold.Data;
+
 using (IDbConnection conn = new SqlConnection(connectionString))
 {
 	conn.Open();
@@ -130,6 +132,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 #####Create dynamic Enumerable List
 ```csharp
 using MariGold.Data;
+
 using (IDbConnection conn = new SqlConnection(connectionString))
 {
 	conn.Open();
