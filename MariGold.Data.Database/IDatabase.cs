@@ -18,31 +18,31 @@
 
         void Rollback();
 
-        IDataReader GetDataReader(string sql, CommandType commandType, IDictionary<string, object> parameters);
+        IDataReader GetDataReader(string sql, CommandType commandType, object parameters);
 
         IDataReader GetDataReader(string sql, CommandType commandType);
 
-        IDataReader GetDataReader(string sql, IDictionary<string, object> parameters);
+        IDataReader GetDataReader(string sql, object parameters);
 
         IDataReader GetDataReader(string sql);
 
         IDataReader GetDataReader(Query query);
 
-        int Execute(string sql, CommandType commandType, IDictionary<string, object> parameters);
+        int Execute(string sql, CommandType commandType, object parameters);
 
         int Execute(string sql, CommandType commandType);
 
-        int Execute(string sql, IDictionary<string, object> parameters);
+        int Execute(string sql, object parameters);
 
         int Execute(string sql);
 
         int Execute(Query query);
 
-        object GetScalar(string sql, CommandType commandType, IDictionary<string, object> parameters);
+        object GetScalar(string sql, CommandType commandType, object parameters);
 
         object GetScalar(string sql, CommandType commandType);
 
-        object GetScalar(string sql, IDictionary<string, object> parameters);
+        object GetScalar(string sql, object parameters);
 
         object GetScalar(string sql);
 

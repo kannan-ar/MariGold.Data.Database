@@ -183,7 +183,7 @@
 		public IDataReader GetDataReader(
 			string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+			object parameters)
 		{
 			return GetDataReader(Query.GetCommand(conn, sql, commandType, parameters));
 		}
@@ -197,7 +197,7 @@
 
 		public IDataReader GetDataReader(
 			string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			return GetDataReader(Query.GetCommand(conn, sql, parameters));
 		}
@@ -227,7 +227,7 @@
 		public int Execute(
 			string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			return Execute(Query.GetCommand(conn, sql, commandType, parameters));
 		}
@@ -241,7 +241,7 @@
 
 		public int Execute(
 			string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			return Execute(Query.GetCommand(conn, sql, parameters));
 		}
@@ -276,7 +276,7 @@
 		public object GetScalar(
 			string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			return GetScalar(Query.GetCommand(conn, sql, commandType, parameters));
 		}
@@ -290,7 +290,7 @@
 
 		public object GetScalar(
 			string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			return GetScalar(Query.GetCommand(conn, sql, parameters));
 		}

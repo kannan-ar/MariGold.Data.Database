@@ -11,7 +11,7 @@
 	public sealed class Query
 	{
 		private string sql;
-		private IDictionary<string, object> parameters;
+        private object parameters;
 		private CommandType commandType;
 
 		/// <summary>
@@ -54,7 +54,7 @@
 		/// <summary>
 		/// A collection of parameters to create the IDbCommand.
 		/// </summary>
-		public IDictionary<string, object> Parameters
+        public object Parameters
 		{
 			get
 			{
@@ -86,7 +86,7 @@
 		public Query(
 			string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			if (!ValidateString(sql))
 			{
@@ -107,7 +107,7 @@
 
 		public Query(
 			string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 			: this(sql, CommandType.Text, parameters)
 		{
 		}
@@ -121,7 +121,7 @@
 		/// Merge the given parameters to existing parameter collection. 
 		/// </summary>
 		/// <param name="parameters"></param>
-		public void MergeParameters(IDictionary<string, object> parameters)
+		/*public void MergeParameters(IDictionary<string, object> parameters)
 		{
 			if (parameters == null)
 			{
@@ -138,12 +138,13 @@
 				parameters[param.Key] = param.Value;
 			}
 		}
+        */
 
 		static internal IDbCommand GetCommand(
 			IDbConnection connection,
 			string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+			object parameters)
 		{
 			if (connection == null)
 			{
@@ -165,7 +166,7 @@
 			cmd.CommandText = sql;
 
 			cmd.CommandType = commandType;
-
+            /*
 			if (parameters != null && parameters.Count > 0)
 			{
 				foreach (var p in parameters)
@@ -177,14 +178,28 @@
 					cmd.Parameters.Add(param);
 				}
 			}
+            */
 
+            if (parameters != null)
+            {
+                var properties = parameters.GetType().GetProperties();
+
+                foreach (var property in properties)
+                {
+                    IDbDataParameter param = cmd.CreateParameter();
+                    param.ParameterName = property.Name;
+                    param.Value = property.GetValue(parameters);
+
+                    cmd.Parameters.Add(param);
+                }
+            }
 			return cmd;
 		}
 
 		static internal IDbCommand GetCommand(
 			IDbConnection connection,
 			string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			return GetCommand(connection, sql, CommandType.Text, parameters);
 		}

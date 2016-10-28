@@ -17,7 +17,7 @@
         public static IDataReader GetDataReader(this IDbConnection conn,
             string sql,
             CommandType commandType,
-            IDictionary<string, object> parameters)
+            object parameters)
         {
 			IDatabase db = Db.GetConnection(conn);
 
@@ -35,7 +35,7 @@
 
         public static IDataReader GetDataReader(this IDbConnection conn,
             string sql,
-            IDictionary<string, object> parameters)
+            object parameters)
         {
             IDatabase db = Db.GetConnection(conn);
 
@@ -74,7 +74,7 @@
             this IDbConnection conn,
             string sql,
             CommandType commandType,
-            IDictionary<string, object> parameters)
+            object parameters)
         {
             IDatabase db = Db.GetConnection(conn);
 
@@ -94,7 +94,7 @@
         public static int Execute(
             this IDbConnection conn,
             string sql,
-            IDictionary<string, object> parameters)
+            object parameters)
         {
             IDatabase db = Db.GetConnection(conn);
 
@@ -133,7 +133,7 @@
             this IDbConnection conn,
             string sql,
             CommandType commandType,
-            IDictionary<string, object> parameters)
+            object parameters)
         {
             IDatabase db = Db.GetConnection(conn);
 
@@ -153,7 +153,7 @@
         public static object GetScalar(
             this IDbConnection conn,
             string sql,
-            IDictionary<string, object> parameters)
+            object parameters)
         {
             IDatabase db = Db.GetConnection(conn);
 

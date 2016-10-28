@@ -17,7 +17,7 @@
 		public static T Get<T>(this IDbConnection conn,
 			string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 			 where T : class, new()
 		{
 			Db db = new Db(conn);
@@ -37,7 +37,7 @@
 
 		public static T Get<T>(this IDbConnection conn,
 			string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 			 where T : class, new()
 		{
 			Db db = new Db(conn);
@@ -78,7 +78,7 @@
 		public static IList<T> GetList<T>(this IDbConnection conn,
 			string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 			 where T : class, new()
 		{
 			Db db = new Db(conn);
@@ -98,7 +98,7 @@
 
 		public static IList<T> GetList<T>(this IDbConnection conn,
 			string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 			 where T : class, new()
 		{
 			Db db = new Db(conn);
@@ -139,7 +139,7 @@
 		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn,
 			string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 			 where T : class, new()
 		{
 			Db db = new Db(conn);
@@ -159,7 +159,7 @@
 
 		public static IEnumerable<T> GetEnumerable<T>(this IDbConnection conn,
 			string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 			 where T : class, new()
 		{
 			Db db = new Db(conn);
@@ -193,7 +193,7 @@
 		public static dynamic Get(this IDbConnection conn,
 			string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			Db db = new Db(conn);
 			
@@ -211,7 +211,7 @@
         
 		public static dynamic Get(this IDbConnection conn,
 			string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			Db db = new Db(conn);
 			
@@ -236,7 +236,7 @@
 		public static IList<dynamic> GetList(this IDbConnection conn,
 			string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			Db db = new Db(conn);
 
@@ -254,7 +254,7 @@
 		
 		public static IList<dynamic> GetList(this IDbConnection conn,
 			string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			Db db = new Db(conn);
 
@@ -278,7 +278,7 @@
 		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn,
 			string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			Db db = new Db(conn);
 			
@@ -296,7 +296,7 @@
 		
 		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn,
 			string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			Db db = new Db(conn);
 			

@@ -92,7 +92,7 @@
 		
 		public T Get<T>(string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 			 where T : class, new()
 		{
 			var db = GetConnection(conn);
@@ -112,7 +112,7 @@
 		}
 		
 		public T Get<T>(string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 			 where T : class, new()
 		{
 			var db = GetConnection(conn);
@@ -141,7 +141,7 @@
 		
 		public IList<T> GetList<T>(string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 			 where T : class, new()
 		{
 			var db = GetConnection(conn);
@@ -161,7 +161,7 @@
 		}
 		
 		public IList<T> GetList<T>(string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 			 where T : class, new()
 		{
 			var db = GetConnection(conn);
@@ -190,7 +190,7 @@
 		
 		public IEnumerable<T> GetEnumerable<T>(string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 			 where T : class, new()
 		{
 			var db = GetConnection(conn);
@@ -210,7 +210,7 @@
 		}
 		
 		public IEnumerable<T> GetEnumerable<T>(string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 			 where T : class, new()
 		{
 			var db = GetConnection(conn);
@@ -239,7 +239,7 @@
 		
 		public dynamic Get(string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			var db = GetConnection(conn);
 			var converter = GetDynamicConvertor();
@@ -257,7 +257,7 @@
 		}
 		
 		public dynamic Get(string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			var db = GetConnection(conn);
 			var converter = GetDynamicConvertor();
@@ -283,7 +283,7 @@
 		
 		public IList<dynamic> GetList(string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			var db = GetConnection(conn);
 			var converter = GetDynamicConvertor();
@@ -301,7 +301,7 @@
 		}
 		
 		public IList<dynamic> GetList(string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			var db = GetConnection(conn);
 			var converter = GetDynamicConvertor();
@@ -327,7 +327,7 @@
 		
 		public IEnumerable<dynamic> GetEnumerable(string sql,
 			CommandType commandType,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			var db = GetConnection(conn);
 			var converter = GetDynamicConvertor();
@@ -345,7 +345,7 @@
 		}
 		
 		public IEnumerable<dynamic> GetEnumerable(string sql,
-			IDictionary<string, object> parameters)
+            object parameters)
 		{
 			var db = GetConnection(conn);
 			var converter = GetDynamicConvertor();
