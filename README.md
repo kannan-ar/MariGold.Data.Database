@@ -25,9 +25,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 {
 	conn.Open();
 
-	IDataReader dr = conn.GetDataReader("Select Id, Name From Employee Where Id = @Id",
-		new Dictionary<string,object>() {
-		{ "Id", 1 }});
+	IDataReader dr = conn.GetDataReader("Select Id, Name From Employee Where Id = @Id", new { Id = 1 });
 	
 }
 ```
@@ -46,9 +44,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 {
 	conn.Open();
 
-	Employee emp = conn.Get<Employee>("Select Id, Name From Employee Where Id = @Id",
-		new Dictionary<string,object>() {
-		{ "Id", 1 }});
+	Employee emp = conn.Get<Employee>("Select Id, Name From Employee Where Id = @Id", new { Id = 1 });
 }
 ```
 #####Create a CLR object from a data reader
@@ -71,9 +67,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 {
 	conn.Open();
 				
-	conn.Execute("Delete From Employee Where Id = @Id",
-		new Dictionary<string,object>() {
-		{ "Id", 1 }});
+	conn.Execute("Delete From Employee Where Id = @Id", new { Id = 1 });
 }
 ```
 #####Create a dynamic object
@@ -84,10 +78,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 {
 	conn.Open();
 
-	var emp = conn.Get("Select Id, Name From Employee Where Id = @Id",
-		new Dictionary<string,object>() {
-		{ "Id", 1 }
-	});
+	var emp = conn.Get("Select Id, Name From Employee Where Id = @Id", new { Id = 1 });
 }
 ```
 #####Create IList from IDbConnection

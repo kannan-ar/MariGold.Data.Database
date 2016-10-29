@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MariGold.Data.Database")]
-[assembly: AssemblyDescription("Provides the database operations using an IDbConnection instance")]
+[assembly: AssemblyDescription("Provides various data manipulation functions using an IDbConnection instance")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MariGold")]
 [assembly: AssemblyProduct("MariGold Framework")]

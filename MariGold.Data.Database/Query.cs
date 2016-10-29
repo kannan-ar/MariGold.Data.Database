@@ -117,29 +117,6 @@
 		{
 		}
 
-		/// <summary>
-		/// Merge the given parameters to existing parameter collection. 
-		/// </summary>
-		/// <param name="parameters"></param>
-		/*public void MergeParameters(IDictionary<string, object> parameters)
-		{
-			if (parameters == null)
-			{
-				return;
-			}
-
-			if (parameters.Count == 0)
-			{
-				return;
-			}
-
-			foreach (KeyValuePair<string, object> param in parameters)
-			{
-				parameters[param.Key] = param.Value;
-			}
-		}
-        */
-
 		static internal IDbCommand GetCommand(
 			IDbConnection connection,
 			string sql,
@@ -166,19 +143,6 @@
 			cmd.CommandText = sql;
 
 			cmd.CommandType = commandType;
-            /*
-			if (parameters != null && parameters.Count > 0)
-			{
-				foreach (var p in parameters)
-				{
-					IDbDataParameter param = cmd.CreateParameter();
-					param.ParameterName = p.Key;
-					param.Value = p.Value;
-
-					cmd.Parameters.Add(param);
-				}
-			}
-            */
 
             if (parameters != null)
             {
@@ -193,6 +157,7 @@
                     cmd.Parameters.Add(param);
                 }
             }
+
 			return cmd;
 		}
 

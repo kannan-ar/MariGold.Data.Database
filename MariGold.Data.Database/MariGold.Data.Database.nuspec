@@ -8,7 +8,7 @@
     <owners>$author$</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Minor corrections for Oracle Database</releaseNotes>
+    <releaseNotes>Implemented new extension methods for IDbConnection and support for dynamic objects</releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>MariGold ORM</tags>
   </metadata>
