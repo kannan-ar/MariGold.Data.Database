@@ -1,12 +1,8 @@
 ##MariGold.Data.Database
-MariGold.Data.Database is a minimalist set of components to automate most of the tedious tasks in database query operations. It is a zero-configuration library which works with all types of IDbConnection implementations. MariGold.Data.Database will also supports dynamic types.
+MariGold.Data.Database is a minimalist set of components to automate most of the tedious tasks in database query operations. It is a zero-configuration library which works with all types of IDbConnection implementations.
 
-Various components of MariGold.Data.Database can be used to:
-- Fetch a data reader from an sql string.
-- Create CLR object from an sql string.
-- Create a CLR object from a data reader.
-- Execute sql string using an IDbConnection.
-- Helper methods to fetch values from data reader without boxing.
+MariGold.Data.Database is not just an ORM tool but also a collection of methods for various database operations. For example, MariGold.Data.Database can be use to generate an IDataReader from an IDbConnection or convert an IDataReader into a CLR entity.
+
 
 ###Installing via NuGet
 
@@ -14,7 +10,9 @@ In Package Manager Console, enter the following command:
 ```
 Install-Package MariGold.Data.Database
 ```
-##Usage
+###Usage
+MariGold.Data.Database will support both static and dynamic data types.
+
 #####Create IDataReader from sql string
 
 ```csharp
