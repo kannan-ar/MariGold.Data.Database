@@ -45,7 +45,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 	Employee emp = conn.Get<Employee>("Select Id, Name From Employee Where Id = @Id", new { Id = 1 });
 }
 ```
-#####Create a CLR object from a IDataReader
+#####Create a CLR object from an IDataReader
 ```csharp
 using MariGold.Data;
 
@@ -112,7 +112,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 	var lstEmp = conn.GetList("Select Id, Name From Employee");
 }
 ```
-#####Create dynamic Enumerable List
+#####Create dynamic an IEnumerable List
 ```csharp
 using MariGold.Data;
 
@@ -121,5 +121,17 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 	conn.Open();
 				
 	var lstEmp = conn.GetEnumerable("Select Id, Name From Employee");
+}
+```
+#####Utility methods
+MariGold.Data.Database also contains several utility methods to handle the data from IDataReader. For example the below code illustrates how to convert Datetime and decimal values from an opened IDataReader
+```csharp
+using(IDataReader dr = conn.GetDataReader("Select DOB,  From Employee Where Id = @Id", new { Id = 1 }))
+{
+	if (dr.Read())
+        {
+        	DateTime? dob = dr.ConvertToDateTime("DOB", null);
+                decimal salary = dr.ConvertToDecimal("Salary", 0);
+        }
 }
 ```
