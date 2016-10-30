@@ -11,7 +11,7 @@ In Package Manager Console, enter the following command:
 Install-Package MariGold.Data.Database
 ```
 ###Usage
-MariGold.Data.Database will support both static and dynamic data types.
+MariGold.Data.Database supports both static and dynamic data types.
 
 #####Create IDataReader from sql string
 
@@ -27,7 +27,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 	
 }
 ```
-#####Create CLR object from an sql string
+#####Create a CLR object from an sql string
 ```csharp
 using MariGold.Data;
 
@@ -45,7 +45,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 	Employee emp = conn.Get<Employee>("Select Id, Name From Employee Where Id = @Id", new { Id = 1 });
 }
 ```
-#####Create a CLR object from a data reader
+#####Create a CLR object from a IDataReader
 ```csharp
 using MariGold.Data;
 
@@ -82,12 +82,6 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 #####Create IList from IDbConnection
 ```csharp
 using MariGold.Data;
-
-public class Employee
-{
-	public Int32 Id{ get; set; }
-	public String Name{ get; set; }
-}
 
 using (IDbConnection conn = new SqlConnection(connectionString))
 {
