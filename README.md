@@ -126,12 +126,12 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 #####Utility methods
 MariGold.Data.Database also contains several utility methods to handle the data from IDataReader. For example the below code illustrates how to convert Datetime and decimal values from an opened IDataReader
 ```csharp
-using(IDataReader dr = conn.GetDataReader("Select DOB,  From Employee Where Id = @Id", new { Id = 1 }))
+using(IDataReader dr = conn.GetDataReader("Select DOB,Salary  From Employee Where Id = @Id", new { Id = 1 }))
 {
 	if (dr.Read())
         {
         	DateTime? dob = dr.ConvertToDateTime("DOB", null);
-                decimal salary = dr.ConvertToDecimal("Salary", 0);
+		decimal salary = dr.ConvertToDecimal("Salary", 0);
         }
 }
 ```
