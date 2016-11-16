@@ -129,9 +129,9 @@ MariGold.Data.Database also contains several utility methods to handle the data 
 using(IDataReader dr = conn.GetDataReader("Select DOB,Salary From Employee Where Id = @Id", new { Id = 1 }))
 {
 	if (dr.Read())
-        {
+	{
 		DateTime? dob = dr.ConvertToDateTime("DOB", null);
 		decimal salary = dr.ConvertToDecimal("Salary", 0);
-        }
+	}
 }
 ```
