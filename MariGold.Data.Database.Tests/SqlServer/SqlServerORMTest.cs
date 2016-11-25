@@ -121,7 +121,21 @@
                     i++;
                 }
             }
+        }
 
+        [Test]
+        public void NullName()
+        {
+            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            {
+                conn.Open();
+
+                var person = conn.Get<Person>("Select NULL As Name");
+
+                Assert.IsNotNull(person);
+                Assert.AreEqual(null, person.Name);
+
+            }
         }
     }
 }

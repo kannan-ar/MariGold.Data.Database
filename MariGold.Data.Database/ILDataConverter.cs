@@ -89,9 +89,10 @@
 					typeof(bool)
 				});
 				MethodInfo fieldCount = recordType.GetProperty("FieldCount").GetGetMethod();
+                MethodInfo isDBNull = recordType.GetMethod("IsDBNull");
 
-				//New dynamic method with IDataReader type parameter and T type return value.
-				var method = new DynamicMethod("", type, new[] { readerType }, true);
+                //New dynamic method with IDataReader type parameter and T type return value.
+                var method = new DynamicMethod("", type, new[] { readerType }, true);
 				var il = method.GetILGenerator();
 				
 				var entity = il.DeclareLocal(type);
@@ -135,8 +136,16 @@
 				il.Emit(OpCodes.Ldloc, count);
 				il.Emit(OpCodes.Bge, end);
 
-				//Get the field name of data reader at the index of 'index' variable 
-				il.Emit(OpCodes.Ldloc, dataRecord);
+                //Check the value in current index is DBNull
+                il.Emit(OpCodes.Ldloc, dataRecord);
+                il.Emit(OpCodes.Ldloc, index);
+                il.Emit(OpCodes.Callvirt, isDBNull);
+
+                //Go to next iteration if the value is DbNull.
+                il.Emit(OpCodes.Brtrue, loopStart);
+
+                //Get the field name of data reader at the index of 'index' variable 
+                il.Emit(OpCodes.Ldloc, dataRecord);
 				il.Emit(OpCodes.Ldloc, index);
 				il.Emit(OpCodes.Callvirt, getName);
 				il.Emit(OpCodes.Stloc, fieldName);
