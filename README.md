@@ -1,7 +1,7 @@
 ##MariGold.Data.Database
 MariGold.Data.Database is a minimalist set of components to automate most of the tedious tasks in database query operations. It is a zero-configuration library which works with all types of IDbConnection implementations.
 
-MariGold.Data.Database is not just an ORM tool but also a collection of methods for various database operations. For example, MariGold.Data.Database can be use to generate an IDataReader from an IDbConnection or convert an IDataReader into a CLR entity.
+MariGold.Data.Database is not just an ORM tool but also a collection of methods for various database operations. For example, MariGold.Data.Database can be used to generate an IDataReader from an IDbConnection or convert an IDataReader into a CLR entity.
 
 
 ###Installing via NuGet
@@ -124,7 +124,7 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 }
 ```
 #####Utility methods
-MariGold.Data.Database also contains several utility methods to handle the data from IDataReader. For example the below code illustrates how to convert Datetime and decimal values from an opened IDataReader.
+MariGold.Data.Database also contains several utility methods to handle the data from IDataReader. For example, the below code illustrates how to convert Datetime and decimal values from an opened IDataReader.
 ```csharp
 using(IDataReader dr = conn.GetDataReader("Select DOB,Salary From Employee Where Id = @Id", new { Id = 1 }))
 {
