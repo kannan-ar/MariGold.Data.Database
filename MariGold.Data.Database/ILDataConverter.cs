@@ -1,140 +1,174 @@
 ﻿namespace MariGold.Data
 {
-	using System;
-	using System.Data;
-	using System.Reflection;
-	using System.Reflection.Emit;
-	using System.Collections.Generic;
-	using System.Collections.Concurrent;
+    using System;
+    using System.Data;
+    using System.Reflection;
+    using System.Reflection.Emit;
+    using System.Collections.Generic;
+    using System.Collections.Concurrent;
 
-	/// <summary>
-	/// Creates dynamic methods to iterate through data reader and generate CLR objects using IL Emit.
-	/// </summary>
-	public sealed class ILDataConverter : IDataConverter
-	{
-		private static ConcurrentDictionary<Type,Delegate> methods;
-		
-		private MethodInfo GetDrMethod(Type drType, string propTypeName)
-		{
-			MethodInfo drMethod = null;
+    /// <summary>
+    /// Creates dynamic methods to iterate through data reader and generate CLR objects using IL Emit.
+    /// </summary>
+    public sealed class ILDataConverter : IDataConverter
+    {
+        private static ConcurrentDictionary<Type, Delegate> methods;
 
-			switch (propTypeName)
-			{
-				case "Int32":
-					drMethod = drType.GetMethod("GetInt32");
-					break;
+        private Dictionary<string, MethodInfo> GetDrMethod(Type recordType)
+        {
+            Dictionary<string, MethodInfo> list = new Dictionary<string, MethodInfo>();
 
-				case "String":
-					drMethod = drType.GetMethod("GetString");
-					break;
+            list.Add("Int32", recordType.GetMethod("GetInt32"));
+            list.Add("String", recordType.GetMethod("GetString"));
+            list.Add("Boolean", recordType.GetMethod("GetBoolean"));
+            list.Add("Char", recordType.GetMethod("GetChar"));
+            list.Add("DateTime", recordType.GetMethod("GetDateTime"));
+            list.Add("Decimal", recordType.GetMethod("GetDecimal"));
+            list.Add("Double", recordType.GetMethod("GetDouble"));
+            list.Add("Single", recordType.GetMethod("GetFloat"));
+            list.Add("Int16", recordType.GetMethod("GetInt16"));
+            list.Add("Int64", recordType.GetMethod("GetInt64"));
 
-				case "Boolean":
-					drMethod = drType.GetMethod("GetBoolean");
-					break;
+            return list;
+        }
 
-				case "Char":
-					drMethod = drType.GetMethod("GetChar");
-					break;
+        private Type GetTypeName(Type type, out bool isNullable)
+        {
+            isNullable = false;
 
-				case "DateTime":
-					drMethod = drType.GetMethod("GetDateTime");
-					break;
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                isNullable = true;
+                return Nullable.GetUnderlyingType(type);
+            }
+            else
+            {
+                return type;
+            }
+        }
+        /*
+        private MethodInfo GetDrMethod(Type drType, string propTypeName)
+        {
+            MethodInfo drMethod = null;
 
-				case "Decimal":
-					drMethod = drType.GetMethod("GetDecimal");
-					break;
+            switch (propTypeName)
+            {
+                case "Int32":
+                    drMethod = drType.GetMethod("GetInt32");
+                    break;
 
-				case "Double":
-					drMethod = drType.GetMethod("GetDouble");
-					break;
+                case "String":
+                    drMethod = drType.GetMethod("GetString");
+                    break;
 
-				case "Single":
-					drMethod = drType.GetMethod("GetFloat");
-					break;
+                case "Boolean":
+                    drMethod = drType.GetMethod("GetBoolean");
+                    break;
 
-				case "Int16":
-					drMethod = drType.GetMethod("GetInt16");
-					break;
+                case "Char":
+                    drMethod = drType.GetMethod("GetChar");
+                    break;
 
-				case "Int64":
-					drMethod = drType.GetMethod("GetInt64");
-					break;
-			}
-            
-			return drMethod;
-		}
+                case "DateTime":
+                    drMethod = drType.GetMethod("GetDateTime");
+                    break;
 
-		static ILDataConverter()
-		{
-			methods = new ConcurrentDictionary<Type, Delegate>();
-		}
-        
-		private Func<IDataReader, T> GetReaderFunc<T>(IDataReader dr)
-			where T: class, new()
-		{
-			Type type = typeof(T);
-			Delegate del;
-            
-			if (!methods.TryGetValue(type, out del))
-			{
-				Type readerType = typeof(IDataReader);
-				Type recordType = typeof(IDataRecord);
-				Type stringType = typeof(String);
-				Type intType = typeof(Int32);
+                case "Decimal":
+                    drMethod = drType.GetMethod("GetDecimal");
+                    break;
 
-				MethodInfo getName = recordType.GetMethod("GetName");
-				MethodInfo compare = stringType.GetMethod("Compare", new Type[] {
-					stringType,
-					stringType,
-					typeof(bool)
-				});
-				MethodInfo fieldCount = recordType.GetProperty("FieldCount").GetGetMethod();
+                case "Double":
+                    drMethod = drType.GetMethod("GetDouble");
+                    break;
+
+                case "Single":
+                    drMethod = drType.GetMethod("GetFloat");
+                    break;
+
+                case "Int16":
+                    drMethod = drType.GetMethod("GetInt16");
+                    break;
+
+                case "Int64":
+                    drMethod = drType.GetMethod("GetInt64");
+                    break;
+            }
+
+            return drMethod;
+        }
+        */
+        static ILDataConverter()
+        {
+            methods = new ConcurrentDictionary<Type, Delegate>();
+        }
+
+        private Func<IDataReader, T> GetReaderFunc<T>(IDataReader dr)
+            where T : class, new()
+        {
+            Type type = typeof(T);
+            Delegate del;
+
+            if (!methods.TryGetValue(type, out del))
+            {
+                Type readerType = typeof(IDataReader);
+                Type recordType = typeof(IDataRecord);
+                Type stringType = typeof(String);
+                Type intType = typeof(Int32);
+                Dictionary<string, MethodInfo> drMethods = GetDrMethod(recordType);
+
+                MethodInfo getName = recordType.GetMethod("GetName");
+                MethodInfo compare = stringType.GetMethod("Compare", new Type[] {
+                    stringType,
+                    stringType,
+                    typeof(bool)
+                });
+                MethodInfo fieldCount = recordType.GetProperty("FieldCount").GetGetMethod();
                 MethodInfo isDBNull = recordType.GetMethod("IsDBNull");
 
                 //New dynamic method with IDataReader type parameter and T type return value.
                 var method = new DynamicMethod("", type, new[] { readerType }, true);
-				var il = method.GetILGenerator();
-				
-				var entity = il.DeclareLocal(type);
-				var dataRecord = il.DeclareLocal(recordType);
-				var fieldName = il.DeclareLocal(stringType);
-				var count = il.DeclareLocal(intType);
-				var index = il.DeclareLocal(intType);
+                var il = method.GetILGenerator();
 
-				Label end = il.DefineLabel();
-				Label loopStart = il.DefineLabel();
+                var entity = il.DeclareLocal(type);
+                var dataRecord = il.DeclareLocal(recordType);
+                var fieldName = il.DeclareLocal(stringType);
+                var count = il.DeclareLocal(intType);
+                var index = il.DeclareLocal(intType);
 
-				//Create new T type object and store at location 'entity'
-				il.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
-				il.Emit(OpCodes.Stloc, entity);
- 
-				//Convert input parameter of IDataReader to IDataRecord and store at location 'dataRecord'
-				il.Emit(OpCodes.Ldarg_0);
-				il.Emit(OpCodes.Castclass, recordType);
-				il.Emit(OpCodes.Stloc, dataRecord);
+                Label end = il.DefineLabel();
+                Label loopStart = il.DefineLabel();
 
-				//Get field count of data reader input and store it in count variable
-				il.Emit(OpCodes.Ldloc, dataRecord);
-				il.Emit(OpCodes.Callvirt, fieldCount);
-				il.Emit(OpCodes.Stloc, count);
+                //Create new T type object and store at location 'entity'
+                il.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
+                il.Emit(OpCodes.Stloc, entity);
 
-				//Initally load -1 to the index variable
-				il.Emit(OpCodes.Ldc_I4, -1);
-				il.Emit(OpCodes.Stloc, index);
+                //Convert input parameter of IDataReader to IDataRecord and store at location 'dataRecord'
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Castclass, recordType);
+                il.Emit(OpCodes.Stloc, dataRecord);
 
-				//Starts loop through the data reader columns
-				il.MarkLabel(loopStart);
+                //Get field count of data reader input and store it in count variable
+                il.Emit(OpCodes.Ldloc, dataRecord);
+                il.Emit(OpCodes.Callvirt, fieldCount);
+                il.Emit(OpCodes.Stloc, count);
 
-				//Add +1 to the index variable
-				il.Emit(OpCodes.Ldloc, index);
-				il.Emit(OpCodes.Ldc_I4, 1);
-				il.Emit(OpCodes.Add);
-				il.Emit(OpCodes.Stloc, index);
+                //Initally load -1 to the index variable
+                il.Emit(OpCodes.Ldc_I4, -1);
+                il.Emit(OpCodes.Stloc, index);
 
-				//Go to the lable 'end' if the index varible is greather than count variable
-				il.Emit(OpCodes.Ldloc, index);
-				il.Emit(OpCodes.Ldloc, count);
-				il.Emit(OpCodes.Bge, end);
+                //Starts loop through the data reader columns
+                il.MarkLabel(loopStart);
+
+                //Add +1 to the index variable
+                il.Emit(OpCodes.Ldloc, index);
+                il.Emit(OpCodes.Ldc_I4, 1);
+                il.Emit(OpCodes.Add);
+                il.Emit(OpCodes.Stloc, index);
+
+                //Go to the lable 'end' if the index varible is greather than count variable
+                il.Emit(OpCodes.Ldloc, index);
+                il.Emit(OpCodes.Ldloc, count);
+                il.Emit(OpCodes.Bge, end);
 
                 //Check the value in current index is DBNull
                 il.Emit(OpCodes.Ldloc, dataRecord);
@@ -146,134 +180,154 @@
 
                 //Get the field name of data reader at the index of 'index' variable 
                 il.Emit(OpCodes.Ldloc, dataRecord);
-				il.Emit(OpCodes.Ldloc, index);
-				il.Emit(OpCodes.Callvirt, getName);
-				il.Emit(OpCodes.Stloc, fieldName);
+                il.Emit(OpCodes.Ldloc, index);
+                il.Emit(OpCodes.Callvirt, getName);
+                il.Emit(OpCodes.Stloc, fieldName);
 
-				//Stores the jump lable and property info of each property in the type 'T'
-				Dictionary<PropertyInfo, Label> jumpTable = new Dictionary<PropertyInfo, Label>();
+                //Stores the jump lable and property info of each property in the type 'T'
+                Dictionary<Label, Tuple<PropertyInfo, Type, bool>> jumpTable = new Dictionary<Label, Tuple<PropertyInfo, Type, bool>>();
 
-				//Scan through the 'T' type's properties and emit il to compare property names with data reader column name
-				foreach (PropertyInfo property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
-				{
-					Label label = il.DefineLabel();
-					jumpTable.Add(property, label);
+                //Scan through the 'T' type's properties and emit il to compare property names with data reader column name
+                foreach (PropertyInfo property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
+                {
+                    bool isNullable;
+                    Type propType = GetTypeName(property.PropertyType, out isNullable);
 
-					//Compare the data reader column name and property name
-					il.Emit(OpCodes.Ldloc, fieldName);
-					il.Emit(OpCodes.Ldstr, property.Name);
-					il.Emit(OpCodes.Ldc_I4, 1);
-					il.Emit(OpCodes.Call, compare);
+                    //Skip the iteration if the property type is not convertible
+                    if (!drMethods.ContainsKey(propType.Name))
+                    {
+                        continue;
+                    }
 
-					//If both values are equal, go to the label where sets the property with the data reader value.
-					il.Emit(OpCodes.Ldc_I4_0);
-					il.Emit(OpCodes.Ceq);
-					il.Emit(OpCodes.Brtrue, label);
-				}
+                    Label label = il.DefineLabel();
+                    jumpTable.Add(label, new Tuple<PropertyInfo, Type, bool>(property, propType, isNullable));
 
-				//It acts like default case. The control reaches here because no property names matches with data reader column name.
-				//So goes to next loop iteration
-				il.Emit(OpCodes.Br, loopStart);
+                    //Compare the data reader column name and property name
+                    il.Emit(OpCodes.Ldloc, fieldName);
+                    il.Emit(OpCodes.Ldstr, property.Name);
+                    il.Emit(OpCodes.Ldc_I4, 1);
+                    il.Emit(OpCodes.Call, compare);
 
-				//Scan through the dictionary and emit instructions to set property with data reader values
-				foreach (var jump in jumpTable)
-				{
-					il.MarkLabel(jump.Value);
+                    //If both values are equal, go to the label where sets the property with the data reader value.
+                    il.Emit(OpCodes.Ldc_I4_0);
+                    il.Emit(OpCodes.Ceq);
+                    il.Emit(OpCodes.Brtrue, label);
+                }
 
-					//Gets the exact method based on property type to fetch value from data reader
-					MethodInfo drMethod = GetDrMethod(recordType, jump.Key.PropertyType.Name);
-					MethodInfo propMethod = jump.Key.GetSetMethod();
+                //It acts like default case. The control reaches here because no property names matches with data reader column name.
+                //So goes to next loop iteration
+                il.Emit(OpCodes.Br, loopStart);
 
-					//fetch value from data reader and assigned it to the property
-					il.Emit(OpCodes.Ldloc, entity);
-					il.Emit(OpCodes.Ldloc, dataRecord);
-					il.Emit(OpCodes.Ldloc, index);
-					il.Emit(OpCodes.Callvirt, drMethod);
-					il.Emit(OpCodes.Callvirt, propMethod);
-					//Go to the next loop iteration
-					il.Emit(OpCodes.Br, loopStart);
-				}
+                //Scan through the dictionary and emit instructions to set property with data reader values
+                foreach (var jump in jumpTable)
+                {
+                    il.MarkLabel(jump.Key);
 
-				il.MarkLabel(end);
-				//Loads and returns the created entity.
-				il.Emit(OpCodes.Ldloc, entity);
-				il.Emit(OpCodes.Ret);
+                    //Gets the exact method based on property type to fetch value from data reader
+                    // MethodInfo drMethod = GetDrMethod(recordType, jump.Value.PropertyType.Name);
+                    MethodInfo drMethod;
+
+                    drMethods.TryGetValue(jump.Value.Item2.Name, out drMethod);
+
+                    MethodInfo propMethod = jump.Value.Item1.GetSetMethod();
+
+                    //fetch value from data reader and assigned it to the property
+                    il.Emit(OpCodes.Ldloc, entity);
+                    il.Emit(OpCodes.Ldloc, dataRecord);
+                    il.Emit(OpCodes.Ldloc, index);
+                    il.Emit(OpCodes.Callvirt, drMethod);
+
+                    //If the property is a nullable type, add extra logic to convert the value into nullable type.
+                    if (jump.Value.Item3)
+                    {
+                        il.Emit(OpCodes.Newobj, jump.Value.Item1.PropertyType.GetConstructor(new[] { jump.Value.Item2 }));
+                    }
                     
-				del = method.CreateDelegate(typeof(Func<IDataReader, T>));
-				
-				methods.TryAdd(type, del);
-			}
-			
-			return (Func<IDataReader, T>)del;
-		}
+                    il.Emit(OpCodes.Callvirt, propMethod);
+                    //Go to the next loop iteration
+                    il.Emit(OpCodes.Br, loopStart);
+                }
 
-		/// <summary>
-		/// Creates and returns the generic type T object and initilizes its public properties with the values of matching fields from given IDataReader.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="dr"></param>
-		/// <returns></returns>
-		public T Get<T>(IDataReader dr)
-			where T : class, new()
-		{
-			T item = default(T);
+                il.MarkLabel(end);
+                //Loads and returns the created entity.
+                il.Emit(OpCodes.Ldloc, entity);
+                il.Emit(OpCodes.Ret);
 
-			if (dr.Read())
-			{
-				Func<IDataReader, T> func = GetReaderFunc<T>(dr);
+                del = method.CreateDelegate(typeof(Func<IDataReader, T>));
 
-				item = func(dr);
-			}
+                methods.TryAdd(type, del);
+            }
 
-			return item;
-		}
+            return (Func<IDataReader, T>)del;
+        }
 
-		/// <summary>
-		/// Creates and returns a list of generic type T from given IDataReader.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="dr"></param>
-		/// <returns></returns>
-		public IList<T> GetList<T>(IDataReader dr)
-			 where T : class, new()
-		{
-			IList<T> list = new List<T>();
+        /// <summary>
+        /// Creates and returns the generic type T object and initilizes its public properties with the values of matching fields from given IDataReader.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dr"></param>
+        /// <returns></returns>
+        public T Get<T>(IDataReader dr)
+            where T : class, new()
+        {
+            T item = default(T);
 
-			if (dr.Read())
-			{
-				Func<IDataReader, T> func = GetReaderFunc<T>(dr);
+            if (dr.Read())
+            {
+                Func<IDataReader, T> func = GetReaderFunc<T>(dr);
 
-				do
-				{
-					list.Add(func(dr));
+                item = func(dr);
+            }
 
-				}
-				while (dr.Read());
-			}
+            return item;
+        }
 
-			return list;
-		}
+        /// <summary>
+        /// Creates and returns a list of generic type T from given IDataReader.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dr"></param>
+        /// <returns></returns>
+        public IList<T> GetList<T>(IDataReader dr)
+             where T : class, new()
+        {
+            IList<T> list = new List<T>();
 
-		/// <summary>
-		/// Creates and returns an IEnumerable type T from given IDataReader
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="dr"></param>
-		/// <returns></returns>
-		public IEnumerable<T> GetEnumerable<T>(IDataReader dr)
-			 where T : class, new()
-		{
-			if (dr.Read())
-			{
-				Func<IDataReader, T> func = GetReaderFunc<T>(dr);
+            if (dr.Read())
+            {
+                Func<IDataReader, T> func = GetReaderFunc<T>(dr);
 
-				do
-				{
-					yield return func(dr);
+                do
+                {
+                    list.Add(func(dr));
 
-				}
-				while (dr.Read());
-			}
-		}
-	}
+                }
+                while (dr.Read());
+            }
+
+            return list;
+        }
+
+        /// <summary>
+        /// Creates and returns an IEnumerable type T from given IDataReader
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dr"></param>
+        /// <returns></returns>
+        public IEnumerable<T> GetEnumerable<T>(IDataReader dr)
+             where T : class, new()
+        {
+            if (dr.Read())
+            {
+                Func<IDataReader, T> func = GetReaderFunc<T>(dr);
+
+                do
+                {
+                    yield return func(dr);
+
+                }
+                while (dr.Read());
+            }
+        }
+    }
 }

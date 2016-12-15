@@ -137,5 +137,20 @@
 
             }
         }
+
+        [Test]
+        public void SelectNullableDOB()
+        {
+            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Assert.DoesNotThrow(() =>
+                {
+                    conn.GetList<Person>("Select DateOfBirth From person");
+                });
+
+            }
+        }
     }
 }
