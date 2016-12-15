@@ -26,7 +26,7 @@
             {
                 conn.Open();
 
-                var person = conn.Get<Person>("select Id,Name from person where Id = @Id", new { Id = 1 });
+                var person = conn.Get<Person>("Select Id,Name From PERSON Where Id = @Id", new { Id = 1 });
 
                 Assert.IsNotNull(person);
 
@@ -44,7 +44,7 @@
             {
                 conn.Open();
 
-                var person = conn.Get<Person>("select * from person where Id = @Id", new { Id = 5 });
+                var person = conn.Get<Person>("Select * From PERSON Where Id = @Id", new { Id = 5 });
 
                 Assert.IsNotNull(person);
 
@@ -67,7 +67,7 @@
             {
                 conn.Open();
 
-                IList<Person> persons = conn.GetList<Person>("select Id,Name from person where Id > @from and Id < @to",
+                IList<Person> persons = conn.GetList<Person>("Select Id,Name From PERSON Where Id > @from and Id < @to",
                     new { from = 2, to = 4 });
             }
         }
@@ -81,7 +81,7 @@
             {
                 conn.Open();
 
-                var persons = conn.GetList<Person>("select Id,Name from person where Name like 'M%'");
+                var persons = conn.GetList<Person>("Select Id,Name From PERSON Where Name like 'M%'");
 
                 Assert.AreEqual(mockPersons.Count, persons.Count);
 
@@ -102,7 +102,7 @@
             {
                 conn.Open();
 
-                var people = conn.GetEnumerable<Person>("select * from person");
+                var people = conn.GetEnumerable<Person>("Select * From PERSON");
 
                 Assert.AreEqual(mockPersons.Count, people.Count());
 
@@ -147,7 +147,22 @@
 
                 Assert.DoesNotThrow(() =>
                 {
-                    conn.GetList<Person>("Select DateOfBirth From person");
+                    conn.GetList<Person>("Select DateOfBirth From PERSON");
+                });
+
+            }
+        }
+
+        [Test]
+        public void NullDOB()
+        {
+            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Assert.DoesNotThrow(() =>
+                {
+                    conn.GetList<Person>("Select NULL as DateOfBirth From PERSON");
                 });
 
             }

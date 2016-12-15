@@ -125,5 +125,50 @@
             }
 
         }
+
+        [Test]
+        public void NullName()
+        {
+            using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
+            {
+                conn.Open();
+
+                var person = conn.Get<Person>("Select NULL As Name From DUAL");
+
+                Assert.IsNotNull(person);
+                Assert.AreEqual(null, person.Name);
+
+            }
+        }
+
+        [Test]
+        public void SelectNullableDOB()
+        {
+            using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Assert.DoesNotThrow(() =>
+                {
+                    conn.GetList<Person>("Select DateOfBirth From PERSON");
+                });
+
+            }
+        }
+
+        [Test]
+        public void NullDOB()
+        {
+            using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Assert.DoesNotThrow(() =>
+                {
+                    conn.GetList<Person>("Select NULL as DateOfBirth From PERSON");
+                });
+
+            }
+        }
     }
 }

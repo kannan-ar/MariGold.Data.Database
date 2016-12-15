@@ -25,7 +25,7 @@
             {
                 conn.Open();
 
-                int count = Convert.ToInt32(conn.GetScalar("select count(*) from person"));
+                int count = Convert.ToInt32(conn.GetScalar("Select COUNT(*) From PERSON"));
 
                 int i = table.GetTable().Count;
 
@@ -42,7 +42,7 @@
             {
                 conn.Open();
 
-                using (IDataReader dr = conn.GetDataReader("select Id,Name from person where Id = @Id", new { Id = 1 }))
+                using (IDataReader dr = conn.GetDataReader("Select Id,Name From PERSON Where Id = @Id", new { Id = 1 }))
                 {
                     if (dr.Read())
                     {
@@ -62,7 +62,7 @@
             {
                 conn.Open();
 
-                using (IDataReader dr = conn.GetDataReader("select Id,Name from person where Id > @from and Id < @to",
+                using (IDataReader dr = conn.GetDataReader("Select Id,Name From PERSON Where Id > @from and Id < @to",
                     new { from = 2, to = 4 }))
                 {
 
@@ -91,7 +91,7 @@
             {
                 conn.Open();
 
-                using (IDataReader dr = conn.GetDataReader("select Id,Name from person where Name like 'M%'"))
+                using (IDataReader dr = conn.GetDataReader("Select Id,Name From PERSON Where Name like 'M%'"))
                 {
 
                     int i = 0;

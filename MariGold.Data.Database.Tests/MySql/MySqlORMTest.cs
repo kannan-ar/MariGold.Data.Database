@@ -123,5 +123,50 @@
             }
 
         }
+
+        [Test]
+        public void NullName()
+        {
+            using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
+            {
+                conn.Open();
+
+                var person = conn.Get<Person>("Select NULL As Name");
+
+                Assert.IsNotNull(person);
+                Assert.AreEqual(null, person.Name);
+
+            }
+        }
+
+        [Test]
+        public void SelectNullableDOB()
+        {
+            using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Assert.DoesNotThrow(() =>
+                {
+                    conn.GetList<Person>("Select DateOfBirth From PERSON");
+                });
+
+            }
+        }
+
+        [Test]
+        public void NullDOB()
+        {
+            using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Assert.DoesNotThrow(() =>
+                {
+                    conn.GetList<Person>("Select NULL as DateOfBirth From PERSON");
+                });
+
+            }
+        }
     }
 }
