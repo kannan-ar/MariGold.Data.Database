@@ -8,7 +8,7 @@
     <owners>$author$</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Added support for nullable properties</releaseNotes>
+    <releaseNotes>Added support for column mapping</releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>MariGold ORM</tags>
   </metadata>

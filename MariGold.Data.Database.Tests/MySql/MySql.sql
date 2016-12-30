@@ -1,1 +1,13 @@
-﻿
+﻿ALTER TABLE `tests`.`person` 
+ADD COLUMN `Name` VARCHAR(50) NULL AFTER `Id`,
+ADD COLUMN `DateOfBirth` DATETIME NULL AFTER `Name`,
+ADD COLUMN `SSN` BIGINT(10) NULL AFTER `DateOfBirth`,
+ADD COLUMN `BankAccount` DECIMAL(18) NULL AFTER `SSN`,
+ADD COLUMN `NoofCars` SMALLINT(8) NULL AFTER `BankAccount`,
+ADD COLUMN `IsPremium` BIT(1) NULL AFTER `NoofCars`;
+
+INSERT Person (Id, Name, DateOfBirth, SSN, BankAccount, NoofCars, IsPremium) VALUES (1, N'James', '19731101', 1000001, 75000.00, 2, 0)
+INSERT Person (Id, Name, DateOfBirth, SSN, BankAccount, NoofCars, IsPremium) VALUES (2, N'Tomy', '19840617', 1000002, 115000.00, 5, 1)
+INSERT Person (Id, Name, DateOfBirth, SSN, BankAccount, NoofCars, IsPremium) VALUES (3, N'Max', '19950119', 1000007, 500.00, 0, 0)
+INSERT Person (Id, Name, DateOfBirth, SSN, BankAccount, NoofCars, IsPremium) VALUES (4, N'Matthew', '19651212', 1000010, 50000.00, 0, 1)
+INSERT Person (Id, Name, DateOfBirth, SSN, BankAccount, NoofCars, IsPremium) VALUES (5, N'Thomas', '20010210', 1000011, 150000.00, 1, 1)

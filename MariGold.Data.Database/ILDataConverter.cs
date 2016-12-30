@@ -46,57 +46,7 @@
                 return type;
             }
         }
-        /*
-        private MethodInfo GetDrMethod(Type drType, string propTypeName)
-        {
-            MethodInfo drMethod = null;
-
-            switch (propTypeName)
-            {
-                case "Int32":
-                    drMethod = drType.GetMethod("GetInt32");
-                    break;
-
-                case "String":
-                    drMethod = drType.GetMethod("GetString");
-                    break;
-
-                case "Boolean":
-                    drMethod = drType.GetMethod("GetBoolean");
-                    break;
-
-                case "Char":
-                    drMethod = drType.GetMethod("GetChar");
-                    break;
-
-                case "DateTime":
-                    drMethod = drType.GetMethod("GetDateTime");
-                    break;
-
-                case "Decimal":
-                    drMethod = drType.GetMethod("GetDecimal");
-                    break;
-
-                case "Double":
-                    drMethod = drType.GetMethod("GetDouble");
-                    break;
-
-                case "Single":
-                    drMethod = drType.GetMethod("GetFloat");
-                    break;
-
-                case "Int16":
-                    drMethod = drType.GetMethod("GetInt16");
-                    break;
-
-                case "Int64":
-                    drMethod = drType.GetMethod("GetInt64");
-                    break;
-            }
-
-            return drMethod;
-        }
-        */
+       
         static ILDataConverter()
         {
             methods = new ConcurrentDictionary<Type, Delegate>();
@@ -110,11 +60,13 @@
 
             if (!methods.TryGetValue(type, out del))
             {
+                bool shouldDispose;
                 Type readerType = typeof(IDataReader);
                 Type recordType = typeof(IDataRecord);
                 Type stringType = typeof(String);
                 Type intType = typeof(Int32);
                 Dictionary<string, MethodInfo> drMethods = GetDrMethod(recordType);
+                Dictionary<string, string> columns = EntityManager<T>.Get(out shouldDispose);
 
                 MethodInfo getName = recordType.GetMethod("GetName");
                 MethodInfo compare = stringType.GetMethod("Compare", new Type[] {
@@ -204,7 +156,18 @@
 
                     //Compare the data reader column name and property name
                     il.Emit(OpCodes.Ldloc, fieldName);
-                    il.Emit(OpCodes.Ldstr, property.Name);
+
+                    string columnName;
+
+                    if (columns != null && columns.TryGetValue(property.Name, out columnName))
+                    {
+                        il.Emit(OpCodes.Ldstr, columnName);
+                    }
+                    else
+                    {
+                        il.Emit(OpCodes.Ldstr, property.Name);
+                    }
+
                     il.Emit(OpCodes.Ldc_I4, 1);
                     il.Emit(OpCodes.Call, compare);
 
@@ -255,10 +218,19 @@
 
                 del = method.CreateDelegate(typeof(Func<IDataReader, T>));
 
-                methods.TryAdd(type, del);
+                if (!shouldDispose)
+                {
+                    methods.TryAdd(type, del);
+                }
             }
 
             return (Func<IDataReader, T>)del;
+        }
+
+        internal static void ClearItem(Type type)
+        {
+            Delegate value;
+            methods.TryRemove(type, out value);
         }
 
         /// <summary>

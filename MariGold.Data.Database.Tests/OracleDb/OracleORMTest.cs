@@ -170,5 +170,26 @@
 
             }
         }
+
+        [Test]
+        public void TestPersonWithMappingFieldAndIdIsOne()
+        {
+            IPerson mockPerson = table.GetTable().First(p => p.Id == 1);
+
+            using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
+            {
+                conn.Open();
+
+                EntityManager<Person>.Map(p => p.Id, "ID").Map(p => p.Name, "PName").DisposeAfterUse();
+
+                var person = conn.Get<Person>("select Id as ID, Name as PName from person where Id = :Id",
+                    new { Id = 1 });
+
+                Assert.IsNotNull(person);
+
+                Assert.AreEqual(mockPerson.Id, person.Id);
+                Assert.AreEqual(mockPerson.Name, person.Name);
+            }
+        }
     }
 }

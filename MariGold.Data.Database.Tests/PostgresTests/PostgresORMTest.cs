@@ -1,18 +1,19 @@
-﻿namespace MariGold.Data.Database.Tests.SqlServer
+﻿namespace MariGold.Data.Database.Tests.PostgresTests
 {
     using System;
     using NUnit.Framework;
     using MariGold.Data;
-    using System.Data.SqlClient;
-    using System.Linq;
+    using System.Data;
     using System.Collections.Generic;
+    using Npgsql;
+    using System.Linq;
 
     [TestFixture]
-    public class SqlServerORMTest
+    public class PostgresORMTest
     {
         private readonly PersonTable table;
 
-        public SqlServerORMTest()
+        public PostgresORMTest()
         {
             table = new PersonTable();
         }
@@ -22,11 +23,11 @@
         {
             IPerson mockPerson = table.GetTable().First(p => p.Id == 1);
 
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
             {
                 conn.Open();
 
-                var person = conn.Get<Person>("Select Id,Name From PERSON Where Id = @Id", new { Id = 1 });
+                var person = conn.Get<Person>("select \"Id\",\"Name\" from public.\"Person\" where \"Id\" = @Id", new { Id = 1 });
 
                 Assert.IsNotNull(person);
 
@@ -40,11 +41,11 @@
         {
             IPerson mockPerson = table.GetTable().First(p => p.Id == 5);
 
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
             {
                 conn.Open();
 
-                var person = conn.Get<Person>("Select * From PERSON Where Id = @Id", new { Id = 5 });
+                var person = conn.Get<Person>("select * from public.\"Person\" where \"Id\" = @Id", new { Id = 5 });
 
                 Assert.IsNotNull(person);
 
@@ -63,12 +64,12 @@
         {
             List<IPerson> mockPersons = table.GetTable().Where(p => p.Id > 2 && p.Id < 4).ToList();
 
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
             {
                 conn.Open();
 
-                IList<Person> persons = conn.GetList<Person>("Select Id,Name From PERSON Where Id > @from and Id < @to",
-                    new { from = 2, to = 4 });
+                IList<Person> persons = conn.GetList<Person>("select \"Id\",\"Name\" from public.\"Person\" where \"Id\" > @from_id and \"Id\" < @to_id",
+                    new { from_id = 2, to_id = 4 });
             }
         }
 
@@ -77,11 +78,11 @@
         {
             List<IPerson> mockPersons = table.GetTable().Where(p => p.Name.StartsWith("M")).ToList();
 
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
             {
                 conn.Open();
 
-                var persons = conn.GetList<Person>("Select Id,Name From PERSON Where Name like 'M%'");
+                var persons = conn.GetList<Person>("select \"Id\",\"Name\" from public.\"Person\" where \"Name\" like 'M%'");
 
                 Assert.AreEqual(mockPersons.Count, persons.Count);
 
@@ -98,11 +99,11 @@
         {
             var mockPersons = table.GetTable();
 
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
             {
                 conn.Open();
 
-                var people = conn.GetEnumerable<Person>("Select * From PERSON");
+                var people = conn.GetEnumerable<Person>("select * from public.\"Person\"");
 
                 Assert.AreEqual(mockPersons.Count, people.Count());
 
@@ -121,16 +122,17 @@
                     i++;
                 }
             }
+
         }
 
         [Test]
         public void NullName()
         {
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
             {
                 conn.Open();
 
-                var person = conn.Get<Person>("Select NULL As Name");
+                var person = conn.Get<Person>("Select NULL As \"Name\"");
 
                 Assert.IsNotNull(person);
                 Assert.AreEqual(null, person.Name);
@@ -141,13 +143,13 @@
         [Test]
         public void SelectNullableDOB()
         {
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
             {
                 conn.Open();
 
                 Assert.DoesNotThrow(() =>
                 {
-                    conn.GetList<Person>("Select DateOfBirth From PERSON");
+                    conn.GetList<Person>("Select \"DateOfBirth\" From public.\"Person\"");
                 });
 
             }
@@ -156,13 +158,13 @@
         [Test]
         public void NullDOB()
         {
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
             {
                 conn.Open();
 
                 Assert.DoesNotThrow(() =>
                 {
-                    conn.GetList<Person>("Select NULL as DateOfBirth From PERSON");
+                    conn.GetList<Person>("Select NULL as \"DateOfBirth\" From public.\"Person\"");
                 });
 
             }
@@ -173,13 +175,13 @@
         {
             IPerson mockPerson = table.GetTable().First(p => p.Id == 1);
 
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
             {
                 conn.Open();
 
                 EntityManager<Person>.Map(p => p.Id, "ID").Map(p => p.Name, "PName").DisposeAfterUse();
 
-                var person = conn.Get<Person>("Select Id as ID, Name as PName From PERSON Where Id = @Id", new { Id = 1 });
+                var person = conn.Get<Person>("select \"Id\" as \"ID\",\"Name\" as \"PName\" from public.\"Person\" where \"Id\" = @Id", new { Id = 1 });
 
                 Assert.IsNotNull(person);
 
