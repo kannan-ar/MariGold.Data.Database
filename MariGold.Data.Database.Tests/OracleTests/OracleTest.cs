@@ -1,19 +1,19 @@
-﻿namespace MariGold.Data.Database.Tests.SqlServer
+﻿namespace MariGold.Data.Database.Tests.OracleTests
 {
     using System;
     using NUnit.Framework;
     using MariGold.Data;
     using System.Data;
     using System.Collections.Generic;
-    using System.Data.SqlClient;
+    using Oracle.ManagedDataAccess.Client;
     using System.Linq;
 
     [TestFixture]
-    public class SqlServerTest
+    public class OracleTest
     {
         private readonly PersonTable table;
 
-        public SqlServerTest()
+        public OracleTest()
         {
             table = new PersonTable();
         }
@@ -21,11 +21,11 @@
         [Test]
         public void PersonCountTest()
         {
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
             {
                 conn.Open();
 
-                int count = Convert.ToInt32(conn.GetScalar("Select COUNT(*) From PERSON"));
+                int count = Convert.ToInt32(conn.GetScalar("Select Count(*) From Person"));
 
                 int i = table.GetTable().Count;
 
@@ -38,11 +38,12 @@
         {
             IPerson person = table.GetTable().First(p => p.Id == 1);
 
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
             {
                 conn.Open();
 
-                using (IDataReader dr = conn.GetDataReader("Select Id,Name From PERSON Where Id = @Id", new { Id = 1 }))
+                using (IDataReader dr = conn.GetDataReader("select \"Id\",\"Name\" from person where \"Id\" = :Id",
+                    new { Id = 1 }))
                 {
                     if (dr.Read())
                     {
@@ -58,12 +59,12 @@
         {
             List<IPerson> persons = table.GetTable().Where(p => p.Id > 2 && p.Id < 4).ToList();
 
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
             {
                 conn.Open();
 
-                using (IDataReader dr = conn.GetDataReader("Select Id,Name From PERSON Where Id > @from and Id < @to",
-                    new { from = 2, to = 4 }))
+                using (IDataReader dr = conn.GetDataReader("select \"Id\",\"Name\" from person where \"Id\" > :from_id and \"Id\" < :to_id",
+                    new { from_id = 2, to_id = 4 }))
                 {
 
                     int i = 0;
@@ -87,11 +88,11 @@
         {
             List<IPerson> persons = table.GetTable().Where(p => p.Name.StartsWith("M", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
             {
                 conn.Open();
 
-                using (IDataReader dr = conn.GetDataReader("Select Id,Name From PERSON Where Name like 'M%'"))
+                using (IDataReader dr = conn.GetDataReader("select \"Id\",\"Name\" from person where \"Name\" like 'M%'"))
                 {
 
                     int i = 0;

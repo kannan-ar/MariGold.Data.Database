@@ -1,4 +1,4 @@
-﻿namespace MariGold.Data.Database.Tests
+﻿namespace MariGold.Data.Database.Tests.MySqlTests
 {
 	using System;
 	using System.Configuration;

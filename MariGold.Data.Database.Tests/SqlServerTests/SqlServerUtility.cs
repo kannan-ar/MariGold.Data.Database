@@ -1,4 +1,4 @@
-﻿namespace MariGold.Data.Database.Tests.SqlServer
+﻿namespace MariGold.Data.Database.Tests.SqlServerTests
 {
 	using System;
 	using System.Configuration;

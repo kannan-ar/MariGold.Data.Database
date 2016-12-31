@@ -1,10 +1,14 @@
-﻿ALTER TABLE `tests`.`person` 
-ADD COLUMN `Name` VARCHAR(50) NULL AFTER `Id`,
-ADD COLUMN `DateOfBirth` DATETIME NULL AFTER `Name`,
-ADD COLUMN `SSN` BIGINT(10) NULL AFTER `DateOfBirth`,
-ADD COLUMN `BankAccount` DECIMAL(18) NULL AFTER `SSN`,
-ADD COLUMN `NoofCars` SMALLINT(8) NULL AFTER `BankAccount`,
-ADD COLUMN `IsPremium` BIT(1) NULL AFTER `NoofCars`;
+﻿CREATE TABLE `person` (
+  `Id` int(11) NOT NULL,
+  `Name` varchar(50) DEFAULT NULL,
+  `DateOfBirth` datetime DEFAULT NULL,
+  `SSN` bigint(10) DEFAULT NULL,
+  `BankAccount` decimal(18,0) DEFAULT NULL,
+  `NoofCars` smallint(8) DEFAULT NULL,
+  `IsPremium` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 INSERT Person (Id, Name, DateOfBirth, SSN, BankAccount, NoofCars, IsPremium) VALUES (1, N'James', '19731101', 1000001, 75000.00, 2, 0)
 INSERT Person (Id, Name, DateOfBirth, SSN, BankAccount, NoofCars, IsPremium) VALUES (2, N'Tomy', '19840617', 1000002, 115000.00, 5, 1)

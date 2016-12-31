@@ -1,4 +1,4 @@
-﻿namespace MariGold.Data.Database.Tests.OracleDb
+﻿namespace MariGold.Data.Database.Tests.OracleTests
 {
 	using System;
 	using System.Configuration;

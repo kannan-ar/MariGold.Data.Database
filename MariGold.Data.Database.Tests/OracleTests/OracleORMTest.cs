@@ -1,4 +1,4 @@
-﻿namespace MariGold.Data.Database.Tests.OracleDb
+﻿namespace MariGold.Data.Database.Tests.OracleTests
 {
     using System;
     using NUnit.Framework;
@@ -26,7 +26,7 @@
             {
                 conn.Open();
 
-                var person = conn.Get<Person>("select Id,Name from person where Id = :Id",
+                var person = conn.Get<Person>("select \"Id\",\"Name\" from person where \"Id\" = :Id",
                     new { Id = 1 });
 
                 Assert.IsNotNull(person);
@@ -45,7 +45,7 @@
             {
                 conn.Open();
 
-                var person = conn.Get<Person>("select Id,Name,DateOfBirth,SSN,BankAccount,NoofCars from person where Id = :Id",
+                var person = conn.Get<Person>("select \"Id\",\"Name\",\"DateOfBirth\",\"SSN\",\"BankAccount\",\"NoofCars\" from person where \"Id\" = :Id",
                     new { Id = 5 });
 
                 Assert.IsNotNull(person);
@@ -69,7 +69,7 @@
             {
                 conn.Open();
 
-                IList<Person> persons = conn.GetList<Person>("select Id,Name from person where Id > :from_id and Id < :to_id",
+                IList<Person> persons = conn.GetList<Person>("select \"Id\",\"Name\" from person where \"Id\" > :from_id and \"Id\" < :to_id",
                     new { from_id = 2, to_id = 4 });
             }
         }
@@ -83,7 +83,7 @@
             {
                 conn.Open();
 
-                var persons = conn.GetList<Person>("select Id,Name from person where Name like 'M%'");
+                var persons = conn.GetList<Person>("select \"Id\",\"Name\" from person where \"Name\" like 'M%'");
 
                 Assert.AreEqual(mockPersons.Count, persons.Count);
 
@@ -104,7 +104,7 @@
             {
                 conn.Open();
 
-                var people = conn.GetEnumerable<Person>("select Id,Name,DateOfBirth,SSN,BankAccount,NoofCars from person");
+                var people = conn.GetEnumerable<Person>("select \"Id\",\"Name\",\"DateOfBirth\",\"SSN\",\"BankAccount\",\"NoofCars\" from person");
 
                 Assert.AreEqual(mockPersons.Count, people.Count());
 
@@ -150,7 +150,7 @@
 
                 Assert.DoesNotThrow(() =>
                 {
-                    conn.GetList<Person>("Select DateOfBirth From PERSON");
+                    conn.GetList<Person>("Select \"DateOfBirth\" From PERSON");
                 });
 
             }
@@ -182,7 +182,7 @@
 
                 EntityManager<Person>.Map(p => p.Id, "ID").Map(p => p.Name, "PName").DisposeAfterUse();
 
-                var person = conn.Get<Person>("select Id as ID, Name as PName from person where Id = :Id",
+                var person = conn.Get<Person>("select \"Id\" as ID, \"Name\" as PName from person where \"Id\" = :Id",
                     new { Id = 1 });
 
                 Assert.IsNotNull(person);

@@ -1,18 +1,19 @@
-﻿namespace MariGold.Data.Database.Tests.SqlServer
+﻿namespace MariGold.Data.Database.Tests.PostgresTests
 {
     using System;
     using NUnit.Framework;
     using MariGold.Data;
-    using System.Data.SqlClient;
-    using System.Linq;
+    using System.Data;
     using System.Collections.Generic;
+    using Npgsql;
+    using System.Linq;
 
     [TestFixture]
-    public class SqlServerDynamicTest
+    public class PostgresDynamicTest
     {
         private readonly PersonTable table;
 
-        public SqlServerDynamicTest()
+        public PostgresDynamicTest()
         {
             table = new PersonTable();
         }
@@ -22,11 +23,11 @@
         {
             IPerson mockPerson = table.GetTable().First(p => p.Id == 1);
 
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
             {
                 conn.Open();
 
-                var person = conn.Get("select Id,Name from person where Id = @Id",
+                var person = conn.Get("select \"Id\",\"Name\" from public.\"Person\" where \"Id\" = @Id",
                     new { Id = 1 });
 
                 Assert.IsNotNull(person);
@@ -41,11 +42,11 @@
         {
             IPerson mockPerson = table.GetTable().First(p => p.Id == 1);
 
-            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
             {
                 conn.Open();
 
-                var person = conn.Get("select * from person where Id = @Id",
+                var person = conn.Get("select * from public.\"Person\" where \"Id\" = @Id",
                     new { Id = 1 });
 
                 Assert.IsNotNull(person);
