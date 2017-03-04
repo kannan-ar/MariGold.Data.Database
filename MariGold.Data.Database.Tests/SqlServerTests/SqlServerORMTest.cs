@@ -187,5 +187,19 @@
                 Assert.AreEqual(mockPerson.Name, person.Name);
             }
         }
+
+        [Test]
+        public void TestDynamicNameList()
+        {
+            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            {
+                conn.Open();
+
+                var people = conn.GetList("select Name from Person");
+
+                Assert.IsNotNull(people);
+                Assert.AreEqual(5, people.Count);
+            }
+        }
     }
 }

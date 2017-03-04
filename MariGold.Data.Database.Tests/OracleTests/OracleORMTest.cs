@@ -191,5 +191,20 @@
                 Assert.AreEqual(mockPerson.Name, person.Name);
             }
         }
+
+
+        [Test]
+        public void TestDynamicNameList()
+        {
+            using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
+            {
+                conn.Open();
+
+                var people = conn.GetList("select \"Name\" from person");
+
+                Assert.IsNotNull(people);
+                Assert.AreEqual(5, people.Count);
+            }
+        }
     }
 }

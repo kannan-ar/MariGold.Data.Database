@@ -9,7 +9,7 @@
         {
             get
             {
-                return @"User ID=postgres;Password=pass@word1;Host=localhost;Port=5432;Database=Tests;";
+                return @"User ID=postgres;Password=123;Host=localhost;Port=5432;Database=Tests;";
             }
         }
     }

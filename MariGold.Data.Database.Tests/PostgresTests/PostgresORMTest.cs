@@ -189,5 +189,19 @@
                 Assert.AreEqual(mockPerson.Name, person.Name);
             }
         }
+
+        [Test]
+        public void TestDynamicNameList()
+        {
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
+            {
+                conn.Open();
+
+                var people = conn.GetList("select \"Name\" from \"Person\"");
+
+                Assert.IsNotNull(people);
+                Assert.AreEqual(5, people.Count);
+            }
+        }
     }
 }

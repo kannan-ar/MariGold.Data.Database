@@ -42,7 +42,7 @@
 			
 			while (dr.Read())
 			{
-				list.Add(GetObject(dr));
+				list.Add((DbObject)GetObject(dr));
 			}
 			
 			return list;
