@@ -25,7 +25,7 @@
             {
                 conn.Open();
                 
-                int count = Convert.ToInt32(conn.GetScalar("Select COUNT(*) From public.\"Person\""));
+                int count = Convert.ToInt32(conn.GetScalar("Select COUNT(*) From public.person"));
 
                 int i = table.GetTable().Count;
 
@@ -42,12 +42,12 @@
             {
                 conn.Open();
 
-                using (IDataReader dr = conn.GetDataReader("Select \"Id\", \"Name\" From public.\"Person\" Where \"Id\" = @Id", new { Id = 1 }))
+                using (IDataReader dr = conn.GetDataReader("Select id, name From public.person Where id = @Id", new { Id = 1 }))
                 {
                     if (dr.Read())
                     {
-                        Assert.AreEqual(dr.ConvertToInt32("Id"), person.Id);
-                        Assert.AreEqual(dr.ConvertToString("Name"), person.Name);
+                        Assert.AreEqual(dr.ConvertToInt32("id"), person.Id);
+                        Assert.AreEqual(dr.ConvertToString("name"), person.Name);
                     }
                 }
             }
@@ -62,7 +62,7 @@
             {
                 conn.Open();
 
-                using (IDataReader dr = conn.GetDataReader("Select \"Id\",\"Name\" From public.\"Person\" Where \"Id\" > @from and \"Id\" < @to",
+                using (IDataReader dr = conn.GetDataReader("Select id, name From public.person Where id > @from and id < @to",
                     new { from = 2, to = 4 }))
                 {
 
@@ -70,8 +70,8 @@
 
                     while (dr.Read())
                     {
-                        Assert.AreEqual(dr.ConvertToInt32("Id"), persons[i].Id);
-                        Assert.AreEqual(dr.ConvertToString("Name"), persons[i].Name);
+                        Assert.AreEqual(dr.ConvertToInt32("id"), persons[i].Id);
+                        Assert.AreEqual(dr.ConvertToString("name"), persons[i].Name);
 
                         ++i;
                     }
@@ -91,15 +91,15 @@
             {
                 conn.Open();
 
-                using (IDataReader dr = conn.GetDataReader("Select \"Id\",\"Name\" From public.\"Person\" Where \"Name\" like 'M%'"))
+                using (IDataReader dr = conn.GetDataReader("Select id, name From public.person Where name like 'M%'"))
                 {
 
                     int i = 0;
 
                     while (dr.Read())
                     {
-                        Assert.AreEqual(dr.ConvertToInt32("Id"), persons[i].Id);
-                        Assert.AreEqual(dr.ConvertToString("Name"), persons[i].Name);
+                        Assert.AreEqual(dr.ConvertToInt32("id"), persons[i].Id);
+                        Assert.AreEqual(dr.ConvertToString("name"), persons[i].Name);
 
                         ++i;
                     }

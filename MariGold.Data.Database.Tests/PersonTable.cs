@@ -17,7 +17,7 @@
 			person.DateOfBirth.Returns(dateOfBirth);
 			person.SSN.Returns(ssn);
 			person.BankAccount.Returns(bankAccount);
-			person.NoofCars.Returns(noofCars);
+			person.NoOfCars.Returns(noofCars);
 			person.IsPremium.Returns(isPremium);
 			
 			return person;

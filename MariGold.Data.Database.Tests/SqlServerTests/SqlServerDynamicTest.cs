@@ -55,7 +55,7 @@
                 Assert.AreEqual(mockPerson.DateOfBirth, person.DateOfBirth);
                 Assert.AreEqual(mockPerson.SSN, person.SSN);
                 Assert.AreEqual(mockPerson.BankAccount, person.BankAccount);
-                Assert.AreEqual(mockPerson.NoofCars, person.NoofCars);
+                Assert.AreEqual(mockPerson.NoOfCars, person.NoofCars);
                 Assert.AreEqual(mockPerson.IsPremium, person.IsPremium);
             }
         }

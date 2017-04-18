@@ -26,14 +26,14 @@
             using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
             {
                 conn.Open();
-
-                var person = conn.Get("select \"Id\",\"Name\" from public.\"Person\" where \"Id\" = @Id",
+                
+                var person = conn.Get("select id,name from person where id = @Id",
                     new { Id = 1 });
 
                 Assert.IsNotNull(person);
 
-                Assert.AreEqual(mockPerson.Id, person.Id);
-                Assert.AreEqual(mockPerson.Name, person.Name);
+                Assert.AreEqual(mockPerson.Id, person.id);
+                Assert.AreEqual(mockPerson.Name, person.name);
             }
         }
 
@@ -46,18 +46,18 @@
             {
                 conn.Open();
 
-                var person = conn.Get("select * from public.\"Person\" where \"Id\" = @Id",
+                var person = conn.Get("select * from public.person where id = @Id",
                     new { Id = 1 });
 
                 Assert.IsNotNull(person);
 
-                Assert.AreEqual(mockPerson.Id, person.Id);
-                Assert.AreEqual(mockPerson.Name, person.Name);
-                Assert.AreEqual(mockPerson.DateOfBirth, person.DateOfBirth);
-                Assert.AreEqual(mockPerson.SSN, person.SSN);
-                Assert.AreEqual(mockPerson.BankAccount, person.BankAccount);
-                Assert.AreEqual(mockPerson.NoofCars, person.NoofCars);
-                Assert.AreEqual(mockPerson.IsPremium, person.IsPremium);
+                Assert.AreEqual(mockPerson.Id, person.id);
+                Assert.AreEqual(mockPerson.Name, person.name);
+                Assert.AreEqual(mockPerson.DateOfBirth, person.date_of_birth);
+                Assert.AreEqual(mockPerson.SSN, person.ssn);
+                Assert.AreEqual(mockPerson.BankAccount, person.bank_account);
+                Assert.AreEqual(mockPerson.NoOfCars, person.no_of_cars);
+                Assert.AreEqual(mockPerson.IsPremium, person.is_premium);
             }
         }
     }

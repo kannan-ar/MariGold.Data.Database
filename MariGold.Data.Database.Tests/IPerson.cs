@@ -9,7 +9,7 @@
 		DateTime? DateOfBirth{ get; set; }
 		Int64 SSN{ get; set; }
 		Decimal BankAccount{ get; set; }
-		Int16 NoofCars{ get; set; }
+		Int16 NoOfCars{ get; set; }
 		Boolean IsPremium{ get; set; }
 	}
 }

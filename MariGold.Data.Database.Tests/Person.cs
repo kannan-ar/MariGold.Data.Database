@@ -9,7 +9,7 @@
 		public DateTime? DateOfBirth{ get; set; }
 		public Int64 SSN{ get; set; }
 		public Decimal BankAccount{ get; set; }
-		public Int16 NoofCars{ get; set; }
+		public Int16 NoOfCars{ get; set; }
 		public Boolean IsPremium{ get; set; }
 	}
 }

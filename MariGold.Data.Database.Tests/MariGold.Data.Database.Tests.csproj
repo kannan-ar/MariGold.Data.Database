@@ -100,7 +100,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="MySqlTests\MySql.sql" />
-    <Content Include="OracleTests\Oracle.sql" />
+    <None Include="OracleTests\Oracle.sql" />
     <Content Include="PostgresTests\Scripts.sql" />
     <Content Include="SqlServerTests\SqlServer.sql" />
   </ItemGroup>

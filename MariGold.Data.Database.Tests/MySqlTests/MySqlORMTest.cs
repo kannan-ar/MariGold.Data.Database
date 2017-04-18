@@ -53,7 +53,7 @@
                 Assert.AreEqual(mockPerson.DateOfBirth, person.DateOfBirth);
                 Assert.AreEqual(mockPerson.SSN, person.SSN);
                 Assert.AreEqual(mockPerson.BankAccount, person.BankAccount);
-                Assert.AreEqual(mockPerson.NoofCars, person.NoofCars);
+                Assert.AreEqual(mockPerson.NoOfCars, person.NoOfCars);
                 Assert.AreEqual(mockPerson.IsPremium, person.IsPremium);
             }
         }
@@ -115,7 +115,7 @@
                     Assert.AreEqual(mockPersons[i].DateOfBirth, person.DateOfBirth);
                     Assert.AreEqual(mockPersons[i].SSN, person.SSN);
                     Assert.AreEqual(mockPersons[i].BankAccount, person.BankAccount);
-                    Assert.AreEqual(mockPersons[i].NoofCars, person.NoofCars);
+                    Assert.AreEqual(mockPersons[i].NoOfCars, person.NoOfCars);
                     Assert.AreEqual(mockPersons[i].IsPremium, person.IsPremium);
 
                     i++;

@@ -63,25 +63,6 @@
             }
         }
 
-        public static EntityMapper Map(Expression<Func<T, object>> item, string columnName)
-        {
-            EntityMapper mapper;
-            Type type = typeof(T);
-
-            ILDataConverter.ClearItem(type);
-
-            if (!maps.TryGetValue(type, out mapper))
-            {
-                mapper = new EntityMapper();
-                maps.TryAdd(type, mapper);
-            }
-
-            mapper.Init();
-            mapper.Map(item, columnName);
-
-            return mapper;
-        }
-
         internal static Dictionary<string, string> Get(out bool shouldDispose)
         {
             Type type = typeof(T);
@@ -102,6 +83,25 @@
             {
                 return null;
             }
+        }
+
+        public static EntityMapper Map(Expression<Func<T, object>> item, string columnName)
+        {
+            EntityMapper mapper;
+            Type type = typeof(T);
+
+            Db.GetConverter().ClearType<T>();
+
+            if (!maps.TryGetValue(type, out mapper))
+            {
+                mapper = new EntityMapper();
+                maps.TryAdd(type, mapper);
+            }
+
+            mapper.Init();
+            mapper.Map(item, columnName);
+
+            return mapper;
         }
     }
 }

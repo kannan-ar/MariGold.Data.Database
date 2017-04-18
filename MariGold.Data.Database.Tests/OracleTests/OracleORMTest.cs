@@ -26,7 +26,7 @@
             {
                 conn.Open();
 
-                var person = conn.Get<Person>("select \"Id\",\"Name\" from person where \"Id\" = :Id",
+                var person = conn.Get<Person>("select id, name from person where id = :Id",
                     new { Id = 1 });
 
                 Assert.IsNotNull(person);
@@ -45,7 +45,9 @@
             {
                 conn.Open();
 
-                var person = conn.Get<Person>("select \"Id\",\"Name\",\"DateOfBirth\",\"SSN\",\"BankAccount\",\"NoofCars\" from person where \"Id\" = :Id",
+                Config.UnderscoreToPascalCase = true;
+
+                var person = conn.Get<Person>("select id, name,date_of_birth, ssn, bank_account, no_of_cars from person where id = :Id",
                     new { Id = 5 });
 
                 Assert.IsNotNull(person);
@@ -55,7 +57,7 @@
                 Assert.AreEqual(mockPerson.DateOfBirth, person.DateOfBirth);
                 Assert.AreEqual(mockPerson.SSN, person.SSN);
                 Assert.AreEqual(mockPerson.BankAccount, person.BankAccount);
-                Assert.AreEqual(mockPerson.NoofCars, person.NoofCars);
+                Assert.AreEqual(mockPerson.NoOfCars, person.NoOfCars);
                 //Assert.AreEqual(mockPerson.IsPremium, person.IsPremium);
             }
         }
@@ -69,7 +71,7 @@
             {
                 conn.Open();
 
-                IList<Person> persons = conn.GetList<Person>("select \"Id\",\"Name\" from person where \"Id\" > :from_id and \"Id\" < :to_id",
+                IList<Person> persons = conn.GetList<Person>("select id, name from person where id > :from_id and id < :to_id",
                     new { from_id = 2, to_id = 4 });
             }
         }
@@ -83,7 +85,7 @@
             {
                 conn.Open();
 
-                var persons = conn.GetList<Person>("select \"Id\",\"Name\" from person where \"Name\" like 'M%'");
+                var persons = conn.GetList<Person>("select id, name from person where name like 'M%'");
 
                 Assert.AreEqual(mockPersons.Count, persons.Count);
 
@@ -104,7 +106,9 @@
             {
                 conn.Open();
 
-                var people = conn.GetEnumerable<Person>("select \"Id\",\"Name\",\"DateOfBirth\",\"SSN\",\"BankAccount\",\"NoofCars\" from person");
+                Config.UnderscoreToPascalCase = true;
+
+                var people = conn.GetEnumerable<Person>("select id, name, date_of_birth, ssn, bank_account, no_of_cars from person");
 
                 Assert.AreEqual(mockPersons.Count, people.Count());
 
@@ -117,7 +121,7 @@
                     Assert.AreEqual(mockPersons[i].DateOfBirth, person.DateOfBirth);
                     Assert.AreEqual(mockPersons[i].SSN, person.SSN);
                     Assert.AreEqual(mockPersons[i].BankAccount, person.BankAccount);
-                    Assert.AreEqual(mockPersons[i].NoofCars, person.NoofCars);
+                    Assert.AreEqual(mockPersons[i].NoOfCars, person.NoOfCars);
                     //Assert.AreEqual(mockPersons[i].IsPremium, person.IsPremium);
 
                     i++;
@@ -148,9 +152,11 @@
             {
                 conn.Open();
 
+                Config.UnderscoreToPascalCase = true;
+
                 Assert.DoesNotThrow(() =>
                 {
-                    conn.GetList<Person>("Select \"DateOfBirth\" From PERSON");
+                    conn.GetList<Person>("Select date_of_birth From PERSON");
                 });
 
             }
@@ -163,9 +169,11 @@
             {
                 conn.Open();
 
+                Config.UnderscoreToPascalCase = true;
+
                 Assert.DoesNotThrow(() =>
                 {
-                    conn.GetList<Person>("Select NULL as DateOfBirth From PERSON");
+                    conn.GetList<Person>("Select NULL as date_of_birth From PERSON");
                 });
 
             }
@@ -182,7 +190,7 @@
 
                 EntityManager<Person>.Map(p => p.Id, "ID").Map(p => p.Name, "PName").DisposeAfterUse();
 
-                var person = conn.Get<Person>("select \"Id\" as ID, \"Name\" as PName from person where \"Id\" = :Id",
+                var person = conn.Get<Person>("select id as ID, name as PName from person where id = :Id",
                     new { Id = 1 });
 
                 Assert.IsNotNull(person);
@@ -200,7 +208,7 @@
             {
                 conn.Open();
 
-                var people = conn.GetList("select \"Name\" from person");
+                var people = conn.GetList("select name from person");
 
                 Assert.IsNotNull(people);
                 Assert.AreEqual(5, people.Count);

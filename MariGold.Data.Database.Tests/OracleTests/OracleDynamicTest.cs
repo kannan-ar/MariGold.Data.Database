@@ -25,13 +25,13 @@
             {
                 conn.Open();
 
-                var person = conn.Get("select \"Id\",\"Name\" from person where \"Id\" = :Id",
+                var person = conn.Get("select id, name from person where id = :Id",
                     new { Id = 1 });
 
                 Assert.IsNotNull(person);
 
-                Assert.AreEqual(mockPerson.Id, person.Id);
-                Assert.AreEqual(mockPerson.Name, person.Name);
+                Assert.AreEqual(mockPerson.Id, person.ID);
+                Assert.AreEqual(mockPerson.Name, person.NAME);
             }
         }
 
@@ -44,18 +44,20 @@
             {
                 conn.Open();
 
-                var person = conn.Get("select * from person where \"Id\" = :Id",
+                Config.UnderscoreToPascalCase = true;
+
+                var person = conn.Get("select * from person where id = :Id",
                     new { Id = 1 });
 
                 Assert.IsNotNull(person);
 
-                Assert.AreEqual(mockPerson.Id, person.Id);
-                Assert.AreEqual(mockPerson.Name, person.Name);
-                Assert.AreEqual(mockPerson.DateOfBirth, person.DateOfBirth);
+                Assert.AreEqual(mockPerson.Id, person.ID);
+                Assert.AreEqual(mockPerson.Name, person.NAME);
+                Assert.AreEqual(mockPerson.DateOfBirth, person.DATE_OF_BIRTH);
                 Assert.AreEqual(mockPerson.SSN, person.SSN);
-                Assert.AreEqual(mockPerson.BankAccount, person.BankAccount);
-                Assert.AreEqual(mockPerson.NoofCars, person.NoofCars);
-                Assert.AreEqual(mockPerson.IsPremium ? 1 : 0, person.IsPremium);
+                Assert.AreEqual(mockPerson.BankAccount, person.BANK_ACCOUNT);
+                Assert.AreEqual(mockPerson.NoOfCars, person.NO_OF_CARS);
+                Assert.AreEqual(mockPerson.IsPremium ? 1 : 0, person.IS_PREMIUM);
             }
         }
     }

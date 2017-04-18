@@ -10,7 +10,7 @@
     /// <summary>
     /// Creates dynamic methods to iterate through data reader and generate CLR objects using IL Emit.
     /// </summary>
-    public sealed class ILDataConverter : IDataConverter
+    public sealed class ILDataConverter : DataConverter
     {
         private static ConcurrentDictionary<Type, Delegate> methods;
 
@@ -46,7 +46,7 @@
                 return type;
             }
         }
-       
+
         static ILDataConverter()
         {
             methods = new ConcurrentDictionary<Type, Delegate>();
@@ -175,6 +175,19 @@
                     il.Emit(OpCodes.Ldc_I4_0);
                     il.Emit(OpCodes.Ceq);
                     il.Emit(OpCodes.Brtrue, label);
+
+                    if (Config.UnderscoreToPascalCase)
+                    {
+                        il.Emit(OpCodes.Ldloc, fieldName);
+                        il.Emit(OpCodes.Ldstr, ConvertCamelStringToUnderscore(property.Name));
+
+                        il.Emit(OpCodes.Ldc_I4, 1);
+                        il.Emit(OpCodes.Call, compare);
+
+                        il.Emit(OpCodes.Ldc_I4_0);
+                        il.Emit(OpCodes.Ceq);
+                        il.Emit(OpCodes.Brtrue, label);
+                    }
                 }
 
                 //It acts like default case. The control reaches here because no property names matches with data reader column name.
@@ -205,7 +218,7 @@
                     {
                         il.Emit(OpCodes.Newobj, jump.Value.Item1.PropertyType.GetConstructor(new[] { jump.Value.Item2 }));
                     }
-                    
+
                     il.Emit(OpCodes.Callvirt, propMethod);
                     //Go to the next loop iteration
                     il.Emit(OpCodes.Br, loopStart);
@@ -227,10 +240,15 @@
             return (Func<IDataReader, T>)del;
         }
 
-        internal static void ClearItem(Type type)
+        public override void ClearType<T>()
         {
             Delegate value;
-            methods.TryRemove(type, out value);
+            methods.TryRemove(typeof(T), out value);
+        }
+
+        public override void ClearAllTypes()
+        {
+            methods.Clear();
         }
 
         /// <summary>
@@ -239,8 +257,7 @@
         /// <typeparam name="T"></typeparam>
         /// <param name="dr"></param>
         /// <returns></returns>
-        public T Get<T>(IDataReader dr)
-            where T : class, new()
+        public override T Get<T>(IDataReader dr)
         {
             T item = default(T);
 
@@ -260,8 +277,7 @@
         /// <typeparam name="T"></typeparam>
         /// <param name="dr"></param>
         /// <returns></returns>
-        public IList<T> GetList<T>(IDataReader dr)
-             where T : class, new()
+        public override IList<T> GetList<T>(IDataReader dr)
         {
             IList<T> list = new List<T>();
 
@@ -286,8 +302,7 @@
         /// <typeparam name="T"></typeparam>
         /// <param name="dr"></param>
         /// <returns></returns>
-        public IEnumerable<T> GetEnumerable<T>(IDataReader dr)
-             where T : class, new()
+        public override IEnumerable<T> GetEnumerable<T>(IDataReader dr)
         {
             if (dr.Read())
             {
