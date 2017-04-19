@@ -8,7 +8,7 @@
     <owners>$author$</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Bug fix in dynamic object generation</releaseNotes>
+    <releaseNotes>Implemented the Config.UnderscoreToPascalCase property to automatically map the database fields with underscore to pascal case entity fields</releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>MariGold ORM</tags>
   </metadata>

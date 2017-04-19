@@ -148,12 +148,12 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 }
 ```
 ##### Dispose After Use
-Once created, the custom mapping will remain throughout the life time of AppDomain. The DisposeAfterUse method can be use if the mapping needs to be disposed after the very first use. The following statment will dispose the mapping immediately after the select statment executed.
+Once created, the custom mapping will remain throughout the life time of AppDomain. The DisposeAfterUse method can use if the mapping needs to be disposed after the very first use. The following statment will dispose the mapping immediately after the select statment executed.
 ```csharp
 EntityManager<Employee>.Map(p => p.EmployeeId, "Id").Map(p => p.EmployeeName, "Name").DisposeAfterUse();
 ```
-##### Map database fields with underscore to pascal case CLR fields
-Some databases like PostgreSQL following the naming conventions with lower cases and underscores which does not match the C# property naming conventions. The conversion from lower case database column names with underscore to pascal case can be done without any custom mapping using the UnderscoreToPascalCase configuration settings property.
+##### Map database fields with underscore to pascal case entity fields
+Some databases like PostgreSQL following the naming conventions with lower cases and underscores which does not match the C# property naming conventions. The conversion from lower case database column names with underscore to pascal case can be done without any custom mapping using the UnderscoreToPascalCase configuration settings property. For example, a "first_name" data base field can be automatically mapped to "FirstName" enity field.
 ```csharp
-Config.CamelCaseToUnderscore = true;
+Config.UnderscoreToPascalCase = true;
 ```
