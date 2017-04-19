@@ -153,7 +153,7 @@ Once created, the custom mapping will remain throughout the life time of AppDoma
 EntityManager<Employee>.Map(p => p.EmployeeId, "Id").Map(p => p.EmployeeName, "Name").DisposeAfterUse();
 ```
 ##### Map database fields with underscore to pascal case entity fields
-Some databases like PostgreSQL following the naming conventions with lower cases and underscores which does not match the C# property naming conventions. The conversion from lower case database column names with underscore to pascal case can be done without any custom mapping using the UnderscoreToPascalCase configuration settings property. For example, a "first_name" data base field can be automatically mapped to "FirstName" enity field.
+Some databases like PostgreSQL following the naming conventions with lower cases and underscores which does not match the C# property naming conventions. The conversion from lower case database column names with underscore to pascal case can be done without any custom mapping using the UnderscoreToPascalCase configuration settings property. For example, a "first_name" data base field can be automatically mapped to "FirstName" entity field.
 ```csharp
 Config.UnderscoreToPascalCase = true;
 ```
