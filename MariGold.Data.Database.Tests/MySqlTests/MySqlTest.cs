@@ -105,7 +105,6 @@
                     }
 
                     Assert.AreEqual(persons.Count, i);
-
                 }
             }
         }

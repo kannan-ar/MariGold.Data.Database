@@ -313,8 +313,41 @@
 		public static IEnumerable<dynamic> GetEnumerable(this IDbConnection conn, Query query)
 		{
 			Db db = new Db(conn);
-			
 			return db.GetEnumerable(query);
 		}
-	}
+
+        public static IRecordSet QueryMultiple(this IDbConnection conn, string sql,
+            CommandType commandType,
+            object parameters)
+        {
+            Db db = new Db(conn);
+            return db.QueryMultiple(sql, commandType, parameters);
+        }
+
+        public static IRecordSet QueryMultiple(this IDbConnection conn, string sql,
+            CommandType commandType)
+        {
+            Db db = new Db(conn);
+            return db.QueryMultiple(sql, commandType, commandType);
+        }
+
+        public static IRecordSet QueryMultiple(this IDbConnection conn, string sql,
+            object parameters)
+        {
+            Db db = new Db(conn);
+            return db.QueryMultiple(sql, parameters);
+        }
+
+        public static IRecordSet QueryMultiple(this IDbConnection conn, string sql)
+        {
+            Db db = new Db(conn);
+            return db.QueryMultiple(sql);
+        }
+
+        public static IRecordSet QueryMultiple(this IDbConnection conn, Query query)
+        {
+            Db db = new Db(conn);
+            return db.QueryMultiple(query);
+        }
+    }
 }

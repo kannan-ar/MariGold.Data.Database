@@ -58,5 +58,19 @@
                 Assert.AreEqual(mockPerson.IsPremium, person.IsPremium);
             }
         }
+
+        [Test]
+        public void TestDynamicNameList()
+        {
+            using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
+            {
+                conn.Open();
+
+                var people = conn.GetList("select Name from Person");
+
+                Assert.IsNotNull(people);
+                Assert.AreEqual(5, people.Count);
+            }
+        }
     }
 }

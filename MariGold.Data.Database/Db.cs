@@ -428,5 +428,39 @@
 
             return converter.GetEnumerable(db.GetDataReader(query));
         }
+
+        public IRecordSet QueryMultiple(string sql,
+            CommandType commandType,
+            object parameters)
+        {
+            var db = GetConnection(conn);
+            return new MultiRecordSet(db.GetDataReader(sql, commandType, parameters));
+        }
+
+        public IRecordSet QueryMultiple(string sql,
+            CommandType commandType)
+        {
+            var db = GetConnection(conn);
+            return new MultiRecordSet(db.GetDataReader(sql, commandType));
+        }
+
+        public IRecordSet QueryMultiple(string sql,
+            object parameters)
+        {
+            var db = GetConnection(conn);
+            return new MultiRecordSet(db.GetDataReader(sql, parameters));
+        }
+
+        public IRecordSet QueryMultiple(string sql)
+        {
+            var db = GetConnection(conn);
+            return new MultiRecordSet(db.GetDataReader(sql));
+        }
+
+        public IRecordSet QueryMultiple(Query query)
+        {
+            var db = GetConnection(conn);
+            return new MultiRecordSet(db.GetDataReader(query));
+        }
     }
 }
