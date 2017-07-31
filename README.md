@@ -123,6 +123,22 @@ using (IDbConnection conn = new SqlConnection(connectionString))
 	var lstEmp = conn.GetEnumerable("Select Id, Name From Employee");
 }
 ```
+##### Query multiple records in one query
+QueryMultiple function utilizes the IDataReader's NextResult method to process multiple results from a single data reader.
+```csharp
+using MariGold.Data;
+
+using (IDbConnection conn = new SqlConnection(connectionString))
+{
+	conn.Open();
+				
+	var records = conn.QueryMultiple("Select Id, Name From Employee;Select Count(Id) From Employee");
+
+	var lstEmp = records.GetList<Employee>();
+
+	Int32 count = Convert.ToInt32(records.GetScalar());
+}
+```
 ##### Utility methods
 MariGold.Data.Database also contains several utility methods to handle the data from IDataReader. For example, the below code illustrates how to convert Datetime and decimal values from an opened IDataReader.
 ```csharp
