@@ -235,7 +235,6 @@
 
                 Assert.AreEqual(5, record.GetScalar());
             }
-
         }
     }
 }

@@ -201,5 +201,53 @@
                 Assert.AreEqual(5, people.Count);
             }
         }
+
+        [Test]
+        public void TestMultipleMaxCountScalar()
+        {
+            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            {
+                conn.Open();
+
+                IRecordSet record = conn.QueryMultiple(@"Select Max(Id)+10 From person;Select Count(Id) From person");
+
+                Assert.AreEqual(15, record.GetScalar());
+                Assert.AreEqual(5, record.GetScalar());
+            }
+        }
+
+        [Test]
+        public void GetMultipleAllAndCountList()
+        {
+            var mockPersons = table.GetTable();
+
+            using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
+            {
+                conn.Open();
+
+                IRecordSet record = conn.QueryMultiple(@"select * from person;select count(*) from person");
+
+                var people = record.GetList<Person>();
+
+                Assert.AreEqual(mockPersons.Count, people.Count());
+
+                int i = 0;
+
+                foreach (IPerson person in people)
+                {
+                    Assert.AreEqual(mockPersons[i].Id, person.Id);
+                    Assert.AreEqual(mockPersons[i].Name, person.Name);
+                    Assert.AreEqual(mockPersons[i].DateOfBirth, person.DateOfBirth);
+                    Assert.AreEqual(mockPersons[i].SSN, person.SSN);
+                    Assert.AreEqual(mockPersons[i].BankAccount, person.BankAccount);
+                    Assert.AreEqual(mockPersons[i].NoOfCars, person.NoOfCars);
+                    Assert.AreEqual(mockPersons[i].IsPremium, person.IsPremium);
+
+                    i++;
+                }
+
+                Assert.AreEqual(5, record.GetScalar());
+            }
+        }
     }
 }
