@@ -134,7 +134,6 @@
 
                 Assert.IsNotNull(person);
                 Assert.AreEqual(null, person.Name);
-
             }
         }
 
@@ -149,7 +148,6 @@
                 {
                     conn.GetList<Person>("Select DateOfBirth From PERSON");
                 });
-
             }
         }
 
@@ -164,7 +162,6 @@
                 {
                     conn.GetList<Person>("Select NULL as DateOfBirth From PERSON");
                 });
-
             }
         }
 
@@ -245,7 +242,7 @@
 
                     i++;
                 }
-
+                
                 Assert.AreEqual(5, record.GetScalar());
             }
         }
