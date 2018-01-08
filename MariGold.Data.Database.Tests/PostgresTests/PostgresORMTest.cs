@@ -12,10 +12,12 @@
     public class PostgresORMTest
     {
         private readonly PersonTable table;
+        private readonly EmployeeTable empTable;
 
         public PostgresORMTest()
         {
             table = new PersonTable();
+            empTable = new EmployeeTable();
         }
 
         [Test]
@@ -280,6 +282,8 @@
             {
                 conn.Open();
 
+                Config.UnderscoreToPascalCase = true;
+
                 IRecordSet record = conn.QueryMultiple(@"select * from person;select count(*) from person");
 
                 var people = record.GetList<Person>();
@@ -302,6 +306,53 @@
                 }
 
                 Assert.AreEqual(5, record.GetScalar());
+            }
+        }
+
+        [Test]
+        public void GetEmployeeOnly()
+        {
+            var mockEmployee = empTable.GetTable().Where(e => e.EmployeeId == 1).FirstOrDefault();
+
+            Assert.NotNull(mockEmployee);
+
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Config.UnderscoreToPascalCase = true;
+
+                Employee emp = conn.Query<Employee>("select * from public.employee where employee_id = 1").Get();
+
+                Assert.NotNull(emp);
+
+                Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);
+                Assert.AreEqual(mockEmployee.EmployeeName, emp.EmployeeName);
+                Assert.AreEqual(mockEmployee.User, emp.User);
+            }
+        }
+
+        [Test]
+        public void GetEmployeeWithUser()
+        {
+            var mockEmployee = empTable.GetFullTable().Where(e => e.EmployeeId == 1).FirstOrDefault();
+
+            Assert.NotNull(mockEmployee);
+
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Config.UnderscoreToPascalCase = true;
+
+                Employee emp = conn.Query<Employee>("select * from public.employee e inner join public.user u on e.user_id = u.user_id where employee_id = 1", e => e.User).Get();
+
+                Assert.NotNull(emp);
+
+                Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);
+                Assert.AreEqual(mockEmployee.EmployeeName, emp.EmployeeName);
+                Assert.AreEqual(mockEmployee.User.UserId, emp.User.UserId);
+                Assert.AreEqual(mockEmployee.User.UserName, emp.User.UserName);
             }
         }
     }

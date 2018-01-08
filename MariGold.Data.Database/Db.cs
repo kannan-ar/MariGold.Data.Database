@@ -3,6 +3,7 @@
     using System;
     using System.Data;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
 
     public class Db
     {
@@ -461,6 +462,45 @@
         {
             var db = GetConnection(conn);
             return new MultiRecordSet(db.GetDataReader(query));
+        }
+
+        public ITypedRecordSet<T> Query<T>(string sql,
+           CommandType commandType,
+           object parameters, params Expression<Func<T, object>>[] properties)
+            where T : class, new()
+        {
+            var db = GetConnection(conn);
+            return new TreeRecordSet<T>(db.GetDataReader(sql,commandType, parameters), GetConverter(), properties);
+        }
+
+        public ITypedRecordSet<T> Query<T>(string sql,
+            CommandType commandType, params Expression<Func<T, object>>[] properties)
+            where T : class, new()
+        {
+            var db = GetConnection(conn);
+            return new TreeRecordSet<T>(db.GetDataReader(sql, commandType), GetConverter(), properties);
+        }
+
+        public ITypedRecordSet<T> Query<T>(string sql,
+           object parameters, params Expression<Func<T, object>>[] properties)
+            where T : class, new()
+        {
+            var db = GetConnection(conn);
+            return new TreeRecordSet<T>(db.GetDataReader(sql, parameters), GetConverter(), properties);
+        }
+
+        public ITypedRecordSet<T> Query<T>(string sql, params Expression<Func<T, object>>[] properties)
+            where T : class, new()
+        {
+            var db = GetConnection(conn);
+            return new TreeRecordSet<T>(db.GetDataReader(sql), GetConverter(), properties);
+        }
+
+        public ITypedRecordSet<T> Query<T>(Query query, params Expression<Func<T, object>>[] properties)
+            where T : class, new()
+        {
+            var db = GetConnection(conn);
+            return new TreeRecordSet<T>(db.GetDataReader(query), GetConverter(), properties);
         }
     }
 }

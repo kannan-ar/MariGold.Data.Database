@@ -1,10 +1,11 @@
 ﻿namespace MariGold.Data
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Data;
-	
-	public abstract class DataConverter
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Linq.Expressions;
+
+    public abstract class DataConverter
 	{
         protected string ConvertCamelStringToUnderscore(string text)
         {
@@ -33,8 +34,8 @@
 
         public abstract void ClearType<T>();
         public abstract void ClearAllTypes();
-        public abstract T Get<T>(IDataReader dr) where T : class, new();
-        public abstract IList<T> GetList<T>(IDataReader dr) where T : class, new();
-        public abstract IEnumerable<T> GetEnumerable<T>(IDataReader dr) where T : class, new();
-	}
+        public abstract T Get<T>(IDataReader dr, Expression<Func<T, object>>[] properties = null) where T : class, new();
+        public abstract IList<T> GetList<T>(IDataReader dr, Expression<Func<T, object>>[] properties = null) where T : class, new();
+        public abstract IEnumerable<T> GetEnumerable<T>(IDataReader dr, Expression<Func<T, object>>[] properties = null) where T : class, new();
+    }
 }

@@ -15,3 +15,18 @@ INSERT Person (Id, Name, DateOfBirth, SSN, BankAccount, NoofCars, IsPremium) VAL
 INSERT Person (Id, Name, DateOfBirth, SSN, BankAccount, NoofCars, IsPremium) VALUES (3, N'Max', '19950119', 1000007, 500.00, 0, 0)
 INSERT Person (Id, Name, DateOfBirth, SSN, BankAccount, NoofCars, IsPremium) VALUES (4, N'Matthew', '19651212', 1000010, 50000.00, 0, 1)
 INSERT Person (Id, Name, DateOfBirth, SSN, BankAccount, NoofCars, IsPremium) VALUES (5, N'Thomas', '20010210', 1000011, 150000.00, 1, 1)
+
+CREATE TABLE `user` (
+  `UserId` int(11),
+  `UserName` varchar(50)
+)
+
+INSERT INTO user(UserId, UserName) VALUES(1,'User1')
+
+CREATE TABLE `employee` (
+  `EmployeeId` int(11),
+  `EmployeeName` varchar(50),
+  `UserId` int(11)
+)
+
+INSERT INTO EMPLOYEE(EmployeeId, EmployeeName, UserId) VALUES(1, 'Employee1', 1)

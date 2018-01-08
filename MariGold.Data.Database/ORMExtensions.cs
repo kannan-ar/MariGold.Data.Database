@@ -1,10 +1,11 @@
 ﻿namespace MariGold.Data
 {
-	using System;
-	using System.Data;
-	using System.Collections.Generic;
+    using System;
+    using System.Data;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
 
-	public static class ORMExtensions
+    public static class ORMExtensions
 	{
 		/// <summary>
 		/// Creates type T instance from the sql query using the default implementations of IDatabase and IConvertDataReader provided through DbBuilder class.
@@ -348,6 +349,47 @@
         {
             Db db = new Db(conn);
             return db.QueryMultiple(query);
+        }
+
+        public static ITypedRecordSet<T> Query<T>(this IDbConnection conn, string sql,
+          CommandType commandType,
+          object parameters, params Expression<Func<T, object>>[] properties)
+           where T : class, new()
+        {
+            Db db = new Db(conn);
+            return db.Query<T>(sql, commandType, parameters, properties);
+        }
+
+        public static ITypedRecordSet<T> Query<T>(this IDbConnection conn, string sql,
+            CommandType commandType, params Expression<Func<T, object>>[] properties)
+            where T : class, new()
+        {
+            Db db = new Db(conn);
+            return db.Query<T>(sql, commandType, properties);
+        }
+
+        public static ITypedRecordSet<T> Query<T>(this IDbConnection conn, string sql,
+           object parameters, params Expression<Func<T, object>>[] properties)
+            where T : class, new()
+        {
+            Db db = new Db(conn);
+            return db.Query<T>(sql, parameters, properties);
+        }
+
+        public static ITypedRecordSet<T> Query<T>(this IDbConnection conn, string sql, 
+            params Expression<Func<T, object>>[] properties)
+            where T : class, new()
+        {
+            Db db = new Db(conn);
+            return db.Query<T>(sql, properties);
+        }
+
+        public static ITypedRecordSet<T> Query<T>(this IDbConnection conn, Query query, 
+            params Expression<Func<T, object>>[] properties)
+            where T : class, new()
+        {
+            Db db = new Db(conn);
+            return db.Query<T>(query, properties);
         }
     }
 }

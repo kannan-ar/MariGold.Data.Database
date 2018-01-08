@@ -52,10 +52,13 @@
     <Compile Include="IDatabase.cs" />
     <Compile Include="Db.cs" />
     <Compile Include="IRecordSet.cs" />
+    <Compile Include="ITypedRecordSet.cs" />
     <Compile Include="MultiRecordSet.cs" />
     <Compile Include="ORMExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyTree.cs" />
     <Compile Include="Query.cs" />
+    <Compile Include="TreeRecordSet.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

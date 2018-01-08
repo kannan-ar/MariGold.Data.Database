@@ -11,10 +11,12 @@
     public class OracleORMTest
     {
         private readonly PersonTable table;
+        private readonly EmployeeTable empTable;
 
         public OracleORMTest()
         {
             table = new PersonTable();
+            empTable = new EmployeeTable();
         }
 
         [Test]
@@ -211,6 +213,53 @@
 
                 Assert.IsNotNull(people);
                 Assert.AreEqual(5, people.Count);
+            }
+        }
+
+        [Test]
+        public void GetEmployeeOnly()
+        {
+            var mockEmployee = empTable.GetTable().Where(e => e.EmployeeId == 1).FirstOrDefault();
+
+            Assert.NotNull(mockEmployee);
+
+            using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Config.UnderscoreToPascalCase = true;
+
+                Employee emp = conn.Query<Employee>("select * from employee where employee_id = 1").Get();
+
+                Assert.NotNull(emp);
+
+                Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);
+                Assert.AreEqual(mockEmployee.EmployeeName, emp.EmployeeName);
+                Assert.AreEqual(mockEmployee.User, emp.User);
+            }
+        }
+
+        [Test]
+        public void GetEmployeeWithUser()
+        {
+            var mockEmployee = empTable.GetFullTable().Where(e => e.EmployeeId == 1).FirstOrDefault();
+
+            Assert.NotNull(mockEmployee);
+
+            using (OracleConnection conn = new OracleConnection(OracleUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Config.UnderscoreToPascalCase = true;
+
+                Employee emp = conn.Query<Employee>("select * from employee e inner join users u on e.user_id = u.user_id where employee_id = 1", e => e.User).Get();
+
+                Assert.NotNull(emp);
+
+                Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);
+                Assert.AreEqual(mockEmployee.EmployeeName, emp.EmployeeName);
+                Assert.AreEqual(mockEmployee.User.UserId, emp.User.UserId);
+                Assert.AreEqual(mockEmployee.User.UserName, emp.User.UserName);
             }
         }
     }

@@ -3,8 +3,8 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Data;
-	
-	public sealed class DynamicDataConverter : IDynamicDataConverter
+
+    internal sealed class DynamicDataConverter : IDynamicDataConverter
 	{
 		private dynamic GetObject(IDataReader dr)
 		{
