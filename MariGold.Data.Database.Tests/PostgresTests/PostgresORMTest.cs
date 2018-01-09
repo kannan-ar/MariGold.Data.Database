@@ -355,5 +355,29 @@
                 Assert.AreEqual(mockEmployee.User.UserName, emp.User.UserName);
             }
         }
+
+        [Test]
+        public void PascalToCamelWithEntityMapping()
+        {
+            var mockEmployee = empTable.GetTable().Where(e => e.EmployeeId == 1).FirstOrDefault();
+
+            Assert.NotNull(mockEmployee);
+
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Config.UnderscoreToPascalCase = true;
+                EntityManager<Employee>.Map(e => e.EmployeeName, "EmpName").DisposeAfterUse();
+
+                Employee emp = conn.Query<Employee>("select employee_id, employee_name from public.employee where employee_id = 1").Get();
+
+                Assert.NotNull(emp);
+
+                Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);
+                Assert.AreEqual(mockEmployee.EmployeeName, emp.EmployeeName);
+                Assert.AreEqual(mockEmployee.User, emp.User);
+            }
+        }
     }
 }

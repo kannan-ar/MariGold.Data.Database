@@ -137,7 +137,8 @@
                     Label bottomSection = il.DefineLabel();
                     Label loadSection = il.DefineLabel();
 
-                    Type propType = property.PropertyType;
+                    bool isNullable;
+                    Type propType = GetTypeName(property.PropertyType, out isNullable);
 
                     if (!drMethods.ContainsKey(propType.Name))
                     {
@@ -176,6 +177,12 @@
                     il.Emit(OpCodes.Ldarg_1);
                     il.Emit(OpCodes.Ldloc, index);
                     il.Emit(OpCodes.Callvirt, drMethod);
+                    
+                    if (isNullable)
+                    {
+                        il.Emit(OpCodes.Newobj, property.PropertyType.GetConstructor(new[] { propType }));
+                    }
+                    
                     il.Emit(OpCodes.Callvirt, property.GetSetMethod());
                     il.Emit(OpCodes.Br, loopStart);
 

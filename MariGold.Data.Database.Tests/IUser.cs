@@ -6,5 +6,6 @@
     {
         int UserId { get; set; }
         string UserName { get; set; }
+        int? SessionId { get; set; }
     }
 }
