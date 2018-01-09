@@ -281,5 +281,49 @@
                 Assert.AreEqual(mockEmployee.User.UserName, emp.User.UserName);
             }
         }
+
+        [Test]
+        public void GetEmployeeWithNullUserSection()
+        {
+            var mockEmployee = empTable.GetFullTable().Where(e => e.EmployeeId == 1).FirstOrDefault();
+
+            Assert.NotNull(mockEmployee);
+
+            using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Employee emp = conn.Query<Employee>("select EmployeeId, EmployeeName, u.UserId, UserName from employee e inner join user u on e.userid = u.userid where employeeid = 1", e => e.User).Get();
+
+                Assert.NotNull(emp);
+                Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);
+                Assert.AreEqual(mockEmployee.EmployeeName, emp.EmployeeName);
+                Assert.AreEqual(mockEmployee.User.UserId, emp.User.UserId);
+                Assert.AreEqual(mockEmployee.User.UserName, emp.User.UserName);
+                Assert.IsNull(emp.User.SessionId);
+            }
+        }
+
+        [Test]
+        public void GetEmployeeWithUserSection()
+        {
+            var mockEmployee = empTable.GetFullTable().Where(e => e.EmployeeId == 1).FirstOrDefault();
+
+            Assert.NotNull(mockEmployee);
+
+            using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Employee emp = conn.Query<Employee>("select EmployeeId, EmployeeName, u.UserId, UserName, SessionId from employee e inner join user u on e.userid = u.userid where employeeid = 1", e => e.User).Get();
+
+                Assert.NotNull(emp);
+                Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);
+                Assert.AreEqual(mockEmployee.EmployeeName, emp.EmployeeName);
+                Assert.AreEqual(mockEmployee.User.UserId, emp.User.UserId);
+                Assert.AreEqual(mockEmployee.User.UserName, emp.User.UserName);
+                Assert.AreEqual(mockEmployee.User.SessionId, emp.User.SessionId);
+            }
+        }
     }
 }

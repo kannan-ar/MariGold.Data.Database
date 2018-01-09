@@ -30,3 +30,6 @@ CREATE TABLE `employee` (
 )
 
 INSERT INTO EMPLOYEE(EmployeeId, EmployeeName, UserId) VALUES(1, 'Employee1', 1)
+
+ALTER TABLE user ADD SessionId int(11);
+UPDATE user SET SessionId = 1;
