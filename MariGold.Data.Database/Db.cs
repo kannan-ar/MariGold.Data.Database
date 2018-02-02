@@ -463,44 +463,66 @@
             var db = GetConnection(conn);
             return new MultiRecordSet(db.GetDataReader(query));
         }
-
-        public ITypedRecordSet<T> Query<T>(string sql,
-           CommandType commandType,
-           object parameters, params Expression<Func<T, object>>[] properties)
+        
+        public IQuery<T> Query<T>(string sql,
+           CommandType commandType, object parameters)
             where T : class, new()
         {
             var db = GetConnection(conn);
-            return new TreeRecordSet<T>(db.GetDataReader(sql,commandType, parameters), GetConverter(), properties);
+            var recordSet = new MultiLevelRecordSet<T>(db.GetDataReader(sql, commandType, parameters));
+            var converter = new MultiLevelILConverter(recordSet);
+
+            recordSet.SetConverter(converter);
+
+            return recordSet;
         }
 
-        public ITypedRecordSet<T> Query<T>(string sql,
-            CommandType commandType, params Expression<Func<T, object>>[] properties)
+        public IQuery<T> Query<T>(string sql, CommandType commandType)
             where T : class, new()
         {
             var db = GetConnection(conn);
-            return new TreeRecordSet<T>(db.GetDataReader(sql, commandType), GetConverter(), properties);
+            var recordSet = new MultiLevelRecordSet<T>(db.GetDataReader(sql, commandType));
+            var converter = new MultiLevelILConverter(recordSet);
+
+            recordSet.SetConverter(converter);
+
+            return recordSet;
         }
 
-        public ITypedRecordSet<T> Query<T>(string sql,
-           object parameters, params Expression<Func<T, object>>[] properties)
+        public IQuery<T> Query<T>(string sql, object parameters)
             where T : class, new()
         {
             var db = GetConnection(conn);
-            return new TreeRecordSet<T>(db.GetDataReader(sql, parameters), GetConverter(), properties);
+            var recordSet = new MultiLevelRecordSet<T>(db.GetDataReader(sql, parameters));
+            var converter = new MultiLevelILConverter(recordSet);
+
+            recordSet.SetConverter(converter);
+
+            return recordSet;
         }
 
-        public ITypedRecordSet<T> Query<T>(string sql, params Expression<Func<T, object>>[] properties)
+        public IQuery<T> Query<T>(string sql)
             where T : class, new()
         {
             var db = GetConnection(conn);
-            return new TreeRecordSet<T>(db.GetDataReader(sql), GetConverter(), properties);
+            var recordSet = new MultiLevelRecordSet<T>(db.GetDataReader(sql));
+            var converter = new MultiLevelILConverter(recordSet);
+
+            recordSet.SetConverter(converter);
+
+            return recordSet;
         }
 
-        public ITypedRecordSet<T> Query<T>(Query query, params Expression<Func<T, object>>[] properties)
+        public IQuery<T> Query<T>(Query query)
             where T : class, new()
         {
             var db = GetConnection(conn);
-            return new TreeRecordSet<T>(db.GetDataReader(query), GetConverter(), properties);
+            var recordSet = new MultiLevelRecordSet<T>(db.GetDataReader(query));
+            var converter = new MultiLevelILConverter(recordSet);
+
+            recordSet.SetConverter(converter);
+
+            return recordSet;
         }
     }
 }

@@ -215,7 +215,7 @@
                 Assert.AreEqual(5, people.Count);
             }
         }
-
+        /*
         [Test]
         public void GetEmployeeOnly()
         {
@@ -334,5 +334,6 @@
                 Assert.AreEqual(mockEmployee.User.SessionId, emp.User.SessionId);
             }
         }
+        */
     }
 }
