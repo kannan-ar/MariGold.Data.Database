@@ -58,6 +58,16 @@
             return propertyName;
         }
 
+        private List<string> GetFieldNames(List<string> fields)
+        {
+            for (int i = 0; fields.Count > i; i++)
+            {
+                fields[i] = GetFieldName(fields[i]);
+            }
+
+            return fields;
+        }
+
         private Type GetTypeName(Type type, out bool isNullable, out bool isList)
         {
             isNullable = false;
@@ -533,6 +543,9 @@
 
                 if (HasListProperty(rootEntityType, info, out filterFields, out groupFields))
                 {
+                    filterFields = GetFieldNames(filterFields);
+                    groupFields = GetFieldNames(groupFields);
+
                     Tuple<List<PropertyInfo>, List<PropertyInfo>> subProperties = null;
                     Type propType = info.PropertyType;
                     Type genericType = propType.GenericTypeArguments[0];
@@ -795,7 +808,7 @@
 
             var items = func(fields, results, -1);
 
-            foreach(var item in items)
+            foreach (var item in items)
             {
                 yield return item;
             }
