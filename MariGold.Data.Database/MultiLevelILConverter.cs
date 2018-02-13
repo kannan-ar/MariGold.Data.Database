@@ -41,7 +41,7 @@
         {
             return (type == typeof(object) || Type.GetTypeCode(type) != TypeCode.Object);
         }
-
+        /*
         private string GetFieldName(string propertyName)
         {
             string columnName;
@@ -57,7 +57,56 @@
 
             return propertyName;
         }
+        */
+        private void LoadFieldName(ILGenerator il, string fieldName, MethodInfo indexOf, LocalBuilder fieldIndex, Label nextLocation)
+        {
+            string columnName;
 
+            il.Emit(OpCodes.Ldarg_0);
+
+            if (columns.TryGetValue(fieldName, out columnName))
+            {
+                il.Emit(OpCodes.Ldstr, columnName);
+            }
+            else
+            {
+                il.Emit(OpCodes.Ldstr, fieldName);
+            }
+
+            il.Emit(OpCodes.Call, indexOf);
+            il.Emit(OpCodes.Stloc, fieldIndex);
+
+            if (Config.UnderscoreToPascalCase)
+            {
+                Label skipNextCheck = il.DefineLabel();
+
+                il.Emit(OpCodes.Ldloc, fieldIndex);
+                il.Emit(OpCodes.Ldc_I4, -1);
+                il.Emit(OpCodes.Cgt);
+                il.Emit(OpCodes.Brtrue, skipNextCheck);
+
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldstr, ConvertCamelStringToUnderscore(fieldName));
+
+                il.Emit(OpCodes.Call, indexOf);
+                il.Emit(OpCodes.Stloc, fieldIndex);
+
+                il.Emit(OpCodes.Ldloc, fieldIndex);
+                il.Emit(OpCodes.Ldc_I4, -1);
+                il.Emit(OpCodes.Ceq);
+                il.Emit(OpCodes.Brtrue, nextLocation);
+
+                il.MarkLabel(skipNextCheck);
+            }
+            else
+            {
+                il.Emit(OpCodes.Ldloc, fieldIndex);
+                il.Emit(OpCodes.Ldc_I4, -1);
+                il.Emit(OpCodes.Ceq);
+                il.Emit(OpCodes.Brtrue, nextLocation);
+            }
+        }
+        /*
         private List<string> GetFieldNames(List<string> fields)
         {
             for (int i = 0; fields.Count > i; i++)
@@ -67,7 +116,7 @@
 
             return fields;
         }
-
+        */
         private Type GetTypeName(Type type, out bool isNullable, out bool isList)
         {
             isNullable = false;
@@ -151,6 +200,8 @@
 
             foreach (var groupField in rootGroups)
             {
+                LoadFieldName(il, groupField.Name, indexOf, fieldIndex, nextProperty);
+                /*
                 il.Emit(OpCodes.Ldarg_0);
                 il.Emit(OpCodes.Ldstr, GetFieldName(groupField.Name));
                 il.Emit(OpCodes.Call, indexOf);
@@ -160,7 +211,7 @@
                 il.Emit(OpCodes.Ldc_I4, -1);
                 il.Emit(OpCodes.Ceq);
                 il.Emit(OpCodes.Brtrue, nextProperty);
-
+                */
                 il.Emit(OpCodes.Ldloc, entity);
                 il.Emit(OpCodes.Callvirt, groupField.GetGetMethod());
 
@@ -244,6 +295,18 @@
             return resultList;
         }
 
+        private static int IndexOf(string[] array, string value)
+        {
+            for (int i = 0; array.Length > i; ++i)
+            {
+                if (string.Compare(array[i], value, true) == 0)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
         private void LoopStart(ILGenerator il, Label loopStart, LocalBuilder index, LocalBuilder recordCount, Label end)
         {
             il.Emit(OpCodes.Ldc_I4, -1);
@@ -341,6 +404,8 @@
                 {
                     Label nextProperty = il.DefineLabel();
 
+                    LoadFieldName(il, property.Name, indexOf, fieldIndex, nextProperty);
+                    /*
                     il.Emit(OpCodes.Ldarg_0);
                     il.Emit(OpCodes.Ldstr, GetFieldName(property.Name));
                     il.Emit(OpCodes.Call, indexOf);
@@ -350,7 +415,7 @@
                     il.Emit(OpCodes.Ldc_I4, -1);
                     il.Emit(OpCodes.Ceq);
                     il.Emit(OpCodes.Brtrue, nextProperty);
-
+                    */
                     il.Emit(OpCodes.Ldloc, objArray);
                     il.Emit(OpCodes.Ldloc, fieldIndex);
                     il.Emit(OpCodes.Ldelem_Ref);
@@ -367,6 +432,12 @@
                     il.Emit(OpCodes.Ldloc, fieldIndex);
                     il.Emit(OpCodes.Ldelem_Ref);
                     il.Emit(OpCodes.Unbox_Any, propertyType);
+
+                    if (isNullable)
+                    {
+                        il.Emit(OpCodes.Newobj, property.PropertyType.GetConstructor(new[] { propertyType }));
+                    }
+
                     il.Emit(OpCodes.Callvirt, property.GetSetMethod());
 
                     il.MarkLabel(nextProperty);
@@ -416,6 +487,8 @@
                 il.Emit(OpCodes.Ldstr, filterFields[i]);
                 il.Emit(OpCodes.Stelem_Ref);
 
+                LoadFieldName(il, filterFields[i], indexOf, fieldIndex, nextValue);
+                /*
                 il.Emit(OpCodes.Ldarg_0);
                 il.Emit(OpCodes.Ldstr, GetFieldName(filterFields[i]));
                 il.Emit(OpCodes.Call, indexOf);
@@ -425,7 +498,7 @@
                 il.Emit(OpCodes.Ldc_I4, -1);
                 il.Emit(OpCodes.Ceq);
                 il.Emit(OpCodes.Brtrue, nextValue);
-
+                */
                 il.Emit(OpCodes.Ldloc, filterValueArray);
                 il.Emit(OpCodes.Ldc_I4, i);
 
@@ -543,8 +616,8 @@
 
                 if (HasListProperty(rootEntityType, info, out filterFields, out groupFields))
                 {
-                    filterFields = GetFieldNames(filterFields);
-                    groupFields = GetFieldNames(groupFields);
+                    // filterFields = GetFieldNames(filterFields);
+                    // groupFields = GetFieldNames(groupFields);
 
                     Tuple<List<PropertyInfo>, List<PropertyInfo>> subProperties = null;
                     Type propType = info.PropertyType;
@@ -652,7 +725,8 @@
 
             Dictionary<string, MethodInfo> drMethods = GetDrMethod(recordType);
 
-            MethodInfo indexOf = typeof(Array).GetMethod("IndexOf", new Type[] { typeof(string[]), typeof(string) });
+            //MethodInfo indexOf = typeof(Array).GetMethod("IndexOf", new Type[] { typeof(string[]), typeof(string) });
+            MethodInfo indexOf = typeof(MultiLevelILConverter).GetMethod("IndexOf", BindingFlags.NonPublic | BindingFlags.Static);
             MethodInfo getCount = recordSetType.GetProperty("Count").GetGetMethod();
             MethodInfo getItem = recordSetType.GetProperty("Item").GetGetMethod();
             MethodInfo addMethod = entityListType.GetMethod("Add");

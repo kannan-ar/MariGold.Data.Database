@@ -248,7 +248,7 @@
                 Assert.AreEqual(5, record.GetScalar());
             }
         }
-        /*
+
         [Test]
         public void GetEmployeeOnly()
         {
@@ -281,7 +281,8 @@
             {
                 conn.Open();
 
-                Employee emp = conn.Query<Employee>("select EmployeeId,EmployeeName,u.UserId,UserName from employee e inner join [user] u on e.userid = u.userid where employeeid = 1", e => e.User).Get();
+                Employee emp = conn.Query<Employee>("select EmployeeId,EmployeeName,u.UserId,UserName from employee e inner join [user] u on e.userid = u.userid where employeeid = 1")
+                    .Single<User>(e => e.User).Get();
 
                 Assert.NotNull(emp);
                 Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);
@@ -302,7 +303,8 @@
             {
                 conn.Open();
 
-                Employee emp = conn.Query<Employee>("select EmployeeId, EmployeeName, u.UserId, UserName from employee e inner join [user] u on e.userid = u.userid where employeeid = 1", e => e.User).Get();
+                Employee emp = conn.Query<Employee>("select EmployeeId, EmployeeName, u.UserId, UserName from employee e inner join [user] u on e.userid = u.userid where employeeid = 1")
+                    .Single<User>(e => e.User).Get();
 
                 Assert.NotNull(emp);
                 Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);
@@ -324,7 +326,8 @@
             {
                 conn.Open();
 
-                Employee emp = conn.Query<Employee>("select EmployeeId, EmployeeName, u.UserId, UserName, SessionId from employee e inner join [user] u on e.userid = u.userid where employeeid = 1", e => e.User).Get();
+                Employee emp = conn.Query<Employee>("select EmployeeId, EmployeeName, u.UserId, UserName, SessionId from employee e inner join [user] u on e.userid = u.userid where employeeid = 1")
+                    .Single<User>(e => e.User).Get();
 
                 Assert.NotNull(emp);
                 Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);
@@ -334,6 +337,5 @@
                 Assert.AreEqual(mockEmployee.User.SessionId, emp.User.SessionId);
             }
         }
-        */
     }
 }
