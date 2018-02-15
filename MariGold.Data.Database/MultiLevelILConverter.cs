@@ -246,12 +246,22 @@
 
             foreach (string filterField in filterFields)
             {
-                filterIndices.Add(Array.IndexOf<string>(fields, filterField));
+                int index = Array.IndexOf<string>(fields, filterField);
+
+                if (index != -1)
+                {
+                    filterIndices.Add(index);
+                }
             }
 
             foreach (string groupField in groupFields)
             {
-                groupIndices.Add(Array.IndexOf<string>(fields, groupField));
+                int index = Array.IndexOf<string>(fields, groupField);
+
+                if (index != -1)
+                {
+                    groupIndices.Add(index);
+                }
             }
 
             foreach (object[] row in records)
@@ -307,6 +317,7 @@
 
             return -1;
         }
+
         private void LoopStart(ILGenerator il, Label loopStart, LocalBuilder index, LocalBuilder recordCount, Label end)
         {
             il.Emit(OpCodes.Ldc_I4, -1);

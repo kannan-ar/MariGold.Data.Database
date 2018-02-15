@@ -6,42 +6,42 @@
 
     public class EmployeeTable
     {
-        private IEmployee<IUser> GetEmployee(int employeeId, string employeeName)
+        private Employee GetEmployee(int employeeId, string employeeName)
         {
-            var employee = Substitute.For<IEmployee<IUser>>();
+            var employee = Substitute.For<Employee>();
 
             employee.EmployeeId.Returns(employeeId);
             employee.EmployeeName.Returns(employeeName);
-            employee.User.Returns(default(IUser));
+            employee.User.Returns(default(User));
 
             return employee;
         }
 
-        private IEmployee<IUser> GetEmployee(int employeeId, string employeeName, int userId, string userName, int? sessionId)
+        private Employee GetEmployee(int employeeId, string employeeName, int userId, string userName, int? sessionId)
         {
             var employee = GetEmployee(employeeId, employeeName);
-            var user = Substitute.For<IUser>();
+            var user = Substitute.For<User>();
 
             user.UserId.Returns(userId);
             user.UserName.Returns(userName);
             user.SessionId.Returns(sessionId);
-            employee.User.Returns<IUser>(user);
+            employee.User.Returns<User>(user);
 
             return employee;
         }
 
-        public List<IEmployee<IUser>> GetTable()
+        public List<Employee> GetTable()
         {
-            var table = Substitute.For<List<IEmployee<IUser>>>();
+            var table = Substitute.For<List<Employee>>();
 
             table.Add(GetEmployee(1, "Employee1"));
 
             return table;
         }
 
-        public List<IEmployee<IUser>> GetFullTable()
+        public List<Employee> GetFullTable()
         {
-            var table = Substitute.For<List<IEmployee<IUser>>>();
+            var table = Substitute.For<List<Employee>>();
 
             table.Add(GetEmployee(1, "Employee1", 1, "User1", 1));
 

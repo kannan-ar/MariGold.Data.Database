@@ -2,14 +2,14 @@
 {
 	using System;
 	
-	public class Person : IPerson
+	public class Person
 	{
-		public Int32 Id{ get; set; }
-		public String Name{ get; set; }
-		public DateTime? DateOfBirth{ get; set; }
-		public Int64 SSN{ get; set; }
-		public Decimal BankAccount{ get; set; }
-		public Int16 NoOfCars{ get; set; }
-		public Boolean IsPremium{ get; set; }
+		public virtual Int32 Id{ get; set; }
+		public virtual String Name{ get; set; }
+		public virtual DateTime? DateOfBirth{ get; set; }
+		public virtual Int64 SSN{ get; set; }
+		public virtual Decimal BankAccount{ get; set; }
+		public virtual Int16 NoOfCars{ get; set; }
+		public virtual Boolean IsPremium{ get; set; }
 	}
 }

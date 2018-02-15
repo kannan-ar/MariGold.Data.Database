@@ -36,7 +36,7 @@
         [Test]
         public void CheckPersonWithIdOne()
         {
-            IPerson person = table.GetTable().First(p => p.Id == 1);
+            Person person = table.GetTable().First(p => p.Id == 1);
 
             using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
             {
@@ -56,7 +56,7 @@
         [Test]
         public void CheckPersonWithIdGreaterThan2AndLessThan4()
         {
-            List<IPerson> persons = table.GetTable().Where(p => p.Id > 2 && p.Id < 4).ToList();
+            List<Person> persons = table.GetTable().Where(p => p.Id > 2 && p.Id < 4).ToList();
 
             using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
             {
@@ -85,7 +85,7 @@
         [Test]
         public void CheckPersonWithNameLikeM()
         {
-            List<IPerson> persons = table.GetTable().Where(p => p.Name.StartsWith("M", StringComparison.InvariantCultureIgnoreCase)).ToList();
+            List<Person> persons = table.GetTable().Where(p => p.Name.StartsWith("M", StringComparison.InvariantCultureIgnoreCase)).ToList();
 
             using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
             {

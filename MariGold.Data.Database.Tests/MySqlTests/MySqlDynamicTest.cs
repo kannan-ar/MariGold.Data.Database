@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Collections.Generic;
 
+    [TestFixture]
     public class MySqlDynamicTest
     {
         private readonly PersonTable table;
@@ -19,7 +20,7 @@
         [Test]
         public void TestIdWithOne()
         {
-            IPerson mockPerson = table.GetTable().First(p => p.Id == 1);
+            Person mockPerson = table.GetTable().First(p => p.Id == 1);
 
             using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
             {
@@ -38,7 +39,7 @@
         [Test]
         public void GetAllWithId1()
         {
-            IPerson mockPerson = table.GetTable().First(p => p.Id == 1);
+            Person mockPerson = table.GetTable().First(p => p.Id == 1);
 
             using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
             {

@@ -1,9 +1,9 @@
 ﻿namespace MariGold.Data.Database.Tests
 {
-    public class User : IUser
+    public class User
     {
-        public int UserId { get; set; }
-        public string UserName { get; set; }
-        public int? SessionId { get; set; }
+        public virtual int UserId { get; set; }
+        public virtual string UserName { get; set; }
+        public virtual int? SessionId { get; set; }
     }
 }

@@ -1,9 +1,12 @@
 ﻿namespace MariGold.Data.Database.Tests
 {
-    public class Employee: IEmployee<User>
+    using System.Collections.Generic;
+
+    public class Employee
     {
-        public int EmployeeId { get; set; }
-        public string EmployeeName { get; set; }
-        public User User { get; set; }
+        public virtual int EmployeeId { get; set; }
+        public virtual string EmployeeName { get; set; }
+        public virtual User User { get; set; }
+        public virtual List<Revision> Revisions { get; set; }
     }
 }

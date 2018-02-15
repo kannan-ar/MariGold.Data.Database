@@ -6,10 +6,10 @@
 	
 	public class PersonTable
 	{
-		private IPerson GetPerson(Int32 id, String name, DateTime dateOfBirth, 
+		private Person GetPerson(Int32 id, String name, DateTime dateOfBirth, 
 			Int64 ssn, Decimal bankAccount, Int16 noofCars, Boolean isPremium)
 		{
-			var person = Substitute.For<IPerson>();
+			var person = Substitute.For<Person>();
 			
 			person.Id.Returns(id);
 			person.Name.Returns(name);
@@ -22,9 +22,9 @@
 			return person;
 		}
 		
-		public List<IPerson> GetTable()
+		public List<Person> GetTable()
 		{
-			var table = Substitute.For<List<IPerson>>();
+			var table = Substitute.For<List<Person>>();
 			
 			table.Add(GetPerson(1, "James", new DateTime(1973, 11, 1), 1000001, 75000, 2, false));
 			table.Add(GetPerson(2, "Tomy", new DateTime(1984, 6, 17), 1000002, 115000, 5, true));

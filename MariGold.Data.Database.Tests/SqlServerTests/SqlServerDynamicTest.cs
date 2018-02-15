@@ -20,7 +20,7 @@
         [Test]
         public void TestIdWithOne()
         {
-            IPerson mockPerson = table.GetTable().First(p => p.Id == 1);
+            Person mockPerson = table.GetTable().First(p => p.Id == 1);
 
             using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
             {
@@ -39,7 +39,7 @@
         [Test]
         public void GetAllWithId1()
         {
-            IPerson mockPerson = table.GetTable().First(p => p.Id == 1);
+            Person mockPerson = table.GetTable().First(p => p.Id == 1);
 
             using (SqlConnection conn = new SqlConnection(SqlServerUtility.ConnectionString))
             {
