@@ -8,7 +8,8 @@
     <owners>$author$</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>A new feature added to query multiple records in one query</releaseNotes>
+    <releaseNotes>Feature implemented to resolve multi-level properties</releaseNotes>
+    <projectUrl>https://github.com/kannan-ar/MariGold.Data.Database</projectUrl>
     <copyright>Copyright 2015</copyright>
     <tags>MariGold ORM</tags>
   </metadata>
