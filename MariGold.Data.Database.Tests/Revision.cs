@@ -11,5 +11,7 @@
         public virtual int ModifiedBy { get; set; }
         public virtual RevisionPeriod RevisionPeriod { get; set; }
         public virtual List<RevisionDetail> Details { get; set; }
+        public virtual Employee Employee { get; set; }
+        public virtual Employee RevisedBy { get; set; }
     }
 }

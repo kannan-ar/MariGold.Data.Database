@@ -703,5 +703,98 @@
                 Assert.AreEqual("Definition2", employees[1].Revisions[1].Details[1].Definition.DefinitionName);
             }
         }
+
+        [Test]
+        public void EmployeeUserRevisionWithCustomMapping()
+        {
+            using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
+            {
+                conn.Open();
+
+                var revisions = conn.Query<Revision>(@"Select r.RevisionId, RevisionName, RevisionDate, NextRevisionDate, e.EmployeeId, e.EmployeeName, d.DefinitionId, DefinitionName, Amount, rv.EmployeeId ReviserId, rv.EmployeeName ReviserName From  Revision r
+                    Left Outer Join Employee e On r.EmployeeId = e.EmployeeId
+                    Left Outer Join Employee rv On r.RevisedBy = rv.EmployeeId
+                    Left Outer Join RevisionDetails rd On r.RevisionId = rd.RevisionId
+                    Left Outer Join Definition d On rd.DefinitionId = d.DefinitionId")
+                    .Group(r => r.RevisionId)
+                    .Single<Employee>(e => e.Employee)
+                    .Single<Employee>(r => r.RevisedBy, (m) => m.Map("ReviserId", r => r.EmployeeId).Map("ReviserName", r => r.EmployeeName))
+                    .GetList();
+
+                Assert.IsNotNull(revisions);
+                Assert.AreEqual(4, revisions.Count);
+
+                Assert.AreEqual(1, revisions[0].RevisionId);
+                Assert.AreEqual("Revision1", revisions[0].RevisionName);
+                Assert.IsNotNull(revisions[0].Employee);
+                Assert.AreEqual(1, revisions[0].Employee.EmployeeId);
+                Assert.AreEqual("Employee1", revisions[0].Employee.EmployeeName);
+                Assert.IsNotNull(revisions[0].RevisedBy);
+                Assert.AreEqual(2, revisions[0].RevisedBy.EmployeeId);
+                Assert.AreEqual("Employee2", revisions[0].RevisedBy.EmployeeName);
+
+                Assert.AreEqual(2, revisions[1].RevisionId);
+                Assert.AreEqual("Revision2", revisions[1].RevisionName);
+                Assert.IsNotNull(revisions[1].Employee);
+                Assert.AreEqual(1, revisions[1].Employee.EmployeeId);
+                Assert.AreEqual("Employee1", revisions[1].Employee.EmployeeName);
+                Assert.IsNotNull(revisions[1].RevisedBy);
+                Assert.AreEqual(2, revisions[1].RevisedBy.EmployeeId);
+                Assert.AreEqual("Employee2", revisions[1].RevisedBy.EmployeeName);
+
+                Assert.AreEqual(3, revisions[2].RevisionId);
+                Assert.AreEqual("Revision3", revisions[2].RevisionName);
+                Assert.IsNotNull(revisions[2].Employee);
+                Assert.AreEqual(2, revisions[2].Employee.EmployeeId);
+                Assert.AreEqual("Employee2", revisions[2].Employee.EmployeeName);
+                Assert.IsNotNull(revisions[2].RevisedBy);
+                Assert.AreEqual(1, revisions[2].RevisedBy.EmployeeId);
+                Assert.AreEqual("Employee1", revisions[2].RevisedBy.EmployeeName);
+
+                Assert.AreEqual(4, revisions[3].RevisionId);
+                Assert.AreEqual("Revision4", revisions[3].RevisionName);
+                Assert.IsNotNull(revisions[3].Employee);
+                Assert.AreEqual(2, revisions[3].Employee.EmployeeId);
+                Assert.AreEqual("Employee2", revisions[3].Employee.EmployeeName);
+                Assert.IsNotNull(revisions[3].RevisedBy);
+                Assert.AreEqual(1, revisions[3].RevisedBy.EmployeeId);
+                Assert.AreEqual("Employee1", revisions[3].RevisedBy.EmployeeName);
+            }
+        }
+
+        [Test]
+        public void EmployeeWithCustomFieldRevisions()
+        {
+            using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
+            {
+                conn.Open();
+
+                var employees = conn.Query<Employee>("Select e.EmployeeId, EmployeeName, RevisionId as RevId, RevisionName as RevName From Employee e Inner Join Revision r On e.EmployeeId = r.EmployeeId")
+                    .Group(e => e.EmployeeId)
+                    .Many<Revision>(e => e.Revisions, filter => filter(e => e.EmployeeId), null, (m) => m.Map("RevId", r => r.RevisionId).Map("RevName", r => r.RevisionName))
+                    .GetList();
+
+                Assert.IsNotNull(employees);
+                Assert.AreEqual(2, employees.Count);
+
+                Assert.AreEqual(1, employees[0].EmployeeId);
+                Assert.AreEqual("Employee1", employees[0].EmployeeName);
+                Assert.IsNotNull(employees[0].Revisions);
+                Assert.AreEqual(2, employees[0].Revisions.Count);
+                Assert.AreEqual(1, employees[0].Revisions[0].RevisionId);
+                Assert.AreEqual("Revision1", employees[0].Revisions[0].RevisionName);
+                Assert.AreEqual(2, employees[0].Revisions[1].RevisionId);
+                Assert.AreEqual("Revision2", employees[0].Revisions[1].RevisionName);
+
+                Assert.AreEqual(2, employees[1].EmployeeId);
+                Assert.AreEqual("Employee2", employees[1].EmployeeName);
+                Assert.IsNotNull(employees[1].Revisions);
+                Assert.AreEqual(2, employees[1].Revisions.Count);
+                Assert.AreEqual(3, employees[1].Revisions[0].RevisionId);
+                Assert.AreEqual("Revision3", employees[1].Revisions[0].RevisionName);
+                Assert.AreEqual(4, employees[1].Revisions[1].RevisionId);
+                Assert.AreEqual("Revision4", employees[1].Revisions[1].RevisionName);
+            }
+        }
     }
 }

@@ -11,8 +11,8 @@
     internal sealed class MultiLevelILConverter : DataConverter
     {
         private readonly List<PropertyInfo> rootGroups;
-        private readonly Dictionary<Type, List<PropertyInfo>> singleProperties;
-        private readonly Dictionary<Type, Tuple<List<PropertyInfo>, List<string>, List<string>>> listProperties;
+        private readonly Dictionary<Type, List<Tuple<PropertyInfo, Dictionary<string, string>>>> singleProperties;
+        private readonly Dictionary<Type, Tuple<List<Tuple<PropertyInfo, Dictionary<string, string>>>, List<string>, List<string>>> listProperties;
 
         private class PropertyItem
         {
@@ -42,11 +42,27 @@
             return (type == typeof(object) || Type.GetTypeCode(type) != TypeCode.Object);
         }
 
-        private void LoadFieldName(ILGenerator il, string fieldName, MethodInfo indexOf, LocalBuilder fieldIndex, Label nextLocation)
+        private void LoadFieldName(ILGenerator il, string fieldName, MethodInfo indexOf, LocalBuilder fieldIndex,
+            Dictionary<string, string> customMapping, Label nextLocation)
         {
             string columnName;
 
             il.Emit(OpCodes.Ldarg_0);
+
+            if (customMapping != null && customMapping.ContainsKey(fieldName))
+            {
+                il.Emit(OpCodes.Ldstr, customMapping[fieldName]);
+
+                il.Emit(OpCodes.Call, indexOf);
+                il.Emit(OpCodes.Stloc, fieldIndex);
+
+                il.Emit(OpCodes.Ldloc, fieldIndex);
+                il.Emit(OpCodes.Ldc_I4, -1);
+                il.Emit(OpCodes.Ceq);
+                il.Emit(OpCodes.Brtrue, nextLocation);
+
+                return;
+            }
 
             if (columns.TryGetValue(fieldName, out columnName))
             {
@@ -113,30 +129,47 @@
             return type;
         }
 
-        private bool HasSingleProperty(Type type, PropertyInfo info)
+        private bool HasSingleProperty(Type type, PropertyInfo info, out Dictionary<string, string> customMapping)
         {
-            List<PropertyInfo> propertyList;
+            List<Tuple<PropertyInfo, Dictionary<string, string>>> propertyList;
+            customMapping = null;
 
             if (singleProperties.TryGetValue(type, out propertyList))
             {
-                return propertyList.Contains(info);
+                foreach (var property in propertyList)
+                {
+                    if (property.Item1 == info)
+                    {
+                        customMapping = property.Item2;
+                        return true;
+                    }
+                }
             }
 
             return false;
         }
 
-        private bool HasListProperty(Type type, PropertyInfo info, out List<string> filterFields, out List<string> groupFields)
+        private bool HasListProperty(Type type, PropertyInfo info, out List<string> filterFields, out List<string> groupFields,
+            out Dictionary<string, string> customMapping)
         {
-            Tuple<List<PropertyInfo>, List<string>, List<string>> propertyList;
+            Tuple<List<Tuple<PropertyInfo, Dictionary<string, string>>>, List<string>, List<string>> propertyList;
             filterFields = new List<string>();
             groupFields = new List<string>();
+            customMapping = null;
 
             if (listProperties.TryGetValue(type, out propertyList))
             {
                 filterFields = propertyList.Item2;
                 groupFields = propertyList.Item3;
 
-                return propertyList.Item1.Contains(info);
+                foreach (var property in propertyList.Item1)
+                {
+                    if (property.Item1 == info)
+                    {
+                        customMapping = property.Item2;
+                        return true;
+                    }
+                }
             }
 
             return false;
@@ -174,7 +207,7 @@
 
             foreach (var groupField in rootGroups)
             {
-                LoadFieldName(il, groupField.Name, indexOf, fieldIndex, nextProperty);
+                LoadFieldName(il, groupField.Name, indexOf, fieldIndex, null, nextProperty);
 
                 il.Emit(OpCodes.Ldloc, entity);
                 il.Emit(OpCodes.Callvirt, groupField.GetGetMethod());
@@ -338,6 +371,7 @@
 
         private Tuple<List<PropertyInfo>, List<PropertyInfo>> ScanEntityProperties(
             ILGenerator il,
+            Type rootEntityType,
             Type entityType,
             Dictionary<string, MethodInfo> drMethods,
             MethodInfo indexOf,
@@ -345,6 +379,7 @@
             LocalBuilder isLoaded,
             LocalBuilder entity,
             LocalBuilder objArray,
+            Dictionary<string, string> customMapping,
             bool shouldLoad)
         {
             List<PropertyInfo> listProperties = new List<PropertyInfo>();
@@ -361,8 +396,8 @@
                 {
                     Label nextProperty = il.DefineLabel();
 
-                    LoadFieldName(il, property.Name, indexOf, fieldIndex, nextProperty);
-                   
+                    LoadFieldName(il, property.Name, indexOf, fieldIndex, customMapping, nextProperty);
+
                     il.Emit(OpCodes.Ldloc, objArray);
                     il.Emit(OpCodes.Ldloc, fieldIndex);
                     il.Emit(OpCodes.Ldelem_Ref);
@@ -389,11 +424,11 @@
 
                     il.MarkLabel(nextProperty);
                 }
-                else if (isList)
+                else if (propertyType != rootEntityType && isList)
                 {
                     listProperties.Add(property);
                 }
-                else if (property.PropertyType.IsClass && !IsBulitinType(property.PropertyType))
+                else if (propertyType != rootEntityType && property.PropertyType.IsClass && !IsBulitinType(property.PropertyType))
                 {
                     classProperties.Add(property);
                 }
@@ -438,7 +473,7 @@
                 il.Emit(OpCodes.Ldc_I4, -1);
                 il.Emit(OpCodes.Stelem_I4);
 
-                LoadFieldName(il, filterFields[i], indexOf, fieldIndex, nextValue);
+                LoadFieldName(il, filterFields[i], indexOf, fieldIndex, null, nextValue);
 
                 il.Emit(OpCodes.Ldloc, filterIndices);
                 il.Emit(OpCodes.Ldloc, queryFieldIndex);
@@ -467,7 +502,7 @@
             {
                 Label nextValue = il.DefineLabel();
 
-                LoadFieldName(il, groupFields[i], indexOf, fieldIndex, nextValue);
+                LoadFieldName(il, groupFields[i], indexOf, fieldIndex, null, nextValue);
 
                 il.Emit(OpCodes.Ldloc, groupIndices);
                 il.Emit(OpCodes.Ldloc, queryFieldIndex);
@@ -528,14 +563,13 @@
                 var newEntities = CloneProperties(entities);
                 bool loaded = false;
                 var entity = il.DeclareLocal(entityType);
+                Dictionary<string, string> customMapping;
 
-                if (HasSingleProperty(rootEntityType, info))
+                if (HasSingleProperty(rootEntityType, info, out customMapping))
                 {
                     Label nextObject = il.DefineLabel();
                     loaded = true;
-
                     var isLoaded = il.DeclareLocal(boolType);
-
                     LocalBuilder rootEntity = LoadEntityTree(il, entities);
 
                     il.Emit(OpCodes.Newobj, entityType.GetConstructor(Type.EmptyTypes));
@@ -544,8 +578,8 @@
                     il.Emit(OpCodes.Ldc_I4_0);
                     il.Emit(OpCodes.Stloc, isLoaded);
 
-                    subProperties = ScanEntityProperties(il, entityType, drMethods, indexOf, fieldIndex, isLoaded, entity,
-                        objArray, true);
+                    subProperties = ScanEntityProperties(il, rootEntityType, entityType, drMethods, indexOf, fieldIndex, isLoaded, entity,
+                        objArray, customMapping, true);
 
                     il.Emit(OpCodes.Ldloc, isLoaded);
                     il.Emit(OpCodes.Brfalse, nextObject);
@@ -558,8 +592,8 @@
                 }
                 else
                 {
-                    subProperties = ScanEntityProperties(il, entityType, drMethods, indexOf, fieldIndex, null, null,
-                        objArray, false);
+                    subProperties = ScanEntityProperties(il, rootEntityType, entityType, drMethods, indexOf, fieldIndex, null, null,
+                        objArray, null, false);
                 }
 
                 var latest = newEntities[newEntities.Count - 1];
@@ -577,8 +611,9 @@
             {
                 List<string> filterFields;
                 List<string> groupFields;
+                Dictionary<string, string> customMapping;
 
-                if (HasListProperty(rootEntityType, info, out filterFields, out groupFields))
+                if (HasListProperty(rootEntityType, info, out filterFields, out groupFields, out customMapping))
                 {
                     Tuple<List<PropertyInfo>, List<PropertyInfo>> subProperties = null;
                     Type propType = info.PropertyType;
@@ -646,8 +681,8 @@
                     il.Emit(OpCodes.Ldc_I4_0);
                     il.Emit(OpCodes.Stloc, isLoaded);
 
-                    subProperties = ScanEntityProperties(il, genericType, drMethods, indexOf, fieldIndex, isLoaded, listItem,
-                        objSubArray, true);
+                    subProperties = ScanEntityProperties(il, rootEntityType, genericType, drMethods, indexOf, fieldIndex, isLoaded, listItem,
+                        objSubArray, customMapping, true);
 
                     il.Emit(OpCodes.Ldloc, isLoaded);
                     il.Emit(OpCodes.Brfalse, nextObject);
@@ -743,7 +778,7 @@
             il.Emit(OpCodes.Ldc_I4_0);
             il.Emit(OpCodes.Stloc, isLoaded);
 
-            var properties = ScanEntityProperties(il, entityType, drMethods, indexOf, fieldIndex, isLoaded, entity, objArray, true);
+            var properties = ScanEntityProperties(il, null, entityType, drMethods, indexOf, fieldIndex, isLoaded, entity, objArray, null, true);
 
             il.Emit(OpCodes.Ldloc, isLoaded);
             il.Emit(OpCodes.Brfalse, loopStart);

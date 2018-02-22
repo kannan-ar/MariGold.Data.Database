@@ -59,6 +59,10 @@ INSERT INTO Revision(RevisionId,EmployeeId,RevisionName,RevisionDate,NextRevisio
 INSERT INTO Revision(RevisionId,EmployeeId,RevisionName,RevisionDate,NextRevisionDate) VALUES(3,2,'Revision3','20160503','20170503');
 INSERT INTO Revision(RevisionId,EmployeeId,RevisionName,RevisionDate,NextRevisionDate) VALUES(4,2,'Revision4','20151008','20161008');
 
+ALTER TABLE `Revision` ADD RevisedBy int(11);
+Update `Revision` Set RevisedBy = 2 Where RevisionId In(1,2);
+Update `Revision` Set RevisedBy = 1 Where RevisionId In(3,4);
+
 CREATE TABLE `RevisionDetails` (
 	`RevisionId` int(11),
 	`DefinitionId` int(11),

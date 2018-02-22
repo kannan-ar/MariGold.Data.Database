@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="CustomFieldMapper.cs" />
     <Compile Include="EntityManager.cs" />
     <Compile Include="DataConverter.cs" />
     <Compile Include="DynamicDataConverter.cs" />

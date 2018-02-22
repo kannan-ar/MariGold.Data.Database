@@ -692,5 +692,102 @@
                 Assert.AreEqual("Definition2", employees[1].Revisions[1].Details[1].Definition.DefinitionName);
             }
         }
+
+        [Test]
+        public void EmployeeUserRevisionWithCustomMapping()
+        {
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Config.UnderscoreToPascalCase = true;
+
+                var revisions = conn.Query<Revision>(@"Select r.revision_id, revision_name, revision_date, next_revision_date, e.employee_id, e.employee_name, d.definition_id, definition_name, amount, rv.employee_id reviser_id, rv.employee_name reviser_name From  revision r
+                    Left Outer Join employee e On r.employee_id = e.employee_id
+                    Left Outer Join employee rv On r.revised_by = rv.employee_id
+                    Left Outer Join revision_details rd On r.revision_id = rd.revision_id
+                    Left Outer Join definition d On rd.definition_id = d.definition_id")
+                    .Group(r => r.RevisionId)
+                    .Single<Employee>(e => e.Employee)
+                    .Single<Employee>(r => r.RevisedBy, (m) => m.Map("reviser_id", r => r.EmployeeId).Map("reviser_name", r => r.EmployeeName))
+                    .GetList();
+
+                Assert.IsNotNull(revisions);
+                Assert.AreEqual(4, revisions.Count);
+
+                Assert.AreEqual(1, revisions[0].RevisionId);
+                Assert.AreEqual("Revision1", revisions[0].RevisionName);
+                Assert.IsNotNull(revisions[0].Employee);
+                Assert.AreEqual(1, revisions[0].Employee.EmployeeId);
+                Assert.AreEqual("Employee1", revisions[0].Employee.EmployeeName);
+                Assert.IsNotNull(revisions[0].RevisedBy);
+                Assert.AreEqual(2, revisions[0].RevisedBy.EmployeeId);
+                Assert.AreEqual("Employee2", revisions[0].RevisedBy.EmployeeName);
+
+                Assert.AreEqual(2, revisions[1].RevisionId);
+                Assert.AreEqual("Revision2", revisions[1].RevisionName);
+                Assert.IsNotNull(revisions[1].Employee);
+                Assert.AreEqual(1, revisions[1].Employee.EmployeeId);
+                Assert.AreEqual("Employee1", revisions[1].Employee.EmployeeName);
+                Assert.IsNotNull(revisions[1].RevisedBy);
+                Assert.AreEqual(2, revisions[1].RevisedBy.EmployeeId);
+                Assert.AreEqual("Employee2", revisions[1].RevisedBy.EmployeeName);
+
+                Assert.AreEqual(3, revisions[2].RevisionId);
+                Assert.AreEqual("Revision3", revisions[2].RevisionName);
+                Assert.IsNotNull(revisions[2].Employee);
+                Assert.AreEqual(2, revisions[2].Employee.EmployeeId);
+                Assert.AreEqual("Employee2", revisions[2].Employee.EmployeeName);
+                Assert.IsNotNull(revisions[2].RevisedBy);
+                Assert.AreEqual(1, revisions[2].RevisedBy.EmployeeId);
+                Assert.AreEqual("Employee1", revisions[2].RevisedBy.EmployeeName);
+
+                Assert.AreEqual(4, revisions[3].RevisionId);
+                Assert.AreEqual("Revision4", revisions[3].RevisionName);
+                Assert.IsNotNull(revisions[3].Employee);
+                Assert.AreEqual(2, revisions[3].Employee.EmployeeId);
+                Assert.AreEqual("Employee2", revisions[3].Employee.EmployeeName);
+                Assert.IsNotNull(revisions[3].RevisedBy);
+                Assert.AreEqual(1, revisions[3].RevisedBy.EmployeeId);
+                Assert.AreEqual("Employee1", revisions[3].RevisedBy.EmployeeName);
+            }
+        }
+
+        [Test]
+        public void EmployeeWithCustomFieldRevisions()
+        {
+            using (NpgsqlConnection conn = new NpgsqlConnection(PostgresUtility.ConnectionString))
+            {
+                conn.Open();
+
+                Config.UnderscoreToPascalCase = true;
+
+                var employees = conn.Query<Employee>("Select e.employee_id, employee_name, revision_id as rev_id, revision_name as rev_name From employee e Inner Join revision r On e.employee_id = r.employee_id Order By employee_id, rev_id")
+                    .Group(e => e.EmployeeId)
+                    .Many<Revision>(e => e.Revisions, filter => filter(e => e.EmployeeId), null, (m) => m.Map("rev_id", r => r.RevisionId).Map("rev_name", r => r.RevisionName))
+                    .GetList();
+
+                Assert.IsNotNull(employees);
+                Assert.AreEqual(2, employees.Count);
+
+                Assert.AreEqual(1, employees[0].EmployeeId);
+                Assert.AreEqual("Employee1", employees[0].EmployeeName);
+                Assert.IsNotNull(employees[0].Revisions);
+                Assert.AreEqual(2, employees[0].Revisions.Count);
+                Assert.AreEqual(1, employees[0].Revisions[0].RevisionId);
+                Assert.AreEqual("Revision1", employees[0].Revisions[0].RevisionName);
+                Assert.AreEqual(2, employees[0].Revisions[1].RevisionId);
+                Assert.AreEqual("Revision2", employees[0].Revisions[1].RevisionName);
+
+                Assert.AreEqual(2, employees[1].EmployeeId);
+                Assert.AreEqual("Employee2", employees[1].EmployeeName);
+                Assert.IsNotNull(employees[1].Revisions);
+                Assert.AreEqual(2, employees[1].Revisions.Count);
+                Assert.AreEqual(3, employees[1].Revisions[0].RevisionId);
+                Assert.AreEqual("Revision3", employees[1].Revisions[0].RevisionName);
+                Assert.AreEqual(4, employees[1].Revisions[1].RevisionId);
+                Assert.AreEqual("Revision4", employees[1].Revisions[1].RevisionName);
+            }
+        }
     }
 }
