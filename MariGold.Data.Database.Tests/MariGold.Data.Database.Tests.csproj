@@ -70,6 +70,7 @@
     <Compile Include="MySqlTests\MySqlTest.cs" />
     <Compile Include="MySqlTests\MySqlUtility.cs" />
     <Compile Include="OracleTests\OracleDynamicTest.cs" />
+    <Compile Include="OracleTests\OracleMultiLevelTest.cs" />
     <Compile Include="OracleTests\OracleORMTest.cs" />
     <Compile Include="OracleTests\OracleTest.cs" />
     <Compile Include="OracleTests\OracleUtility.cs" />

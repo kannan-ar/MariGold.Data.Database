@@ -8,7 +8,7 @@
     <owners>$author$</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Feature implemented to resolve multi-level properties</releaseNotes>
+    <releaseNotes>Custom field mapping is implemented on multi level converter</releaseNotes>
     <projectUrl>https://github.com/kannan-ar/MariGold.Data.Database</projectUrl>
     <copyright>Copyright 2015</copyright>
     <tags>MariGold ORM</tags>
