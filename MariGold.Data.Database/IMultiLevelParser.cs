@@ -6,8 +6,7 @@
 
     internal interface IMultiLevelParser
     {
-        Dictionary<Type, List<Tuple<PropertyInfo, Dictionary<string, string>>>> SingleProperties { get; }
-        Dictionary<Type, Tuple<List<Tuple<PropertyInfo, Dictionary<string, string>>>, List<string>, List<string>>> ListProperties { get; }
+        Dictionary<List<PropertyInfo>, Tuple<Dictionary<string, string>, List<string>, List<string>>> PropertiesList { get; }
         List<PropertyInfo> RootGroupFields { get; }
     }
 }

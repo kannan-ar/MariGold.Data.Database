@@ -308,7 +308,7 @@
                 Assert.AreEqual(5, record.GetScalar());
             }
         }
-        
+
         [Test]
         public void GetEmployeeOnly()
         {
@@ -346,7 +346,9 @@
                 Config.UnderscoreToPascalCase = true;
 
                 Employee emp = conn.Query<Employee>("select * from public.employee e inner join public.user u on e.user_id = u.user_id where employee_id = 1")
-                    .Single<User>(e => e.User).Get();
+                    .Property<User>(e => e.Of(u => u.User))
+                    //.Single<User>(e => e.User)
+                    .Get();
 
                 Assert.NotNull(emp);
 
@@ -395,7 +397,9 @@
                 Config.UnderscoreToPascalCase = true;
 
                 Employee emp = conn.Query<Employee>("select employee_id, employee_name, u.user_id, user_name from public.employee e inner join public.user u on e.user_id = u.user_id where employee_id = 1")
-                    .Single<User>(e => e.User).Get();
+                    .Property<User>(e => e.Of(u => u.User))
+                    //.Single<User>(e => e.User)
+                    .Get();
 
                 Assert.NotNull(emp);
                 Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);
@@ -420,7 +424,9 @@
                 Config.UnderscoreToPascalCase = true;
 
                 Employee emp = conn.Query<Employee>("select employee_id, employee_name, u.user_id, user_name, session_id from public.employee e inner join public.user u on e.user_id = u.user_id where employee_id = 1")
-                    .Single<User>(e => e.User).Get();
+                    .Property<User>(e => e.Of(u => u.User))
+                    //.Single<User>(e => e.User)
+                    .Get();
 
                 Assert.NotNull(emp);
                 Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);

@@ -10,11 +10,8 @@
         where Root : class, new()
     {
         private readonly IDataReader dr;
-
         private DataConverter converter;
-
-        private Dictionary<Type, List<Tuple<PropertyInfo, Dictionary<string, string>>>> singleProperties;
-        private Dictionary<Type, Tuple<List<Tuple<PropertyInfo, Dictionary<string, string>>>, List<string>, List<string>>> listProperties;
+        private Dictionary<List<PropertyInfo>, Tuple<Dictionary<string, string>, List<string>, List<string>>> propertiesList;
         private List<PropertyInfo> rootGroupFields;
         private Type rootType;
 
@@ -29,41 +26,19 @@
 
             foreach (var property in properties)
             {
-                customMaps.Add(GetPropertyInfo(property.Value).Name, property.Key);
+                customMaps.Add(property.Value.GetPropertyInfo().Name, property.Key);
             }
 
             return customMaps;
         }
-
-        private PropertyInfo GetPropertyInfo(LambdaExpression exp)
-        {
-            if (exp == null)
-            {
-                return null;
-            }
-
-            MemberExpression ex = exp.Body as MemberExpression;
-
-            if (ex == null)
-            {
-                UnaryExpression uex = exp.Body as UnaryExpression;
-
-                if (uex != null)
-                {
-                    ex = uex.Operand as MemberExpression;
-                }
-            }
-
-            return ex.Member as PropertyInfo;
-        }
-
+        
         private List<string> GetPropertyNames<T>(Expression<Func<T, object>>[] fields)
         {
             List<string> names = new List<string>();
 
             foreach (var field in fields)
             {
-                PropertyInfo info = GetPropertyInfo(field);
+                PropertyInfo info = field.GetPropertyInfo();
 
                 if (info != null)
                 {
@@ -73,129 +48,44 @@
 
             return names;
         }
-
-        private void SetSingleProperty(Type type, LambdaExpression exp, Dictionary<string, string> customMaps = null)
+        
+        private void SetPropertiesList<Child>(Action<IPropertyTree<Root>> item,
+            Action<CustomFieldMapper<Child>> columns = null, Action <QueryAction<Child>> filterFields = null, 
+            Action<QueryAction<Child>> groupFields = null)
         {
-            List<Tuple<PropertyInfo, Dictionary<string, string>>> propertyList;
-            PropertyInfo info = GetPropertyInfo(exp);
+            List<string> filterList = new List<string>();
+            List<string> groupList = new List<string>();
+            Dictionary<string, string> customMaps = null;
 
-            if (singleProperties.TryGetValue(type, out propertyList))
+            filterFields?.Invoke(fields => { filterList = GetPropertyNames<Child>(fields); });
+
+            groupFields?.Invoke(fields => { groupList = GetPropertyNames<Child>(fields); });
+
+            if (columns != null)
             {
-                bool found = false;
+                CustomFieldMapper<Child> map = new CustomFieldMapper<Child>();
+                columns(map);
 
-                foreach (var property in propertyList)
-                {
-                    if (property.Item1 == info)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
-                {
-                    propertyList.Add(new Tuple<PropertyInfo, Dictionary<string, string>>(info, customMaps));
-                }
-            }
-            else
-            {
-                propertyList = new List<Tuple<PropertyInfo, Dictionary<string, string>>>();
-                propertyList.Add(new Tuple<PropertyInfo, Dictionary<string, string>>(info, customMaps));
+                customMaps = ExtractCustomMapping(map.ExtractMap());
             }
 
-            singleProperties[type] = propertyList;
-        }
+            var prop = new PropertyTreeParser<Root>();
+            item(prop);
 
-        private void SetListProperty(Type type, LambdaExpression exp, List<string> filterFields = null,
-            List<string> groupFields = null, Dictionary<string, string> customMaps = null)
-        {
-            Tuple<List<Tuple<PropertyInfo, Dictionary<string, string>>>, List<string>, List<string>> propertyList;
-            PropertyInfo info = GetPropertyInfo(exp);
+            propertiesList.Add(prop.PropertyTree, new Tuple<Dictionary<string, string>, List<string>, List<string>>(customMaps, filterList, groupList));
 
-            if (listProperties.TryGetValue(type, out propertyList))
-            {
-                bool found = false;
-
-                foreach (var property in propertyList.Item1)
-                {
-                    if (property.Item1 == info)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
-                {
-                    propertyList.Item1.Add(new Tuple<PropertyInfo, Dictionary<string, string>>(info, customMaps));
-                }
-
-                if (filterFields != null && filterFields.Count > 0)
-                {
-                    foreach (string filterField in filterFields)
-                    {
-                        if (propertyList.Item2.Contains(filterField))
-                        {
-                            propertyList.Item2.Add(filterField);
-                        }
-                    }
-                }
-
-                if (groupFields != null && groupFields.Count > 0)
-                {
-                    foreach (string groupField in groupFields)
-                    {
-                        if (propertyList.Item3.Contains(groupField))
-                        {
-                            propertyList.Item3.Add(groupField);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                List<Tuple<PropertyInfo, Dictionary<string, string>>> infoList = 
-                    new List<Tuple<PropertyInfo, Dictionary<string, string>>>();
-                List<string> filterList = new List<string>();
-                List<string> groupList = new List<string>();
-
-                infoList.Add(new Tuple<PropertyInfo, Dictionary<string, string>>(info, customMaps));
-
-                if (filterFields != null)
-                {
-                    filterList.AddRange(filterFields);
-                }
-
-                if (groupFields != null)
-                {
-                    groupList.AddRange(groupFields);
-                }
-
-                propertyList = new Tuple<List<Tuple<PropertyInfo, Dictionary<string, string>>>, 
-                    List<string>, List<string>>(infoList, filterList, groupList);
-            }
-
-            listProperties[type] = propertyList;
         }
 
         internal void SetConverter(DataConverter converter)
         {
             this.converter = converter;
         }
-
-        public Dictionary<Type, List<Tuple<PropertyInfo, Dictionary<string, string>>>> SingleProperties
+        
+        public Dictionary<List<PropertyInfo>, Tuple<Dictionary<string, string>, List<string>, List<string>>> PropertiesList
         {
             get
             {
-                return singleProperties;
-            }
-        }
-
-        public Dictionary<Type, Tuple<List<Tuple<PropertyInfo, Dictionary<string, string>>>, List<string>, List<string>>> ListProperties
-        {
-            get
-            {
-                return listProperties;
+                return propertiesList;
             }
         }
 
@@ -212,10 +102,7 @@
             this.dr = dr;
 
             rootType = typeof(Root);
-
-            singleProperties = new Dictionary<Type, List<Tuple<PropertyInfo, Dictionary<string, string>>>>();
-            listProperties = new Dictionary<Type, Tuple<List<Tuple<PropertyInfo, Dictionary<string, string>>>, List<string>, List<string>>>();
-
+            propertiesList = new Dictionary<List<PropertyInfo>, Tuple<Dictionary<string, string>, List<string>, List<string>>>();
             rootGroupFields = new List<PropertyInfo>();
         }
 
@@ -223,98 +110,51 @@
         {
             foreach (LambdaExpression exp in groupFields)
             {
-                rootGroupFields.Add(GetPropertyInfo(exp));
+                rootGroupFields.Add(exp.GetPropertyInfo());
             }
 
             return this;
         }
-
-        public IQuery<Root> Single<Child>(Expression<Func<Root, Child>> item, Action<CustomFieldMapper<Child>> columns = null)
+        
+        public IQuery<Root> Property<Child>(Action<IPropertyTree<Root>> item)
         {
-            Dictionary<string, string> customMaps = null;
-
-            if (columns != null)
-            {
-                CustomFieldMapper<Child> map = new CustomFieldMapper<Child>();
-                columns(map);
-
-                customMaps = ExtractCustomMapping(map.ExtractMap());
-            }
-
-            SetSingleProperty(rootType, item, customMaps);
-
+            SetPropertiesList<Child>(item, null, null, null);
             return this;
         }
 
-        public IQuery<Root> Single<Parent, Child>(Expression<Func<Parent, Child>> item, Action<CustomFieldMapper<Child>> columns = null)
+        public IQuery<Root> Property<Child>(Action<IPropertyTree<Root>> item,
+            Action<CustomFieldMapper<Child>> columns)
         {
-            Dictionary<string, string> customMaps = null;
-
-            if (columns != null)
-            {
-                CustomFieldMapper<Child> map = new CustomFieldMapper<Child>();
-                columns(map);
-
-                customMaps = ExtractCustomMapping(map.ExtractMap());
-            }
-
-            SetSingleProperty(typeof(Parent), item, customMaps);
-
+            SetPropertiesList<Child>(item, columns, null, null);
             return this;
         }
 
-        public IQuery<Root> Many<Child>(Expression<Func<Root, IList<Child>>> list,
-            Action<QueryAction<Child>> filterFields = null, Action<QueryAction<Child>> groupFields = null,
-            Action<CustomFieldMapper<Child>> columns = null)
+        public IQuery<Root> Property<Child>(Action<IPropertyTree<Root>> item,
+            Action<CustomFieldMapper<Child>> columns, Action<QueryAction<Child>> filterFields)
         {
-            List<string> filterList = null;
-            List<string> groupList = null;
-            Dictionary<string, string> customMaps = null;
-
-            if (filterFields != null)
-            {
-                filterFields(fields => { filterList = GetPropertyNames<Child>(fields); });
-            }
-
-            if (groupFields != null)
-            {
-                groupFields(fields => { groupList = GetPropertyNames<Child>(fields); });
-            }
-
-            if (columns != null)
-            {
-                CustomFieldMapper<Child> map = new CustomFieldMapper<Child>();
-                columns(map);
-
-                customMaps = ExtractCustomMapping(map.ExtractMap());
-            }
-
-            SetListProperty(rootType, list, filterList, groupList, customMaps);
-
+            SetPropertiesList<Child>(item, columns, filterFields, null);
             return this;
         }
 
-        public IQuery<Root> Many<Parent, Child>(Expression<Func<Parent, IList<Child>>> list,
-            Action<QueryAction<Child>> filterFields = null, Action<CustomFieldMapper<Child>> columns = null)
+        public IQuery<Root> Property<Child>(Action<IPropertyTree<Root>> item,
+            Action<CustomFieldMapper<Child>> columns, Action<QueryAction<Child>> filterFields,
+            Action<QueryAction<Child>> groupFields)
         {
-            List<string> filterList = null;
-            Dictionary<string, string> customMaps = null;
+            SetPropertiesList<Child>(item, columns, filterFields, groupFields);
+            return this;
+        }
 
-            if (filterFields != null)
-            {
-                filterFields(fields => { filterList = GetPropertyNames<Child>(fields); });
-            }
+        public IQuery<Root> Property<Child>(Action<IPropertyTree<Root>> item,
+           Action<QueryAction<Child>> filterFields, Action<QueryAction<Child>> groupFields)
+        {
+            SetPropertiesList<Child>(item, null, filterFields, groupFields);
+            return this;
+        }
 
-            if (columns != null)
-            {
-                CustomFieldMapper<Child> map = new CustomFieldMapper<Child>();
-                columns(map);
-
-                customMaps = ExtractCustomMapping(map.ExtractMap());
-            }
-
-            SetListProperty(typeof(Parent), list, filterList, null, customMaps);
-
+        public IQuery<Root> Property<Child>(Action<IPropertyTree<Root>> item,
+           Action<QueryAction<Child>> filterFields)
+        {
+            SetPropertiesList<Child>(item, null, filterFields, null);
             return this;
         }
 

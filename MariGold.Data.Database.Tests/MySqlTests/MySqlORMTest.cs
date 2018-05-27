@@ -197,7 +197,7 @@
             using (MySqlConnection conn = new MySqlConnection(MySqlUtility.ConnectionString))
             {
                 conn.Open();
-                
+
                 IRecordSet record = conn.QueryMultiple("Select Max(Id)+10 From person;Select Count(Id) From person");
 
                 Assert.AreEqual(15, record.GetScalar());
@@ -238,7 +238,7 @@
                 Assert.AreEqual(5, record.GetScalar());
             }
         }
-        
+
         [Test]
         public void GetEmployeeOnly()
         {
@@ -272,7 +272,7 @@
                 conn.Open();
 
                 Employee emp = conn.Query<Employee>("select * from employee e inner join user u on e.userid = u.userid where employeeid = 1")
-                    .Single<User>(e => e.User).Get();
+                    .Property<User>(e => e.Of(u => u.User)).Get();
 
                 Assert.NotNull(emp);
 
@@ -295,7 +295,7 @@
                 conn.Open();
 
                 Employee emp = conn.Query<Employee>("select EmployeeId, EmployeeName, u.UserId, UserName from employee e inner join user u on e.userid = u.userid where employeeid = 1")
-                    .Single<User>(e => e.User).Get();
+                    .Property<User>(e => e.Of(u => u.User)).Get();
 
                 Assert.NotNull(emp);
                 Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);
@@ -318,7 +318,7 @@
                 conn.Open();
 
                 Employee emp = conn.Query<Employee>("select EmployeeId, EmployeeName, u.UserId, UserName, SessionId from employee e inner join user u on e.userid = u.userid where employeeid = 1")
-                    .Single<User>(e => e.User).Get();
+                    .Property<User>(e => e.Of(u => u.User)).Get();
 
                 Assert.NotNull(emp);
                 Assert.AreEqual(mockEmployee.EmployeeId, emp.EmployeeId);

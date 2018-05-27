@@ -11,8 +11,7 @@
     internal sealed class MultiLevelILConverter : DataConverter
     {
         private readonly List<PropertyInfo> rootGroups;
-        private readonly Dictionary<Type, List<Tuple<PropertyInfo, Dictionary<string, string>>>> singleProperties;
-        private readonly Dictionary<Type, Tuple<List<Tuple<PropertyInfo, Dictionary<string, string>>>, List<string>, List<string>>> listProperties;
+        private readonly Dictionary<List<PropertyInfo>, Tuple<Dictionary<string, string>, List<string>, List<string>>> propertiesList;
 
         private class PropertyItem
         {
@@ -129,34 +128,75 @@
             return type;
         }
 
-        private bool HasSingleProperty(Type type, PropertyInfo info, out Dictionary<string, string> customMapping)
+        private bool IsPropertyInfoMatch(PropertyInfo info1, PropertyInfo info2)
         {
-            List<Tuple<PropertyInfo, Dictionary<string, string>>> propertyList;
-            customMapping = null;
-
-            if (singleProperties.TryGetValue(type, out propertyList))
+            if (info1 == null || info2 == null)
             {
-                foreach (var property in propertyList)
+                return false;
+            }
+
+            return info1.Name == info2.Name && info1.PropertyType == info2.PropertyType;
+        }
+
+        private bool HasSingleProperty(Int32 position, PropertyInfo info, out bool hasChain, out Dictionary<string, string> customMapping)
+        {
+            customMapping = null;
+            hasChain = false;
+            bool hasFound = false;
+
+            foreach (var infoList in propertiesList)
+            {
+                if (infoList.Key.Count <= position)
                 {
-                    if (property.Item1 == info)
-                    {
-                        customMapping = property.Item2;
-                        return true;
-                    }
+                    continue;
+                }
+
+                if (!hasFound && infoList.Key.Count == (position + 1) && IsPropertyInfoMatch(infoList.Key[position], info))
+                {
+                    customMapping = infoList.Value.Item1;
+                    hasFound = true;
+                }
+                else if (infoList.Key.Count > 1 && IsPropertyInfoMatch(infoList.Key[position], info))
+                {
+                    hasChain = true;
                 }
             }
 
-            return false;
+            return hasFound;
         }
 
-        private bool HasListProperty(Type type, PropertyInfo info, out List<string> filterFields, out List<string> groupFields,
+        private bool HasListProperty(Int32 position, PropertyInfo info, out bool hasChain, out List<string> filterFields, out List<string> groupFields,
             out Dictionary<string, string> customMapping)
         {
-            Tuple<List<Tuple<PropertyInfo, Dictionary<string, string>>>, List<string>, List<string>> propertyList;
-            filterFields = new List<string>();
-            groupFields = new List<string>();
+            //Tuple<List<Tuple<PropertyInfo, Dictionary<string, string>>>, List<string>, List<string>> propertyList;
+            hasChain = false;
             customMapping = null;
+            filterFields = null;
+            groupFields = null;
+            bool hasFound = false;
 
+            foreach (var infoList in propertiesList)
+            {
+                if (infoList.Key.Count <= position)
+                {
+                    continue;
+                }
+
+                if (!hasFound && infoList.Key.Count == (position + 1) && infoList.Key[position] == info)
+                {
+                    customMapping = infoList.Value.Item1;
+                    filterFields = infoList.Value.Item2;
+                    groupFields = infoList.Value.Item3;
+
+                    hasFound = true;
+                }
+                else if (infoList.Key.Count > 1 && infoList.Key[position] == info)
+                {
+                    hasChain = true;
+                }
+            }
+
+            /*
             if (listProperties.TryGetValue(type, out propertyList))
             {
                 filterFields = propertyList.Item2;
@@ -171,8 +211,8 @@
                     }
                 }
             }
-
-            return false;
+            */
+            return hasFound;
         }
 
         private void SkipIfGroupExists<T>(ILGenerator il, LocalBuilder entities, LocalBuilder objArray, Label rootLoopStart,
@@ -540,6 +580,7 @@
 
         private void RecursiveLoadProperties(
             ILGenerator il,
+            Int32 position,
             List<PropertyItem> entities,
             Type rootEntityType,
             LocalBuilder fieldIndex,
@@ -564,8 +605,9 @@
                 bool loaded = false;
                 var entity = il.DeclareLocal(entityType);
                 Dictionary<string, string> customMapping;
+                bool hasChain;
 
-                if (HasSingleProperty(rootEntityType, info, out customMapping))
+                if (HasSingleProperty(position, info, out hasChain, out customMapping))
                 {
                     Label nextObject = il.DefineLabel();
                     loaded = true;
@@ -596,24 +638,28 @@
                         objArray, null, false);
                 }
 
-                var latest = newEntities[newEntities.Count - 1];
-                latest.CurrentEntity = entity;
-                latest.Info = info;
-                latest.IsLoaded = loaded;
+                if (hasChain)
+                {
+                    var latest = newEntities[newEntities.Count - 1];
+                    latest.CurrentEntity = entity;
+                    latest.Info = info;
+                    latest.IsLoaded = loaded;
 
-                newEntities.Add(new PropertyItem() { RootEntity = entity });
+                    newEntities.Add(new PropertyItem() { RootEntity = entity });
 
-                RecursiveLoadProperties(il, newEntities, entityType, fieldIndex, objArray, boolType, intType, recordSetType,
-                    objectArrayType, stringArrayType, intArrayType, drMethods, indexOf, getCount, getItem, subProperties);
+                    RecursiveLoadProperties(il, position + 1, newEntities, entityType, fieldIndex, objArray, boolType, intType, recordSetType,
+                        objectArrayType, stringArrayType, intArrayType, drMethods, indexOf, getCount, getItem, subProperties);
+                }
             }
 
             foreach (PropertyInfo info in properties.Item2)
             {
+                bool hasChain;
                 List<string> filterFields;
                 List<string> groupFields;
                 Dictionary<string, string> customMapping;
 
-                if (HasListProperty(rootEntityType, info, out filterFields, out groupFields, out customMapping))
+                if (HasListProperty(position, info, out hasChain, out filterFields, out groupFields, out customMapping))
                 {
                     Tuple<List<PropertyInfo>, List<PropertyInfo>> subProperties = null;
                     Type propType = info.PropertyType;
@@ -687,9 +733,12 @@
                     il.Emit(OpCodes.Ldloc, isLoaded);
                     il.Emit(OpCodes.Brfalse, nextObject);
 
-                    newEntities.Add(new PropertyItem() { RootEntity = listItem });
-                    RecursiveLoadProperties(il, newEntities, genericType, fieldIndex, objSubArray, boolType, intType, recordSetType,
-                        objectArrayType, stringArrayType, intArrayType, drMethods, indexOf, getCount, getItem, subProperties);
+                    if (hasChain)
+                    {
+                        newEntities.Add(new PropertyItem() { RootEntity = listItem });
+                        RecursiveLoadProperties(il, position + 1, newEntities, genericType, fieldIndex, objSubArray, boolType, intType, recordSetType,
+                            objectArrayType, stringArrayType, intArrayType, drMethods, indexOf, getCount, getItem, subProperties);
+                    }
 
                     il.Emit(OpCodes.Ldloc, listVar);
                     il.Emit(OpCodes.Ldloc, listItem);
@@ -790,7 +839,7 @@
             List<PropertyItem> entityList = new List<PropertyItem>();
             entityList.Add(new PropertyItem() { RootEntity = entity });
 
-            RecursiveLoadProperties(il, entityList, entityType, fieldIndex, objArray, boolType, intType, recordSetType,
+            RecursiveLoadProperties(il, 0, entityList, entityType, fieldIndex, objArray, boolType, intType, recordSetType,
                 objectArrayType, stringArrayType, intArrayType, drMethods, indexOf, getCount, getItem, properties);
 
             il.Emit(OpCodes.Br, loopStart);
@@ -806,8 +855,7 @@
         public MultiLevelILConverter(IMultiLevelParser parser)
         {
             this.rootGroups = parser.RootGroupFields;
-            this.singleProperties = parser.SingleProperties;
-            this.listProperties = parser.ListProperties;
+            this.propertiesList = parser.PropertiesList;
         }
 
         private List<object[]> GetRecordSet(IDataReader dr, out string[] fields)

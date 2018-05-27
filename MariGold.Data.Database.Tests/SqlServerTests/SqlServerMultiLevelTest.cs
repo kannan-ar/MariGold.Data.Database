@@ -64,7 +64,8 @@
                     Left Outer Join RevisionDetails rd On r.RevisionId = rd.RevisionId
                     Left Outer Join [Definition] d On rd.DefinitionId = d.DefinitionId")
                     .Group(e => e.EmployeeId)
-                    .Single<User>(e => e.User)
+                    .Property<User>(e => e.Of(u => u.User))
+                    //.Single<User>(e => e.User)
                     .GetList();
 
                 Assert.IsNotNull(employees);
@@ -100,8 +101,10 @@
                     Left Outer Join RevisionDetails rd On r.RevisionId = rd.RevisionId
                     Left Outer Join [Definition] d On rd.DefinitionId = d.DefinitionId")
                     .Group(e => e.EmployeeId)
-                    .Single<User>(e => e.User)
-                    .Many<Revision>(e => e.Revisions, filter => filter(r => r.EmployeeId), group => group(r => r.RevisionId))
+                    .Property<User>(e => e.Of(u => u.User))
+                    .Property<Revision>(e => e.Of(r => r.Revisions), filter => filter(r => r.EmployeeId), group => group(r => r.RevisionId))
+                    //.Single<User>(e => e.User)
+                    //.Many<Revision>(e => e.Revisions, filter => filter(r => r.EmployeeId), group => group(r => r.RevisionId))
                     .GetList();
 
                 Assert.IsNotNull(employees);
@@ -157,9 +160,12 @@
                     Left Outer Join RevisionDetails rd On r.RevisionId = rd.RevisionId
                     Left Outer Join [Definition] d On rd.DefinitionId = d.DefinitionId")
                     .Group(e => e.EmployeeId)
-                    .Single<User>(e => e.User)
-                    .Many<Revision>(e => e.Revisions, filter => filter(r => r.EmployeeId), group => group(r => r.RevisionId))
-                    .Single<Revision, RevisionPeriod>(r => r.RevisionPeriod)
+                    .Property<User>(e => e.Of(u => u.User))
+                    .Property<Revision>(e => e.Of(r => r.Revisions), filter => filter(r => r.EmployeeId), group => group(r => r.RevisionId))
+                    .Property<RevisionPeriod>(e => e.Of(r => r.Revisions).Of(rp => rp.RevisionPeriod))
+                    //.Single<User>(e => e.User)
+                    //.Many<Revision>(e => e.Revisions, filter => filter(r => r.EmployeeId), group => group(r => r.RevisionId))
+                    //.Single<Revision, RevisionPeriod>(r => r.RevisionPeriod)
                     .GetList();
 
                 Assert.IsNotNull(employees);
@@ -235,10 +241,14 @@
                     Left Outer Join RevisionDetails rd On r.RevisionId = rd.RevisionId
                     Left Outer Join [Definition] d On rd.DefinitionId = d.DefinitionId")
                     .Group(e => e.EmployeeId)
-                    .Single<User>(e => e.User)
-                    .Many<Revision>(e => e.Revisions, filter => filter(r => r.EmployeeId), group => group(r => r.RevisionId))
-                    .Single<Revision, RevisionPeriod>(r => r.RevisionPeriod)
-                    .Many<Revision, RevisionDetail>(r => r.Details, filter => filter(r => r.RevisionId))
+                    .Property<User>(e => e.Of(r => r.User))
+                    .Property<Revision>(e => e.Of(r => r.Revisions), filter => filter(r => r.EmployeeId), group => group(r => r.RevisionId))
+                    .Property<RevisionPeriod>(e => e.Of(r => r.Revisions).Of(rp => rp.RevisionPeriod))
+                    .Property<RevisionDetail>(e => e.Of(r => r.Revisions).Of(rd => rd.Details), filter => filter(r => r.RevisionId))
+                    //.Single<User>(e => e.User)
+                    //.Many<Revision>(e => e.Revisions, filter => filter(r => r.EmployeeId), group => group(r => r.RevisionId))
+                    //.Single<Revision, RevisionPeriod>(r => r.RevisionPeriod)
+                    //.Many<Revision, RevisionDetail>(r => r.Details, filter => filter(r => r.RevisionId))
                     .GetList();
 
                 Assert.IsNotNull(employees);
@@ -342,11 +352,16 @@
                     Left Outer Join RevisionDetails rd On r.RevisionId = rd.RevisionId
                     Left Outer Join [Definition] d On rd.DefinitionId = d.DefinitionId")
                     .Group(e => e.EmployeeId)
-                    .Single<User>(e => e.User)
-                    .Many<Revision>(e => e.Revisions, filter => filter(r => r.EmployeeId), group => group(r => r.RevisionId))
-                    .Single<Revision, RevisionPeriod>(r => r.RevisionPeriod)
-                    .Many<Revision, RevisionDetail>(r => r.Details, filter => filter(r => r.RevisionId))
-                    .Single<RevisionDetail, RevisionDefinition>(rd => rd.Definition)
+                    .Property<User>(e => e.Of(u => u.User))
+                    .Property<Revision>(e => e.Of(r => r.Revisions), filter => filter(r => r.EmployeeId), group => group(r => r.RevisionId))
+                    .Property<RevisionPeriod>(e => e.Of(r => r.Revisions).Of(rp => rp.RevisionPeriod))
+                    .Property<RevisionDetail>(e => e.Of(r => r.Revisions).Of(rd => rd.Details), filter => filter(r => r.RevisionId))
+                    .Property<RevisionDefinition>(e => e.Of(r => r.Revisions).Of(rd => rd.Details).Of(def => def.Definition))
+                    //.Single<User>(e => e.User)
+                    //.Many<Revision>(e => e.Revisions, filter => filter(r => r.EmployeeId), group => group(r => r.RevisionId))
+                    //.Single<Revision, RevisionPeriod>(r => r.RevisionPeriod)
+                    //.Many<Revision, RevisionDetail>(r => r.Details, filter => filter(r => r.RevisionId))
+                    //.Single<RevisionDetail, RevisionDefinition>(rd => rd.Definition)
                     .GetList();
 
                 Assert.IsNotNull(employees);
@@ -466,11 +481,16 @@
                     Left Outer Join RevisionDetails rd On r.RevisionId = rd.RevisionId
                     Left Outer Join [Definition] d On rd.DefinitionId = d.DefinitionId")
                     .Group(e => e.EmployeeId)
-                    .Single<User>(e => e.User)
-                    .Many<Revision>(e => e.Revisions, filter => filter(r => r.EmployeeId, r => r.CreatedBy), group => group(r => r.RevisionId))
-                    .Single<Revision, RevisionPeriod>(r => r.RevisionPeriod)
-                    .Many<Revision, RevisionDetail>(r => r.Details, filter => filter(r => r.RevisionId))
-                    .Single<RevisionDetail, RevisionDefinition>(rd => rd.Definition)
+                    .Property<User>(e => e.Of(u => u.User))
+                    .Property<Revision>(e => e.Of(r => r.Revisions), filter => filter(r => r.EmployeeId, r => r.CreatedBy), group => group(r => r.RevisionId))
+                    .Property<RevisionPeriod>(e => e.Of(r => r.Revisions).Of(rp => rp.RevisionPeriod))
+                    .Property<RevisionDetail>(e => e.Of(r => r.Revisions).Of(rd => rd.Details), filter => filter(r => r.RevisionId))
+                    .Property<RevisionDefinition>(e => e.Of(r => r.Revisions).Of(rd => rd.Details).Of(def => def.Definition))
+                    //.Single<User>(e => e.User)
+                    //.Many<Revision>(e => e.Revisions, filter => filter(r => r.EmployeeId, r => r.CreatedBy), group => group(r => r.RevisionId))
+                    //.Single<Revision, RevisionPeriod>(r => r.RevisionPeriod)
+                    //.Many<Revision, RevisionDetail>(r => r.Details, filter => filter(r => r.RevisionId))
+                    //.Single<RevisionDetail, RevisionDefinition>(rd => rd.Definition)
                     .GetList();
 
                 Assert.IsNotNull(employees);
@@ -590,11 +610,16 @@
                     Left Outer Join RevisionDetails rd On r.RevisionId = rd.RevisionId
                     Left Outer Join [Definition] d On rd.DefinitionId = d.DefinitionId")
                     .Group(e => e.EmployeeId)
-                    .Single<User>(e => e.User)
-                    .Many<Revision>(e => e.Revisions, filter => filter(r => r.EmployeeId, r => r.CreatedBy), group => group(r => r.RevisionId, r => r.ModifiedBy))
-                    .Single<Revision, RevisionPeriod>(r => r.RevisionPeriod)
-                    .Many<Revision, RevisionDetail>(r => r.Details, filter => filter(r => r.RevisionId))
-                    .Single<RevisionDetail, RevisionDefinition>(rd => rd.Definition)
+                    .Property<User>(e => e.Of(u => u.User))
+                    .Property<Revision>(e => e.Of(r => r.Revisions), filter => filter(r => r.EmployeeId, r => r.CreatedBy), group => group(r => r.RevisionId, r => r.ModifiedBy))
+                    .Property<RevisionPeriod>(e => e.Of(r => r.Revisions).Of(rp => rp.RevisionPeriod))
+                    .Property<RevisionDetail>(e => e.Of(r => r.Revisions).Of(rd => rd.Details), filter => filter(r => r.RevisionId))
+                    .Property<RevisionDefinition>(e => e.Of(r => r.Revisions).Of(rd => rd.Details).Of(def => def.Definition))
+                    //.Single<User>(e => e.User)
+                    //.Many<Revision>(e => e.Revisions, filter => filter(r => r.EmployeeId, r => r.CreatedBy), group => group(r => r.RevisionId, r => r.ModifiedBy))
+                    //.Single<Revision, RevisionPeriod>(r => r.RevisionPeriod)
+                    //.Many<Revision, RevisionDetail>(r => r.Details, filter => filter(r => r.RevisionId))
+                    //.Single<RevisionDetail, RevisionDefinition>(rd => rd.Definition)
                     .GetList();
 
                 Assert.IsNotNull(employees);
@@ -715,8 +740,10 @@
                     Left Outer Join RevisionDetails rd On r.RevisionId = rd.RevisionId
                     Left Outer Join[Definition] d On rd.DefinitionId = d.DefinitionId")
                     .Group(r => r.RevisionId)
-                    .Single<Employee>(e => e.Employee)
-                    .Single<Employee>(r => r.RevisedBy, (m) => m.Map("ReviserId", r => r.EmployeeId).Map("ReviserName", r => r.EmployeeName))
+                    .Property<Employee>(r => r.Of(e => e.Employee))
+                    .Property<Employee>(r => r.Of(e => e.RevisedBy), (m) => m.Map("ReviserId", r => r.EmployeeId).Map("ReviserName", r => r.EmployeeName))
+                    //.Single<Employee>(e => e.Employee)
+                    //.Single<Employee>(r => r.RevisedBy, (m) => m.Map("ReviserId", r => r.EmployeeId).Map("ReviserName", r => r.EmployeeName))
                     .GetList();
 
                 Assert.IsNotNull(revisions);
@@ -769,7 +796,8 @@
 
                 var employees = conn.Query<Employee>("Select e.EmployeeId, EmployeeName, RevisionId as RevId, RevisionName as RevName From Employee e Inner Join Revision r On e.EmployeeId = r.EmployeeId")
                     .Group(e => e.EmployeeId)
-                    .Many<Revision>(e => e.Revisions, filter => filter(e => e.EmployeeId), null, (m) => m.Map("RevId", r => r.RevisionId).Map("RevName", r => r.RevisionName))
+                    .Property<Revision>(e => e.Of(r => r.Revisions), (m) => m.Map("RevId", r => r.RevisionId).Map("RevName", r => r.RevisionName), filter => filter(e => e.EmployeeId))
+                    //.Many<Revision>(e => e.Revisions, filter => filter(e => e.EmployeeId), null, (m) => m.Map("RevId", r => r.RevisionId).Map("RevName", r => r.RevisionName))
                     .GetList();
 
                 Assert.IsNotNull(employees);

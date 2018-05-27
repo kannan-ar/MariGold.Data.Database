@@ -10,13 +10,19 @@
         where Root : class, new()
     {
         IQuery<Root> Group(params Expression<Func<Root, object>>[] groupFields);
-        IQuery<Root> Single<Child>(Expression<Func<Root, Child>> item, Action<CustomFieldMapper<Child>> columns = null);
-        IQuery<Root> Single<Parent, Child>(Expression<Func<Parent, Child>> item, Action<CustomFieldMapper<Child>> columns = null);
-        IQuery<Root> Many<Child>(Expression<Func<Root, IList<Child>>> list,
-            Action<QueryAction<Child>> filterFields = null, Action<QueryAction<Child>> groupFields = null,
-            Action<CustomFieldMapper<Child>> columns = null);
-        IQuery<Root> Many<Parent, Child>(Expression<Func<Parent, IList<Child>>> list,
-            Action<QueryAction<Child>> filterFields = null, Action<CustomFieldMapper<Child>> columns = null);
+        
+        IQuery<Root> Property<Child>(Action<IPropertyTree<Root>> item);
+        IQuery<Root> Property<Child>(Action<IPropertyTree<Root>> item,
+            Action<CustomFieldMapper<Child>> columns);
+        IQuery<Root> Property<Child>(Action<IPropertyTree<Root>> item,
+           Action<QueryAction<Child>> filterFields);
+        IQuery<Root> Property<Child>(Action<IPropertyTree<Root>> item,
+            Action<CustomFieldMapper<Child>> columns, Action<QueryAction<Child>> filterFields);
+        IQuery<Root> Property<Child>(Action<IPropertyTree<Root>> item,
+            Action<CustomFieldMapper<Child>> columns, Action<QueryAction<Child>> filterFields,
+            Action<QueryAction<Child>> groupFields);
+        IQuery<Root> Property<Child>(Action<IPropertyTree<Root>> item,
+           Action<QueryAction<Child>> filterFields, Action<QueryAction<Child>> groupFields);
 
         Root Get();
         IList<Root> GetList();

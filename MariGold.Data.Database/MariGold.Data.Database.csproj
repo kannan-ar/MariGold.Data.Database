@@ -44,6 +44,7 @@
     <Compile Include="EntityManager.cs" />
     <Compile Include="DataConverter.cs" />
     <Compile Include="DynamicDataConverter.cs" />
+    <Compile Include="ExpressionUtility.cs" />
     <Compile Include="IDynamicDataConverter.cs" />
     <Compile Include="ILDataConverter.cs" />
     <Compile Include="Database.cs" />
@@ -53,12 +54,14 @@
     <Compile Include="IDatabase.cs" />
     <Compile Include="Db.cs" />
     <Compile Include="IMultiLevelParser.cs" />
+    <Compile Include="IPropertyTree.cs" />
     <Compile Include="IQuery.cs" />
     <Compile Include="IRecordSet.cs" />
     <Compile Include="MultiLevelILConverter.cs" />
     <Compile Include="MultiRecordSet.cs" />
     <Compile Include="ORMExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyTreeParser.cs" />
     <Compile Include="Query.cs" />
     <Compile Include="MultiLevelRecordSet.cs" />
   </ItemGroup>
