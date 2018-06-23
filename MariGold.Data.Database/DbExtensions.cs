@@ -19,7 +19,7 @@
             CommandType commandType,
             object parameters)
         {
-			IDatabase db = Db.GetConnection(conn);
+            IDatabase db = Db.GetConnection(conn);
 
             return db.GetDataReader(sql, commandType, parameters);
         }
@@ -74,9 +74,15 @@
             this IDbConnection conn,
             string sql,
             CommandType commandType,
-            object parameters)
+            object parameters,
+            IDbTransaction tran = null)
         {
             IDatabase db = Db.GetConnection(conn);
+
+            if (tran != null)
+            {
+                db.Transaction = tran;
+            }
 
             return db.Execute(sql, commandType, parameters);
         }
@@ -84,9 +90,15 @@
         public static int Execute(
             this IDbConnection conn,
             string sql,
-            CommandType commandType)
+            CommandType commandType,
+            IDbTransaction tran = null)
         {
             IDatabase db = Db.GetConnection(conn);
+
+            if (tran != null)
+            {
+                db.Transaction = tran;
+            }
 
             return db.Execute(sql, commandType);
         }
@@ -94,16 +106,27 @@
         public static int Execute(
             this IDbConnection conn,
             string sql,
-            object parameters)
+            object parameters,
+            IDbTransaction tran = null)
         {
             IDatabase db = Db.GetConnection(conn);
+
+            if (tran != null)
+            {
+                db.Transaction = tran;
+            }
 
             return db.Execute(sql, parameters);
         }
 
-        public static int Execute(this IDbConnection conn, string sql)
+        public static int Execute(this IDbConnection conn, string sql, IDbTransaction tran = null)
         {
             IDatabase db = Db.GetConnection(conn);
+
+            if (tran != null)
+            {
+                db.Transaction = tran;
+            }
 
             return db.Execute(sql);
         }

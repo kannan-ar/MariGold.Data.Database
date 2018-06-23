@@ -21,7 +21,8 @@
 					cmd.Transaction = tran;
 				}
 
-				return cmd.ExecuteReader();
+
+                return cmd.ExecuteReader();
 			}
 		}
 
@@ -89,6 +90,10 @@
 			{
 				return tran;
 			}
+            set
+            {
+                tran = value;
+            }
 		}
 
 		/// <summary>

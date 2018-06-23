@@ -8,7 +8,7 @@
     {
         ConnectionState State { get; }
         IDbConnection Connection { get; }
-        IDbTransaction Transaction { get; }
+        IDbTransaction Transaction { get; set; }
 
         IDbConnection Open();
 
